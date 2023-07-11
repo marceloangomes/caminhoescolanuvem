@@ -1,3 +1,4 @@
+[
 {"id":1,"descricao":"MANHÃ", "ordem":1},
 {"id":2,"descricao":"TARDE", "ordem":4},
 {"id":3,"descricao":"NOITE", "ordem":7},
@@ -6,3 +7,4 @@
 {"id":6,"descricao":"PÓS-TARDE", "ordem":5},
 {"id":7,"descricao":"PRÉ-NOITE", "ordem":6},
 {"id":8,"descricao":"CONTRA-TURNO", "ordem":8}
+]

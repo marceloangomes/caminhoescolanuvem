@@ -1,6 +1,5 @@
-{    "descricao" : "1º ano Fund",
-	"id_tipo_ens" : 1
-},
+[
+{    "descricao" : "1º ano Fund","id_tipo_ens" : 1},
 {
 	"descricao" : "2º ano Fund",
 	"id_tipo_ens" : 1
@@ -73,3 +72,4 @@
 	"descricao" : "3º Termo Médio",
 	"id_tipo_ens" : 2
 }
+]
