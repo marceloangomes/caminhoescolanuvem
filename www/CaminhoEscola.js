@@ -198,7 +198,7 @@ $(() => {
 
         const filtrarClasse =  (codigoCie) => {
             return (element)=>{
-                return parseInt(element.codigo_Cie) == parseInt(codigoCie);
+                return parseInt(element.codigo_cie) == parseInt(codigoCie);
             }                            
         }
 
