@@ -40,7 +40,7 @@ $(() => {
         })
 
         //Turmas
-        fetch('http://localhost/api/turmas')
+        fetch('turmas.json')
         .then(response => {
             response.text()
             .then(dados => {
@@ -59,7 +59,7 @@ $(() => {
         })
 
         //Turnos
-        fetch('http://localhost/api/turnos')
+        fetch('turnos.json')
         .then(response => {
             response.text()
             .then(dados => {
@@ -78,7 +78,7 @@ $(() => {
         })
         
         //Classes
-        fetch('http://localhost/api/classes')
+        fetch('classes.json')
         .then(response => {
             response.text()
             .then(dados => {
