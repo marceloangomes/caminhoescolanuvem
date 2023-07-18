@@ -1,0 +1,6 @@
+[
+{"id":1,"descricao":"MANHÃ", "ordem":1},
+{"id":2,"descricao":"TARDE", "ordem":2},
+{"id":3,"descricao":"NOITE", "ordem":3},
+{"id":4,"descricao":"INTEGRAL", "ordem":4}
+]
