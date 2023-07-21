@@ -2,5 +2,6 @@
     "enderecoAlunoNaoEncontrado":"O Endereço do aluno não foi encontrado, tente melhorar a consulta.",
     "escolaNaoEncontrada":"Nenhuma escola encontrada próximo ao endereço, tente melhorar a consulta.",
     "enderecoVazio":"Entre com o endereço do aluno.",
+    "selecioneAno":"Selecione o Ano !",
     "erroGenerico":"Houve um problema, tente novamente."
 }

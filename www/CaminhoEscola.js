@@ -12,11 +12,11 @@ $(() => {
     $(window).load(function(){                 
         let escolas = [];                
         let escolasRaio =[];     
-        let escolasProximas = [];  
-        let escolasFiltrado = [];
+        let distanciaProximas = [];          
         let anos = [];
         let turnos = []; 
-        let anoturno = [];
+        let juncoes = [];
+        let escolaJuncoes = [];
         let geocoder = new google.maps.Geocoder();        
         let service = new google.maps.DistanceMatrixService();             
         let directionsService = new google.maps.DirectionsService();            
@@ -31,16 +31,26 @@ $(() => {
 
         //Obter dados
         //Escolas
-        fetch('escolas.json')
+        fetch('Escola.json')
         .then(response => {
             response.text()
             .then(dados => {
                 escolas = JSON.parse(dados)
             })
+            .then(()=>{
+                escolas.forEach(escola=>{
+                    escola.selecionada = false;
+                    selEscola = document.getElementById("selEscola");
+                    let option = document.createElement("option");
+                    option.value = escola.codigo_cie;
+                    option.text = escola.nome;
+                    selEscola.add(option);
+                }) 
+            })
         })
 
         //Anos
-        fetch('ano.json')
+        fetch('Ano.json')
         .then(response => {
             response.text()
             .then(dados => {
@@ -59,7 +69,7 @@ $(() => {
         })
 
         //Turnos
-        fetch('turno.json')
+        fetch('Turno.json')
         .then(response => {
             response.text()
             .then(dados => {
@@ -76,17 +86,26 @@ $(() => {
                 });        
             })
         })
-        
-        //AnoTurno
-        fetch('AnoTurno.json')
+
+        //Juncao
+        fetch('Juncao.json')
         .then(response => {
             response.text()
             .then(dados => {
-                anoturno = JSON.parse(dados)
-            })                              
+                juncoes = JSON.parse(dados)
+            })            
         })
 
-        $.getJSON( "mensagem.json", function( data ) {        
+        //JuncaoEscola
+        fetch('EscolaJuncao.json')
+        .then(response => {
+            response.text()
+            .then(dados => {
+                escolaJuncoes = JSON.parse(dados)
+            })            
+        })
+        
+        $.getJSON( "Mensagem.json", function( data ) {        
             mensagem = data;
         });
                          
@@ -123,7 +142,7 @@ $(() => {
         $("#txtOrigem").keyup(function(e){
             if(e.keyCode === 13)
             $(".btnCalcular").trigger("click");
-        });
+        });        
 
         let markersArray = [];
 
@@ -182,37 +201,12 @@ $(() => {
                     return d && d <= 2000;
                 }
             }
-        };
-
-        const filtrarPorAno = (ano) => {           
-            return (element)=>{
-                return element.id_ano == ano;
-            }
-        };
-        
-        const filtrarPorTurno = (turno) => {           
-            return (element)=>{
-                return element.id_turno == turno;
-            }
-        };
-
-        const filtrarPorEscola =  (codigoCie) => {
-            return (element)=>{
-                return parseInt(element.codigo_cie) == parseInt(codigoCie);
-            }                            
-        }
-
-        function filtrarEscolaPorAnoTurno(anoTurnoFiltrado) {
-            return (element) => {
-                let codigoCie = element.codigo_cie;
-                let retorno = anoTurnoFiltrado.findIndex(filtrarPorEscola(codigoCie));
-                return retorno > -1;
-            };
-        }
+        };        
 
         const Atualizar = async () => {
             LimparResultado();
-            escolasProximas = [];            
+            distanciaProximas = [];      
+            let escolasFiltrado =[];     
             if(!$("#txtOrigem").val())
             {
                 MostrarAlerta(mensagem.enderecoVazio);
@@ -229,29 +223,68 @@ $(() => {
                 }            
             }
 
-            let anoTurnoFiltrado = null;
+            let modelos = [];
+            $("input.form-check-input").each((element)=>{
+                if(element.checked) 
+                    modelos.push(element.value);
+            });
+
+            if(modelos.length == 0)
+                modelos=[1,2];
+
             let ano = document.getElementById('selAno').value;
-            if(ano != null && ano > 0){
-                anoTurnoFiltrado = anoturno.filter(filtrarPorAno(parseInt(ano)));
+            if(ano == 0){
+                MostrarAlerta(mensagem.selecioneAno)
+                return;
             }
+
+            let escolaselecionada = document.getElementById('selEscola').value;
+            if(escolaselecionada > 0){
+                escolas.forEach(escola=>{
+                    if(escola.codigo_cie == escolaselecionada){
+                        escola.selecionada = true;
+                        escolasFiltrado.push(escola)
+                        return;
+                    }
+                })
+            }            
             
             let turno = document.getElementById('selTurno').value;
-            if(turno != null && turno > 0){
-                anoTurnoFiltrado = anoTurnoFiltrado ? anoTurnoFiltrado.filter(filtrarPorTurno(parseInt(turno))) : anoturno.filter(filtrarPorTurno(parseInt(turno)));
-            }
+            let turnosT = [];
+            if(turno > 0)
+                turnosT=turnos.filter(t=>{return t.id==turno});
+            else
+                turnosT.push(turno);
 
-            escolasFiltrado = escolas;
+            let filtros = [];
 
-            if(anoTurnoFiltrado){                
-                escolasFiltrado = escolasFiltrado.filter(filtrarEscolaPorAnoTurno(anoTurnoFiltrado));                                    
-            }
+            modelos.forEach(modelo => {
+                turnosT.forEach(turno=>{
+                    filtros.push({"id_modelo":modelo,"id_turno":turno.id,"id_ano":ano});
+                })
+            })
+
+            filtros.forEach(filtro=>{
+                let juncoesFiltrado = juncoes.filter(juncao=>{
+                    return juncao.id_modelo==filtro.id_modelo && juncao.id_turno==filtro.id_turno && juncao.id_ano==filtro.id_ano;
+                })
+
+                juncoesFiltrado.forEach(juncao=>{
+                    escolaJuncoes.forEach(escolaJuncao=>{
+                        let i = escolaJuncao.juncao.indexOf(juncao.id);
+                        if(i > -1)
+                            if(escolasFiltrado.filter(escolaFiltrado=>{return escolaJuncao.codigo_cie == escolaFiltrado.codigo_cie}).length == 0)
+                                escolasFiltrado.push(escolas.filter(escola=>{return escola.codigo_cie == escolaJuncao.codigo_cie})[0])
+                    })
+                })
+            })                                   
                         
             // Verificar se o Local de origem é válido
-            VerificarLocalOrigem(geocoder, endOrigem, origem, escolasRaio, escolasFiltrado, filtrarEscolas, MostrarAlerta, mensagem, escolasProximas, ProcessarEscolasRaio, AsyncForEach, Sleep, CalculaDistancia, FormataResultado);                                
+            VerificarLocalOrigem(geocoder, endOrigem, origem, escolasRaio, escolasFiltrado, filtrarEscolas, MostrarAlerta, mensagem, ProcessarEscolasRaio, AsyncForEach, Sleep, CalculaDistancia, FormataResultado);                                
         };
 
         const LimparResultado = () => {        
-            escolasProximas=[];
+            distanciaProximas=[];
             escolasRaio=[];           
             $("#pills-tab li a").css("display","none");  
             $("#txtDestinoResultado").val("");   
@@ -267,49 +300,77 @@ $(() => {
         }
 
         const FormataResultado = (escolasRaio) => {        
-            if(escolasProximas.length === escolasRaio.length)
-            {                
-                escolasProximas.sort((a, b) => {
-                    return a.dist - b.dist
-                });
+            if(distanciaProximas.length === escolasRaio.length)
+            {
+                distanciaProximas.sort((a, b) => {
+                    if(a.escola.selecionada < b.escola.selecionada)
+                        return 1
+                    else if(a.escola.selecionada > b.escola.selecionada)
+                        return -1
+                    else
+                        return a.dist - b.dist
+                });                
+                distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia=>{distancia.escola.selecionada==true}).length);
 
-                escolasProximas = escolasProximas.slice(0,3)
                 $("#pills-tab li a").css("display","");  
-                escolasProximas.forEach((d, i)=>{
+                distanciasVisao.forEach((d, i)=>{
                     let $escolaContainer = null
                     switch (i) {
                         case 0:
                             $escolaContainer = $(".containerPrimeira") 
-                            $("#pills-primeira-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(escolasProximas[0]) })                                            
+                            $("#pills-primeira-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(distanciaProximas[0]) });
+                            FormataSelecionada(d.escola, d.dist, distanciasVisao);
                             break;                    
                         case 1:
                             $escolaContainer = $(".containerSegunda") 
-                            $("#pills-segunda-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(escolasProximas[1]) })
+                            $("#pills-segunda-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(distanciaProximas[1]) });
                             break; 
                         case 2:
                             $escolaContainer = $(".containerTerceira") 
-                            $("#pills-terceira-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(escolasProximas[2]) })
+                            $("#pills-terceira-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(distanciaProximas[2]) });
+                            break;
+                        case 3:
+                            $escolaContainer = $(".containerQuarta") 
+                            $("#pills-quarta-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(distanciaProximas[3]) })
+                            break;
+                        case 4:
+                            $escolaContainer = $(".containerQuinta") 
+                            $("#pills-quinta-tab").text(d.escola.nome).removeAttr('hidden').click(()=>{ AtualizarMapa(distanciaProximas[4]) })
                             break;
                         default:
                             break;
                     }                     
                     $($escolaContainer).find("#txtDestinoResultado").val(d.escola.endereco);   
                     $($escolaContainer).find("#txtDistancia").val(d.distLongo); 
-                    $($escolaContainer).find("#txtDestinoEscola").val(d.escola.nome);
-                    const escola = escolasRaio.find(obj => obj.nome === d.escola.nome);
-                    const contato = escola.contato
-                    $($escolaContainer).find("#txtDestinoContato").val(contato);            
+                    $($escolaContainer).find("#txtDestinoEscola").val(d.escola.nome);                    
+                    $($escolaContainer).find("#txtDestinoContato").val(d.escola.contato);            
                     $($escolaContainer).find("#txtTempo").val(d.tempo);                                       
                 })  
                 //Atualizar o mapa.   
-                if(escolasProximas[0]){          
-                    $("#txtOrigemResultado").val(escolasProximas[0].enderecoOrigem);      
-                    escolasProximas[0].enderecoDestino += ' escola';                                
-                    AtualizarMapa(escolasProximas[0])
+                if(distanciasVisao[0]){          
+                    $("#txtOrigemResultado").val(distanciaProximas[0].enderecoOrigem);      
+                    distanciaProximas[0].enderecoDestino += ' escola';                                
+                    AtualizarMapa(distanciasVisao[0])
                 }                                                              
                 return true;
             }
             return false;
+        }
+
+        const FormataSelecionada = (escola, distancia, distanciasVisao) => {
+            if (escola.selecionada){
+                const outrasDistancias = distanciasVisao.filter(escola=>escola.selecionada == false);
+                const distanciaSelecinada = distancia;
+                const maior = outrasDistancias.filter((distancia) => {distanciaSelecinada > distancia}).length > 0
+                if(maior){
+                    $("#pills-primeira-tab.active").css('background-color','#dc35457d'); 
+                    $("#pills-primeira-tab").css('background-color','#dc35451a');              
+                }              
+                else{
+                    $("#pills-primeira-tab.active").css('background-color','#1e7e347d'); 
+                    $("#pills-primeira-tab").css('background-color','#1e7e3426');              
+                }                           
+            }
         }
 
         const AtualizarMapa =(endereco) => {
@@ -350,7 +411,7 @@ $(() => {
             } else { // Se o status for "OK".      
                 var tempo = response.rows[0].elements[0].duration.text;            
                 // Popula o objeto distancia.            
-                escolasProximas.push({"escola":escola,"dist":response.rows[0].elements[0].distance.value,"enderecoDestino":response.destinationAddresses,"enderecoOrigem":response.originAddresses, "distLongo":response.rows[0].elements[0].distance.text,"tempo":tempo});
+                distanciaProximas.push({"escola":escola,"dist":response.rows[0].elements[0].distance.value,"enderecoDestino":response.destinationAddresses,"enderecoOrigem":response.originAddresses, "distLongo":response.rows[0].elements[0].distance.text,"tempo":tempo});
             }          
         }
 
@@ -358,10 +419,10 @@ $(() => {
             let i = 0;
             AsyncForEach(escolasRaio, async (e) => {
                 i++;
-                if (i % 5 === 0)
+                if (i % 2 === 0)
                     await sleep(1010);
                 CalculaDistancia(e, origem);
-            }).then(async () => {
+            }).then(async (e) => {                
                 i = 0;
                 while (!FormataResultado(escolasRaio) && i < 30) {
                     await sleep(500);
@@ -373,16 +434,17 @@ $(() => {
             });
         }
         
-        const VerificarLocalOrigem =(geocoder, endOrigem, origem, escolasRaio, escolas, filtrarEscolas, MostrarAlerta, mensagem, escolasProximas, ProcessarEscolasRaio, asyncForEach, sleep, CalculaDistancia, FormataResultado) =>{            
+        const VerificarLocalOrigem =(geocoder, endOrigem, origem, escolasRaio, escolas, filtrarEscolas, MostrarAlerta, mensagem, ProcessarEscolasRaio, asyncForEach, sleep, CalculaDistancia, FormataResultado) =>{            
             geocoder.geocode({ 'address': endOrigem, 'region': 'BR' }, async function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK && results[0]) {
                     origem = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-                    //Filtrar escolas fora do raio de 2 KM.
-                    escolasRaio = escolas.filter(filtrarEscolas(origem));
+                    //Filtrar escolas fora do raio de 2 KM, incluindo a escola selecionada.
+                    escolasRaio = escolas.filter(escola => escola.selecionada == true || filtrarEscolas(origem));                    
                     if (escolasRaio.length === 0) {
                         MostrarAlerta(mensagem.escolaNaoEncontrada);
                         return;
-                    }                    
+                    }
+
                     ProcessarEscolasRaio(asyncForEach, escolasRaio, sleep, CalculaDistancia, FormataResultado, MostrarAlerta, origem);
                 }
                 else {
