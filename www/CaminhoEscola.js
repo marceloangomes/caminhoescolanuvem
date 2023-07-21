@@ -317,7 +317,7 @@ $(() => {
                     else
                         return a.dist - b.dist
                 });                
-                distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia=>{distancia.escola.selecionada==true}).length);
+                distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia=>{return distancia.escola.selecionada==true}).length);
 
                 $("#pills-tab li a").css("display","");  
                 distanciasVisao.forEach((d, i)=>{
@@ -366,11 +366,12 @@ $(() => {
 
         const FormataSelecionada = (escola, distancia, distanciasVisao) => {
             if (escola.selecionada){
-                const outrasDistancias = distanciasVisao.filter(escola=>escola.selecionada == false);
-                const distanciaSelecinada = distancia;
-                const maior = outrasDistancias.filter((distancia) => {distanciaSelecinada > distancia}).length > 0
+                const outrasDistancias = distanciasVisao.filter(distanciaVisao=>{return distanciaVisao.escola.selecionada == false});
+                const maior = outrasDistancias.filter((outraDistancia) => {return distancia > outraDistancia.dist}).length > 0
                 if(maior){
-                    $("#pills-primeira-tab.active").css('background-color','#dc35457d'); 
+                    $("#pills-primeira-tab").on('click', function() {
+                        $("#pills-primeira-tab").attr('style', 'background-color:#dc35457d !important')
+                    });
                     $("#pills-primeira-tab").css('background-color','#dc35451a');              
                 }              
                 else{
