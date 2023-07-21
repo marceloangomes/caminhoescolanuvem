@@ -153,6 +153,94 @@ $(() => {
               markersArray.length = 0;
         };
 
+        const Atualizar = async () => {
+            LimparResultado();
+            distanciaProximas = [];      
+            let escolasFiltrado =[];     
+            if(!$("#txtOrigem").val())
+            {
+                MostrarAlerta(mensagem.enderecoVazio);
+                return;    
+            }
+
+            $("#aguarde").show('fade');
+            var endOrigem = $("#txtOrigem").val();          
+            if(isNaN(parseFloat(endOrigem))){
+                var cidade = $("#selCidadeOrigem").val();
+                if(cidade !== "Todas")
+                {
+                    endOrigem += ', ' + $("#selCidadeOrigem").val() + ', SP';
+                }            
+            }
+
+            let modelos = [];
+            $("input.form-check-input").each((element)=>{
+                if(element.checked) 
+                    modelos.push(element.value);
+            });
+
+            if(modelos.length == 0)
+                modelos=[1,2];
+
+            let ano = document.getElementById('selAno').value;
+            if(ano == 0){
+                MostrarAlerta(mensagem.selecioneAno)
+                return;
+            }
+
+            let escolaSelecionada = document.getElementById('selEscola').value;
+            if(escolaSelecionada > 0){
+                escolas.forEach(escola=>{
+                    if(escola.codigo_cie == escolaSelecionada){
+                        escola.selecionada = true;
+                        escolasFiltrado.push(escola)
+                        return;
+                    }
+                })
+            }            
+            
+            let turno = document.getElementById('selTurno').value;
+            let turnosT = [];
+            if(turno > 0)
+                turnosT=turnos.filter(t=>{return t.id==turno});
+            else
+                turnosT=turnos;
+
+            let filtros = [];
+
+            modelos.forEach(modelo => {
+                turnosT.forEach(turno=>{
+                    filtros.push({"id_modelo":modelo,"id_turno":turno.id,"id_ano":ano});
+                })
+            })
+
+            filtros.forEach(filtro=>{
+                let juncoesFiltrado = juncoes.filter(juncao=>{
+                    return juncao.id_modelo==filtro.id_modelo && juncao.id_turno==filtro.id_turno && juncao.id_ano==filtro.id_ano;
+                })
+
+                juncoesFiltrado.forEach(juncao=>{
+                    escolaJuncoes.forEach(escolaJuncao=>{
+                        const i = escolaJuncao.juncao.indexOf(juncao.id);
+                        if(i > -1){              
+                            escolas.every(escola =>{
+                                if(escola.codigo_cie == escolaJuncao.codigo_cie){
+                                    escolasFiltrado.push(escola);
+                                    return false;
+                                }
+                                return true;
+                            })                             
+                        }
+                    })
+                })
+            })    
+            escolasFiltrado = escolasFiltrado.filter((valor, indice, self) => {
+                return self.indexOf(valor) === indice;
+            });                               
+                        
+            // Verificar se o Local de origem é válido
+            VerificarLocalOrigem(geocoder, endOrigem, origem, escolasRaio, escolasFiltrado, filtrarEscolas, MostrarAlerta, mensagem, ProcessarEscolasRaio, AsyncForEach, Sleep, CalculaDistancia, FormataResultado);                                
+        };
         const CalculaRota = (start, end) => {                             
             var request = {
                 origin: start,
@@ -193,95 +281,14 @@ $(() => {
             });
         }
       
-        const filtrarEscolas = (origem) => {
-            return (element)=>{
-                if (element.lat && element.lng) {
-                    var destino = new google.maps.LatLng(element.lat, element.lng);
-                    var d = google.maps.geometry.spherical.computeDistanceBetween(origem, destino);
-                    return d && d <= 2000;
-                }
-            }
+        const filtrarEscolas = (origem, escola) => {        
+            if (escola.lat && escola.lng) {
+                let destino = new google.maps.LatLng(escola.lat, escola.lng);
+                let d = google.maps.geometry.spherical.computeDistanceBetween(origem, destino);
+                return d && d <= 2000;
+            } 
+            return false;       
         };        
-
-        const Atualizar = async () => {
-            LimparResultado();
-            distanciaProximas = [];      
-            let escolasFiltrado =[];     
-            if(!$("#txtOrigem").val())
-            {
-                MostrarAlerta(mensagem.enderecoVazio);
-                return;    
-            }
-
-            $("#aguarde").show('fade');
-            var endOrigem = $("#txtOrigem").val();          
-            if(isNaN(parseFloat(endOrigem))){
-                var cidade = $("#selCidadeOrigem").val();
-                if(cidade !== "Todas")
-                {
-                    endOrigem += ', ' + $("#selCidadeOrigem").val() + ', SP';
-                }            
-            }
-
-            let modelos = [];
-            $("input.form-check-input").each((element)=>{
-                if(element.checked) 
-                    modelos.push(element.value);
-            });
-
-            if(modelos.length == 0)
-                modelos=[1,2];
-
-            let ano = document.getElementById('selAno').value;
-            if(ano == 0){
-                MostrarAlerta(mensagem.selecioneAno)
-                return;
-            }
-
-            let escolaselecionada = document.getElementById('selEscola').value;
-            if(escolaselecionada > 0){
-                escolas.forEach(escola=>{
-                    if(escola.codigo_cie == escolaselecionada){
-                        escola.selecionada = true;
-                        escolasFiltrado.push(escola)
-                        return;
-                    }
-                })
-            }            
-            
-            let turno = document.getElementById('selTurno').value;
-            let turnosT = [];
-            if(turno > 0)
-                turnosT=turnos.filter(t=>{return t.id==turno});
-            else
-                turnosT.push(turno);
-
-            let filtros = [];
-
-            modelos.forEach(modelo => {
-                turnosT.forEach(turno=>{
-                    filtros.push({"id_modelo":modelo,"id_turno":turno.id,"id_ano":ano});
-                })
-            })
-
-            filtros.forEach(filtro=>{
-                let juncoesFiltrado = juncoes.filter(juncao=>{
-                    return juncao.id_modelo==filtro.id_modelo && juncao.id_turno==filtro.id_turno && juncao.id_ano==filtro.id_ano;
-                })
-
-                juncoesFiltrado.forEach(juncao=>{
-                    escolaJuncoes.forEach(escolaJuncao=>{
-                        let i = escolaJuncao.juncao.indexOf(juncao.id);
-                        if(i > -1)
-                            if(escolasFiltrado.filter(escolaFiltrado=>{return escolaJuncao.codigo_cie == escolaFiltrado.codigo_cie}).length == 0)
-                                escolasFiltrado.push(escolas.filter(escola=>{return escola.codigo_cie == escolaJuncao.codigo_cie})[0])
-                    })
-                })
-            })                                   
-                        
-            // Verificar se o Local de origem é válido
-            VerificarLocalOrigem(geocoder, endOrigem, origem, escolasRaio, escolasFiltrado, filtrarEscolas, MostrarAlerta, mensagem, ProcessarEscolasRaio, AsyncForEach, Sleep, CalculaDistancia, FormataResultado);                                
-        };
 
         const LimparResultado = () => {        
             distanciaProximas=[];
@@ -439,7 +446,7 @@ $(() => {
                 if (status === google.maps.GeocoderStatus.OK && results[0]) {
                     origem = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
                     //Filtrar escolas fora do raio de 2 KM, incluindo a escola selecionada.
-                    escolasRaio = escolas.filter(escola => escola.selecionada == true || filtrarEscolas(origem));                    
+                    escolasRaio = escolas.filter(escola => escola.selecionada == true || filtrarEscolas(origem,escola));                    
                     if (escolasRaio.length === 0) {
                         MostrarAlerta(mensagem.escolaNaoEncontrada);
                         return;

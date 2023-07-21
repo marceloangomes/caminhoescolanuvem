@@ -39,7 +39,8 @@
     {"codigo_cie":922924 ,"nome":"EE Marco Antonio Prudente de Toledo, Prof.","endereco":"Estrada do Poney Club, 2120 – Jardim Las Palmas, Alvarenga, São Bernardo do Campo","contato":"(11)4358-1111 (11)4358-3706","lat":-23.755521, "lng":-46.605531},
     {"codigo_cie":908757 ,"nome":"EE Maria Auxiliadora Marques, Profª.","endereco":"Rua dos Tangaras, 35 – Parque dos Pássaros, Independência, São Bernardo do Campo","contato":"(11)4343-8499 (11)4392-4884","lat":-23.711076, "lng":-46.583793},
     {"codigo_cie":38519 ,"nome":"EE Maria Cristina Schmidt Miranda, Profª.","endereco":"Rua Abramo Luchesi, 12 – Jardim Leblon, Ferrazópolis, São Bernardo do Campo","contato":"(11)4127-7544 (11)4335-1847","lat":-23.723466, "lng":-46.539456},
-    {"codigo_cie":9210 ,"nome":"EE Maria Iracema Munhoz","endereco":"Rua Marechal Rondon, 100 – Centro","contato, São Bernardo do Campo":"(11)4330-5256 (11)4330-2633","lat":-23.710887, "lng":-46.550655},
+    {"codigo_cie":9118 ,"nome":"EE Maria Luiza Ferrari","endereco":"Rua Santa Adelaide, 81 – Vila Euclides, Centro, São Bernardo do Campo","contato":"(11)4330-4071 (11)4330-9085","lat":-23.695481938099462, "lng":-46.556972221971705},
+    {"codigo_cie":9210 ,"nome":"EE Maria Iracema Munhoz","endereco":"Rua Marechal Rondon, 100 – Centro, São Bernardo do Campo","contato":"(11)4330-5256 (11)4330-2633","lat":-23.710887, "lng":-46.550655},
     {"codigo_cie":41282 ,"nome":"EE Maria Osório Teixeira, Profª.","endereco":"Rua José Dias Donadelli, 567 – Jardim Belita, Alves Dias, São Bernardo do Campo","contato":"(11)4392-2290 (11)4392-4377","lat":-23.715779, "lng":-46.588788},
     {"codigo_cie":8916 ,"nome":"EE Maria Pires, Profª.","endereco":"Estrada do Vergueiro, 631-A – Jardim Jussara, Balneária, São Bernardo do Campo","contato":"(11)4354-0196 (11)4354-7194","lat":-23.762636, "lng": -46.536629},
     {"codigo_cie":917515 ,"nome":"EE Maria Regina Demarchi Fanani","endereco":"Rua Andrea Demarchi, 45 – Jardim Andrea Demarchi, Demarchi, São Bernardo do Campo","contato":"(11)4347-7414 (11)4396-6022","lat":-23.738237, "lng":-46.550687},
@@ -74,6 +75,6 @@
     {"codigo_cie":9581 ,"nome":"EE Idalina Macedo Costa Sodré, Dona","endereco":"Rua Conselheiro Lafayette, 619 – Barcelona, São Caetano do Sul","contato":"(11)4224-4101 (11)4224-4311","lat":-23.620883, "lng":-46.551035},
     {"codigo_cie":9404 ,"nome":"EE Joana Motta, Profª.","endereco":"Rua Espirito Santo, 1.330 – Cerâmica, São Caetano do Sul","contato":"(11)4232-2249 (11)4232-4915","lat":-23.628064, "lng":-46.573696},
     {"codigo_cie":9477 ,"nome":"EE Maria da Conceição Moura Branco, Profª.","endereco":"Rua Tapajos, 1.085 – Olímpico, São Caetano do Sul","contato":"(11)4229-8422 (11)4229-4630","lat":-23.625339, "lng":-46.556840},
-    {"codigo_cie":9351 ,"nome":"EE Maria Trujilo Torloni","endereco":"Estrada das Lágrimas, 579 – São José, São Caetano do Sul","contato":"(11)4238-7686 (11)4232-4959","lat":-23.635390, "lng":-46.577570},
+    {"codigo_cie":9350 ,"nome":"EE Maria Trujilo Torloni","endereco":"Estrada das Lágrimas, 579 – São José, São Caetano do Sul","contato":"(11)4238-7686 (11)4232-4959","lat":-23.635390, "lng":-46.577570},
     {"codigo_cie":9465 ,"nome":"EE Yolanda Ascêncio, Profª.","endereco":"Avenida Tijucussu, 800 – Olímpico, São Caetano do Sul","contato":"(11)4232-8826 (11)4232-2721","lat":-23.629355, "lng":-46.563484}
 ] 
