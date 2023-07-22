@@ -1,0 +1,65 @@
+[
+    {
+        "id": 1,
+        "id_turno": 1,
+        "id_modelo": 1,
+        "horario": {
+            "inicio": "07:00:00",
+            "fim": "12:35:00"
+        }
+    },
+    {
+        "id": 2,
+        "id_turno": 2,
+        "id_modelo": 1,
+        "horario": {
+            "inicio": "13:00:00",
+            "fim": "18:35:00"
+        }
+    },
+    {
+        "id": 3,
+        "id_turno": 3,
+        "id_modelo": 1,
+        "horario": {
+            "inicio": "19:00:00",
+            "fim": "23:00:00"
+        }
+    },
+    {
+        "id": 4,
+        "id_turno": 4,
+        "id_modelo": 2,
+        "horario": {
+            "inicio": "07:00:00",
+            "fim": "16:00:00"
+        }
+    },
+    {
+        "id": 5,
+        "id_turno": 1,
+        "id_modelo": 2,
+        "horario": {
+            "inicio": "07:00:00",
+            "fim": "14:00:00"
+        }
+    },
+    {
+        "id": 6,
+        "id_turno": 2,
+        "id_modelo": 2,
+        "horario": {
+            "inicio": "14:15:00",
+            "fim": "21:15:00"
+        }
+    },
+    {
+        "id": 7,
+        "id_turno": 3,
+        "id_modelo": 3,
+        "horario": {
+            "inicio": "19:00:00",
+            "fim": "23:00:00"
+        }
+    }
+]
