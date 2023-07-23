@@ -30,102 +30,172 @@ $(() => {
         directionsDisplay.setMap(mapa);
         $(".alert").hide();
 
-        //Obter dados
-        //Escolas
-        fetch('Escola.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        escolas = JSON.parse(dados)
-                    })
-                    .then(() => {
-                        escolas.forEach(escola => {
-                            escola.selecionada = false;
-                            selEscola = document.getElementById("selEscola");
-                            let option = document.createElement("option");
-                            option.value = escola.codigo_cie;
-                            option.text = escola.nome;
-                            selEscola.add(option);
+        const PopulaEscolas = (escolas) => {
+            //Não filtra pela cidade devido a poder haver escola em São Bernardo 
+            //mais próxima de um aluno do que São Caetano e vice-versa
+            escolas.sort((escolaA, escolaB) => {
+                if (escolaA.nome < escolaB.nome)
+                    return -1
+                else if (escolaA.nome > escolaB.nome)
+                    return 1
+                else
+                    return 0
+            });
+
+            escolas.forEach(escola => {
+                escola.selecionada = false;
+                selEscola = document.getElementById("selEscola");
+                let option = document.createElement("option");
+                option.value = escola.codigo_cie;
+                option.text = escola.nome;
+                selEscola.add(option);
+            })
+
+        }
+        escolas = localStorage.getItem('escolas');
+        if (escolas) {
+            escolas = JSON.parse(escolas);
+            PopulaEscolas(escolas);
+        }
+        else
+            fetch('Escola.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('escolas', dados);
+                            escolas = JSON.parse(dados)
                         })
-                    })
-            })
+                        .then(() => {
+                            PopulaEscolas(escolas);
+                        })
 
-        //Anos
-        fetch('Ano.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        anos = JSON.parse(dados)
-                    })
-                    .then(() => {
-                        //Preencher controles                
-                        anos.forEach((ano) => {
-                            selAno = document.getElementById("selAno");
-                            let option = document.createElement("option");
-                            option.value = ano.id;
-                            option.text = ano.descricao;
-                            selAno.add(option);
+                })
+
+        const PopulaAnos = (anos) => {
+            //Preencher controles                
+            anos.forEach((ano) => {
+                selAno = document.getElementById("selAno");
+                let option = document.createElement("option");
+                option.value = ano.id;
+                option.text = ano.descricao;
+                selAno.add(option);
+            })
+        }
+        anos = localStorage.getItem('anos');
+        if (anos) {
+            anos = JSON.parse(anos);
+            PopulaAnos(anos);
+        }
+        else
+            fetch('Ano.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('anos', dados);
+                            anos = JSON.parse(dados)
+                        })
+                        .then(() => {
+                            PopulaAnos(anos)
                         });
-                    })
-            })
+                })
 
-        //Turnos
-        fetch('Turno.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        turnos = JSON.parse(dados)
-                    })
-                    .then(() => {
-                        //Preencher controles                
-                        turnos.forEach((turno) => {
-                            selTurno = document.getElementById("selTurno");
-                            let option = document.createElement("option");
-                            option.value = turno.id;
-                            option.text = turno.descricao;
-                            selTurno.add(option);
-                        });
-                    })
-            })
 
-        //Juncao
-        fetch('Juncao.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        juncoes = JSON.parse(dados)
-                    })
-            })
-        //Modelos
-        fetch('Modelo.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        modelos = JSON.parse(dados)
-                    })
-            })
+        const PopulaTurnos = (turnos) => {
+            //Preencher controles                
+            turnos.forEach((turno) => {
+                selTurno = document.getElementById("selTurno");
+                let option = document.createElement("option");
+                option.value = turno.id;
+                option.text = turno.descricao;
+                selTurno.add(option);
+            });
+        }
+        turnos = localStorage.getItem('turnos');
+        if (turnos) {
+            turnos = JSON.parse(turnos);
+            PopulaTurnos(turnos);
+        }
+        else
+            fetch('Turno.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('turnos', dados);
+                            turnos = JSON.parse(dados)
+                        })
+                        .then(() => {
+                            PopulaTurnos(turnos);
+                        })
+                })
 
-        //Turno por Modelo
-        fetch('ModeloTurno.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        modeloTurnos = JSON.parse(dados)
-                    })
-            })
 
-        //JuncaoEscola
-        fetch('EscolaJuncao.json')
-            .then(response => {
-                response.text()
-                    .then(dados => {
-                        escolaJuncoes = JSON.parse(dados)
-                    })
-            })
+        juncoes = localStorage.getItem('juncoes');
+        if (juncoes)
+            juncoes = JSON.parse(juncoes);
+        else
+            fetch('Juncao.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('juncoes', dados);
+                            juncoes = JSON.parse(dados)
+                        })
+                })
 
-        $.getJSON("Mensagem.json", function (data) {
-            mensagem = data;
-        });
+
+        modelos = localStorage.getItem('modelos');
+        if (modelos)
+            modelos = JSON.parse(modelos);
+        else
+            fetch('Modelo.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('modelos', dados);
+                            modelos = JSON.parse(dados)
+                        })
+                })
+
+        modeloTurnos = localStorage.getItem('modeloTurnos');
+        if (modeloTurnos)
+            modelosTurnos = JSON.parse(modeloTurnos);
+        else
+            fetch('ModeloTurno.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('modeloTurnos', dados);
+                            modeloTurnos = JSON.parse(dados)
+                        })
+                })
+
+
+        escolaJuncoes = localStorage.getItem('escolaJuncoes');
+        if (escolaJuncoes)
+            escolaJuncoes = JSON.parse(escolaJuncoes);
+        else
+            fetch('EscolaJuncao.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('escolaJuncoes', dados);
+                            escolaJuncoes = JSON.parse(dados)
+                        })
+                })
+
+
+        mensagem = localStorage.getItem('mensagem');
+        if (mensagem)
+            mensagem = JSON.parse(mensagem);
+        else
+            fetch("Mensagem.json")
+                .then(response => {
+                    response.text()
+                        .then(dados => {
+                            localStorage.setItem('mensagem', dados);
+                            mensagem = JSON.parse(dados)
+                        })
+                });
 
         //Library Common
         const Sleep = (ms) => {
@@ -190,9 +260,9 @@ $(() => {
             }
 
             let modelos = [];
-            $("input.form-check-input").each((element) => {
-                if (element.checked)
-                    modelos.push(element.value);
+            document.querySelectorAll("input[type=checkbox]").forEach((e) => {
+                if (e.checked == true)
+                    modelos.push(e.value);
             });
 
             if (modelos.length == 0) {
@@ -209,12 +279,14 @@ $(() => {
 
             let escolaSelecionada = document.getElementById('selEscola').value;
             if (escolaSelecionada > 0) {
-                escolas.forEach(escola => {
+                escolas.every(escola => {
                     if (escola.codigo_cie == escolaSelecionada) {
                         escola.selecionada = true;
+                        escola.juncoesId = [];
                         escolasFiltrado.push(escola)
-                        return;
+                        return false
                     }
+                    return true;
                 })
             }
 
@@ -325,7 +397,7 @@ $(() => {
         const LimparResultado = () => {
             distanciaProximas = [];
             escolasRaio = [];
-            $("#pills-tab li a").css("display", "none");
+            $("#pills-tab li a").attr("hidden");
             $("#txtDestinoResultado").val("");
             $("#txtDistancia").val("");
             $("#txtDestinoEscola").val("");
@@ -350,7 +422,10 @@ $(() => {
                 });
                 distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
 
-                $("#pills-tab li a").css("display", "");
+                document.querySelectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
+                    e.value = "";
+                })
+
                 distanciasVisao.forEach((d, i) => {
                     let $escolaContainer = null
                     switch (i) {
@@ -384,21 +459,22 @@ $(() => {
                     $($escolaContainer).find("#txtDestinoContato").val(d.escola.contato);
                     $($escolaContainer).find("#txtTempo").val(d.tempo);
                     const informacoes = d.escola.juncoesId.map(juncaoId => {
-                        const juncao = juncoes.filter(juncao => { return juncao.id == juncaoId })
-                        modeloTurno = modeloTurnos.filter(modeloTurno => { return modeloTurno.id_turno == juncao.id_turno && modeloTurno.id_modelo == juncao.id_modelo });
-                        turno = turnos.filter(turno => { return turno.id == juncao.turno_id });
-                        modelo = modelos.filter(modelo => { return modelo.id == juncao.modelo_id });
-                        if (modeloTurno.length > 0)
+                        const juncao = juncoes.filter(juncao => { return juncao.id == juncaoId })[0];
+                        const modeloTurno = modeloTurnos.filter(modeloTurno => { return modeloTurno.id_turno == juncao.id_turno && modeloTurno.id_modelo == juncao.id_modelo })[0];
+                        const turno = turnos.filter(turno => { return turno.id == juncao.id_turno })[0];
+                        const modelo = modelos.filter(modelo => { return modelo.id == juncao.id_modelo })[0];
+                        if (modeloTurno)
                             return "Modelo: " + modelo.descricao + " Período: " + turno.descricao + " de: " + modeloTurno.horario.inicio.substring(0, 5) + " até " + modeloTurno.horario.fim.substring(0, 5);
                         return;
                     });
 
-                    informacoes.forEach(informacao => {
-                        let el = $($escolaContainer).find("#txtInformacoes");
-                        el.setAttribute('style', 'white-space: pre;');
-                        el.textContent += informacao + " \r\n...";
-                    })
-
+                    if (informacoes)
+                        informacoes.forEach(informacao => {
+                            if (informacao) {
+                                informacao += $($escolaContainer).find("#txtInformacoes").val();
+                            }
+                            $($escolaContainer).find("#txtInformacoes").val(informacao);
+                        })
                 })
                 //Atualizar o mapa.   
                 if (distanciasVisao[0]) {
@@ -422,11 +498,11 @@ $(() => {
                 el.classList.add("fa-regular");
                 el.classList.add("fa-shake");
                 if (maior) {
-                    el.style.cssText += "color:#ff0000";
+                    // el.style.cssText += "color:#ff0000";
                     el.classList.add("fa-thumbs-down");
                 }
                 else {
-                    el.style.cssText += "color:#00ff3afa";
+                    //el.style.cssText += "color:#00ff3afa";
                     el.classList.add("fa-thumbs-up");
                 }
             }
