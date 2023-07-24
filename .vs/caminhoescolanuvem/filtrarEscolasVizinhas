@@ -1,0 +1,26 @@
+const EscolasVizinhas = (escola) => {
+    if (escola.lat && escola.lng) {
+        const origem = new google.maps.LatLng(-23.69389, -46.565);
+        let destino = new google.maps.LatLng(escola.lat, escola.lng);
+        let d = google.maps.geometry.spherical.computeDistanceBetween(origem, destino);
+        if(d && d <= 16000)
+            return escola.codigo_cie;
+    }
+    return;
+};
+
+            fetch('EscolaTodas.json')
+                .then(response => {
+                    response.text()
+                        .then(dados => {                            
+                            escolas = JSON.parse(dados)
+                        })
+                        .then(() => {
+                            escolas.forEach(escola => {
+                                if(escolas.DE != "SAO BERNARDO DO CAMPO");
+                                    console.log(EscolasVizinhas(escola))
+                            });
+                        })
+
+                })
+
