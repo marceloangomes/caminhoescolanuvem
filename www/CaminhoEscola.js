@@ -45,6 +45,8 @@ $(() => {
             });
 
             escolas.forEach(escola => {
+                escola.de="SAO BERNARDO DO CAMPO";
+                escola.vizinha = false;
                 escola.selecionada = false;
                 const selEscola = document.getElementById("selEscola");
                 const option = document.createElement("option");
@@ -70,8 +72,30 @@ $(() => {
                         .then(() => {
                             PopulaEscolas(escolas);
                         })
+                        .then(()=>{                            
+                            fetch('EscolaVizinha.json')
+                                .then(response => {
+                                    response.text()
+                                .then(dados => {                                               
+                                    const escolaVizinhas = JSON.parse(dados);
+                                    escolaVizinhas.forEach(escolaVizinha=>{
+                                        const escola = {"de":escolaVizinha.DE,
+                                                        "nome":escolaVizinha.nome,                                                            
+                                                        "endereco":escolaVizinha.COMPLEND + " " + escolaVizinha.ENDESC + ", " + escolaVizinha.NUMESC + " - " + escolaVizinha.BAIRRO,
+                                                        "contato":"",
+                                                        "lat":parseFloat(escolaVizinha.lat.replace(",",".")),
+                                                        "lng":parseFloat(escolaVizinha.lng.replace(",",".")),
+                                                        "selecionada":false,
+                                                        "vizinha":true};
+                                        escolas.push(escola);                                            
+                                    })
+                                })            
+                            })
+                        })
 
                 })
+
+        
 
         const PopulaAnos = (anos) => {
             //Preencher controles                
@@ -312,11 +336,18 @@ $(() => {
                     return juncao.id_modelo == filtro.id_modelo && juncao.id_turno == filtro.id_turno && juncao.id_ano == filtro.id_ano;
                 })
 
-                juncoesFiltrado.forEach(juncao => {
-                    escolaJuncoes.forEach(escolaJuncao => {
-                        const i = escolaJuncao.juncao.indexOf(juncao.id);
-                        if (i > -1) {
-                            escolas.every(escola => {
+                
+                escolas.every(escola => {
+                    if(escola.vizinha)
+                        escolasFiltrado.push(escola);
+                    else
+                    {
+                    juncoesFiltrado.forEach(juncao => {
+                        escolaJuncoes.forEach(escolaJuncao => {
+                            const i = escolaJuncao.juncao.indexOf(juncao.id);
+                            if (i > -1) {
+
+                                
                                 if (escola.codigo_cie == escolaJuncao.codigo_cie) {
                                     let inserir = true;
                                     escolasFiltrado.every(escolaFiltrado => {
@@ -338,11 +369,12 @@ $(() => {
                                     return false;
                                 }
                                 return true;
-                            })
-                        }
+                            }
+                        })
                     })
+                }
                 })
-            })
+            })            
 
             // Verificar se o Local de origem é válido
             VerificarLocalOrigem(geocoder, endOrigem, origem, escolasRaio, escolasFiltrado, filtrarEscolas, MostrarAlerta, mensagem, ProcessarEscolasRaio, AsyncForEach, Sleep, CalculaDistancia, FormataResultado);
@@ -422,11 +454,25 @@ $(() => {
                     else
                         return a.dist - b.dist
                 });
-                const distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
-
+                const distanciasVisao = distanciaProximas.filter(distancia=>{return !distancia.escola.vizinha});
+                distanciasVisao = distanciaVisao.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
+                const distanciaVizinhas = distanciaProximas.filter(distancia=>{return distancia.escola.vizinha});
                 document.querySelectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
                     e.value = "";
                 })
+
+                let vizinhas = ""
+                distanciaVizinhas.forEach(distancia=>{
+                    vizinhas += "Escola: " + distancia.escola.nome;
+                    vizinhas += "   Distância: " + distancia.distLongo + "\n";
+                    vizinhas += "   Endereço: " + distancia.escola.endereco + "\n";
+                    vizinhas += "   Caminhando: " + d.tempo;
+                });
+
+                if(vizinhas.length > 0){
+                    $(".containerVizinhas").find("txtVizinhas").val(vizinhas);
+                    $("#pills-vizinhas-tab").text("Escolas Próximas").show();
+                }
 
                 distanciasVisao.forEach((d, i) => {
                     let $escolaContainer = null
@@ -575,7 +621,7 @@ $(() => {
             geocoder.geocode({ 'address': endOrigem, 'region': 'BR' }, async function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK && results[0]) {
                     origem = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-                    //Filtrar escolas fora do raio de 2 KM, incluindo a escola selecionada.
+                    //Filtrar escolas fora do raio de 2 KM, mantendo a escola selecionada.
                     escolasRaio = escolas.filter(escola => escola.selecionada == true || filtrarEscolas(origem, escola));
                     if (escolasRaio.length === 0) {
                         MostrarAlerta(mensagem.escolaNaoEncontrada);
