@@ -399,7 +399,7 @@ $(() => {
         const LimparResultado = () => {
             distanciaProximas = [];
             escolasRaio = [];
-            $("#pills-tab li a").attr("hidden");
+            $("#pills-tab li a").hide();
             $("#txtDestinoResultado").val("");
             $("#txtDistancia").val("");
             $("#txtDestinoEscola").val("");
@@ -433,24 +433,24 @@ $(() => {
                     switch (i) {
                         case 0:
                             $escolaContainer = $(".containerPrimeira")
-                            $("#pills-primeira-tab").text(d.escola.nome).removeAttr('hidden').click(() => { AtualizarMapa(distanciaProximas[0]) });
+                            $("#pills-primeira-tab").text(d.escola.nome).show().click(() => { AtualizarMapa(distanciaProximas[0]) });
                             FormataSelecionada(d.escola, d.dist, distanciasVisao);
                             break;
                         case 1:
                             $escolaContainer = $(".containerSegunda")
-                            $("#pills-segunda-tab").text(d.escola.nome).removeAttr('hidden').click(() => { AtualizarMapa(distanciaProximas[1]) });
+                            $("#pills-segunda-tab").text(d.escola.nome).show().click(() => { AtualizarMapa(distanciaProximas[1]) });
                             break;
                         case 2:
                             $escolaContainer = $(".containerTerceira")
-                            $("#pills-terceira-tab").text(d.escola.nome).removeAttr('hidden').click(() => { AtualizarMapa(distanciaProximas[2]) });
+                            $("#pills-terceira-tab").text(d.escola.nome).show().click(() => { AtualizarMapa(distanciaProximas[2]) });
                             break;
                         case 3:
                             $escolaContainer = $(".containerQuarta")
-                            $("#pills-quarta-tab").text(d.escola.nome).removeAttr('hidden').click(() => { AtualizarMapa(distanciaProximas[3]) })
+                            $("#pills-quarta-tab").text(d.escola.nome).show().click(() => { AtualizarMapa(distanciaProximas[3]) })
                             break;
                         case 4:
                             $escolaContainer = $(".containerQuinta")
-                            $("#pills-quinta-tab").text(d.escola.nome).removeAttr('hidden').click(() => { AtualizarMapa(distanciaProximas[4]) })
+                            $("#pills-quinta-tab").text(d.escola.nome).show().click(() => { AtualizarMapa(distanciaProximas[4]) })
                             break;
                         default:
                             break;
