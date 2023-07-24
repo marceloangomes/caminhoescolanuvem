@@ -1,3 +1,4 @@
+"use strict";
 let mapa
 $(() => {
     initMap = function () {
@@ -18,6 +19,7 @@ $(() => {
         let modeloTurnos = [];
         let juncoes = [];
         let escolaJuncoes = [];
+        let modelos=[];
         let geocoder = new google.maps.Geocoder();
         let service = new google.maps.DistanceMatrixService();
         let directionsService = new google.maps.DirectionsService();
@@ -44,8 +46,8 @@ $(() => {
 
             escolas.forEach(escola => {
                 escola.selecionada = false;
-                selEscola = document.getElementById("selEscola");
-                let option = document.createElement("option");
+                const selEscola = document.getElementById("selEscola");
+                const option = document.createElement("option");
                 option.value = escola.codigo_cie;
                 option.text = escola.nome;
                 selEscola.add(option);
@@ -74,8 +76,8 @@ $(() => {
         const PopulaAnos = (anos) => {
             //Preencher controles                
             anos.forEach((ano) => {
-                selAno = document.getElementById("selAno");
-                let option = document.createElement("option");
+                const selAno = document.getElementById("selAno");
+                const option = document.createElement("option");
                 option.value = ano.id;
                 option.text = ano.descricao;
                 selAno.add(option);
@@ -103,8 +105,8 @@ $(() => {
         const PopulaTurnos = (turnos) => {
             //Preencher controles                
             turnos.forEach((turno) => {
-                selTurno = document.getElementById("selTurno");
-                let option = document.createElement("option");
+                const selTurno = document.getElementById("selTurno");
+                const option = document.createElement("option");
                 option.value = turno.id;
                 option.text = turno.descricao;
                 selTurno.add(option);
@@ -158,7 +160,7 @@ $(() => {
 
         modeloTurnos = localStorage.getItem('modeloTurnos');
         if (modeloTurnos)
-            modelosTurnos = JSON.parse(modeloTurnos);
+            modeloTurnos = JSON.parse(modeloTurnos);
         else
             fetch('ModeloTurno.json')
                 .then(response => {
@@ -420,7 +422,7 @@ $(() => {
                     else
                         return a.dist - b.dist
                 });
-                distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
+                const distanciasVisao = distanciaProximas.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
 
                 document.querySelectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
                     e.value = "";
@@ -464,7 +466,7 @@ $(() => {
                         const turno = turnos.filter(turno => { return turno.id == juncao.id_turno })[0];
                         const modelo = modelos.filter(modelo => { return modelo.id == juncao.id_modelo })[0];
                         if (modeloTurno)
-                            return "Modelo: " + modelo.descricao + " Período: " + turno.descricao + " de: " + modeloTurno.horario.inicio.substring(0, 5) + " até " + modeloTurno.horario.fim.substring(0, 5);
+                            return "Modelo: " + modelo.descricao + " Período: " + turno.descricao + " de: " + modeloTurno.horario.inicio.substring(0, 5) + " até " + modeloTurno.horario.fim.substring(0, 5) + "\n";
                         return;
                     });
 
