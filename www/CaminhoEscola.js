@@ -460,11 +460,10 @@ $(() => {
 
                 let vizinhas = ""
                 distanciaVizinhas.forEach(distancia=>{
-                    vizinhas += "DE: " + distancia.escola.de +"\n";
-                    vizinhas += "Escola: " + distancia.escola.nome +"\n";
+                    vizinhas += "Escola: " + distancia.escola.nome + " - DE: " + distancia.escola.de + "\n";
                     vizinhas += "   Distância: " + distancia.distLongo + "\n";
                     vizinhas += "   Endereço: " + distancia.escola.endereco + "\n";
-                    vizinhas += "   Caminhando: " + distancia.tempo;
+                    vizinhas += "   Caminhando: " + distancia.tempo + "\n";
                 });
 
                 if(vizinhas.length > 0){
