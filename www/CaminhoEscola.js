@@ -43,10 +43,9 @@ $(() => {
                 else
                     return 0
             });
-
+        
             escolas.forEach(escola => {
-                escola.de="SAO BERNARDO DO CAMPO";
-                escola.vizinha = false;
+                escola.de = "SAO BERNARDO DO CAMPO";                
                 escola.selecionada = false;
                 const selEscola = document.getElementById("selEscola");
                 const option = document.createElement("option");
@@ -54,49 +53,50 @@ $(() => {
                 option.text = escola.nome;
                 selEscola.add(option);
             })
-
         }
         escolas = localStorage.getItem('escolas');
         if (escolas) {
             escolas = JSON.parse(escolas);
             PopulaEscolas(escolas);
         }
-        else
+        else {
             fetch('Escola.json')
                 .then(response => {
-                    response.text()
+                    response.text()                
                         .then(dados => {
-                            localStorage.setItem('escolas', dados);
-                            escolas = JSON.parse(dados)
-                        })
-                        .then(() => {
+                            escolas = JSON.parse(dados); 
+                            escolas.forEach(escola=>{
+                                escola.vizinha = false;
+                            });                            
                             PopulaEscolas(escolas);
-                        })
-                        .then(()=>{                            
+                        })                                                
+                        .then(()=>{
                             fetch('EscolaVizinha.json')
-                                .then(response => {
-                                    response.text()
-                                .then(dados => {                                               
-                                    const escolaVizinhas = JSON.parse(dados);
-                                    escolaVizinhas.forEach(escolaVizinha=>{
-                                        const escola = {"de":escolaVizinha.DE,
-                                                        "nome":escolaVizinha.nome,                                                            
-                                                        "endereco":escolaVizinha.COMPLEND + " " + escolaVizinha.ENDESC + ", " + escolaVizinha.NUMESC + " - " + escolaVizinha.BAIRRO,
-                                                        "contato":"",
-                                                        "lat":parseFloat(escolaVizinha.lat.replace(",",".")),
-                                                        "lng":parseFloat(escolaVizinha.lng.replace(",",".")),
-                                                        "selecionada":false,
-                                                        "vizinha":true};
-                                        escolas.push(escola);                                            
+                            .then(response => {
+                                response.text()
+                                    .then(dados => {                                                                                                              
+                                        const escolaVizinhas = JSON.parse(dados);
+                                        escolaVizinhas.forEach(escolaVizinha=>{
+                                            const escola = {"de":escolaVizinha.DE,
+                                                            "codigo_cie":escolaVizinha.codigo_cie,
+                                                            "nome":escolaVizinha.nome,                                                            
+                                                            "endereco":escolaVizinha.COMPLEND + " " + escolaVizinha.ENDESC + ", " + escolaVizinha.NUMESC + " - " + escolaVizinha.BAIESC,
+                                                            "contato":"",
+                                                            "lat":parseFloat(escolaVizinha.lat.replace(",",".")),
+                                                            "lng":parseFloat(escolaVizinha.lng.replace(",",".")),
+                                                            "selecionada":false,
+                                                            "vizinha":true};
+                                            escolas.push(escola);                                            
+                                        })
                                     })
-                                })            
-                            })
+                                    .then(()=>{
+                                        localStorage.setItem('escolas', JSON.stringify(escolas));
+                                    })
+                                })
                         })
-
-                })
-
+                    })
+        }
         
-
         const PopulaAnos = (anos) => {
             //Preencher controles                
             anos.forEach((ano) => {
@@ -331,49 +331,46 @@ $(() => {
                 })
             })
 
+            const juncoesId =[];
             filtros.forEach(filtro => {
-                let juncoesFiltrado = juncoes.filter(juncao => {
+                juncoes.filter(juncao => {
                     return juncao.id_modelo == filtro.id_modelo && juncao.id_turno == filtro.id_turno && juncao.id_ano == filtro.id_ano;
+                }).forEach(juncao=>{
+                    juncoesId.push(juncao.id);
                 })
+            })
 
-                
-                escolas.every(escola => {
-                    if(escola.vizinha)
-                        escolasFiltrado.push(escola);
-                    else
-                    {
-                    juncoesFiltrado.forEach(juncao => {
-                        escolaJuncoes.forEach(escolaJuncao => {
-                            const i = escolaJuncao.juncao.indexOf(juncao.id);
-                            if (i > -1) {
-
-                                
-                                if (escola.codigo_cie == escolaJuncao.codigo_cie) {
-                                    let inserir = true;
-                                    escolasFiltrado.every(escolaFiltrado => {
-                                        if (escola.codigo_cie == escolaFiltrado.codigo_cie) {
-                                            if (!escolaFiltrado.juncoesId)
-                                                escolaFiltrado.juncoesId = [];
-                                            escolaFiltrado.juncoesId.push(juncao.id)
-                                            inserir = false;
-                                            return false;
-                                        }
-                                        return true;
-                                    });
-                                    let escolaFiltrado = escola;
-                                    if (inserir) {
-                                        escolasFiltrado.push(escolaFiltrado);
+            escolas.forEach(escola => {
+                if(escola.vizinha)
+                    escolasFiltrado.push(escola);
+                else
+                {
+                    const escolaJuncao = escolaJuncoes.filter(escolaJuncao=>{return escola.codigo_cie==escolaJuncao.codigo_cie})[0]
+                    juncoesId.every(id=>{
+                        if(escolaJuncao.juncao.indexOf(id) >-1)
+                        {
+                            let inserir = true;
+                            escolasFiltrado.every(escolaFiltrado => {
+                                if (escola.codigo_cie == escolaFiltrado.codigo_cie) {
+                                    if (!escolaFiltrado.juncoesId)
                                         escolaFiltrado.juncoesId = [];
-                                        escolaFiltrado.juncoesId.push(juncao.id)
-                                    }
+                                    escolaFiltrado.juncoesId.push(id)
+                                    inserir = false;
                                     return false;
                                 }
                                 return true;
+                            });
+                            if (inserir) {
+                                let escolaFiltrado = escola;
+                                escolaFiltrado.juncoesId = [];
+                                escolaFiltrado.juncoesId.push(id)
+                                escolasFiltrado.push(escolaFiltrado); 
                             }
-                        })
-                    })
+                            return false;
+                        }
+                        return true;
+                    })                   
                 }
-                })
             })            
 
             // Verificar se o Local de origem é válido
@@ -454,24 +451,25 @@ $(() => {
                     else
                         return a.dist - b.dist
                 });
-                const distanciasVisao = distanciaProximas.filter(distancia=>{return !distancia.escola.vizinha});
-                distanciasVisao = distanciaVisao.slice(0, 3 + distanciaProximas.filter(distancia => { return distancia.escola.selecionada == true }).length);
-                const distanciaVizinhas = distanciaProximas.filter(distancia=>{return distancia.escola.vizinha});
+                let distanciasVisao = distanciaProximas.filter(distancia=>{return !distancia.escola.vizinha});
+                distanciasVisao = distanciasVisao.slice(0, 3 + distanciasVisao.filter(distancia => { return distancia.escola.selecionada == true }).length);
+                const distanciaVizinhas = distanciaProximas.filter(distancia=>{return distancia.escola.vizinha==true});
                 document.querySelectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
                     e.value = "";
                 })
 
                 let vizinhas = ""
                 distanciaVizinhas.forEach(distancia=>{
-                    vizinhas += "Escola: " + distancia.escola.nome;
+                    vizinhas += "DE: " + distancia.escola.de +"\n";
+                    vizinhas += "Escola: " + distancia.escola.nome +"\n";
                     vizinhas += "   Distância: " + distancia.distLongo + "\n";
                     vizinhas += "   Endereço: " + distancia.escola.endereco + "\n";
-                    vizinhas += "   Caminhando: " + d.tempo;
+                    vizinhas += "   Caminhando: " + distancia.tempo;
                 });
 
                 if(vizinhas.length > 0){
-                    $(".containerVizinhas").find("txtVizinhas").val(vizinhas);
-                    $("#pills-vizinhas-tab").text("Escolas Próximas").show();
+                    $(".containerVizinha").find("#txtVizinha").val(vizinhas);
+                    $("#pills-vizinha-tab").text("Outra DE").show().click(()=>{ $('#map').hide();});
                 }
 
                 distanciasVisao.forEach((d, i) => {
@@ -530,6 +528,9 @@ $(() => {
                     distanciaProximas[0].enderecoDestino += ' escola';
                     AtualizarMapa(distanciasVisao[0])
                 }
+                else
+                    $("#aguarde").hide('fade');
+
                 return true;
             }
             return false;
@@ -558,7 +559,7 @@ $(() => {
 
         const AtualizarMapa = (endereco) => {
             let map = document.querySelector('#map');
-
+            $(map).show();
             function loaded() {
                 $("#aguarde").hide('fade');
             };
@@ -576,10 +577,11 @@ $(() => {
         }
 
         const CalculaDistancia = (escola, origem) => {
+            const destino = new google.maps.LatLng(escola.lat, escola.lng);
             // Executa o DistanceMatrixService.
             service.getDistanceMatrix({
                 origins: [origem], // Origem
-                destinations: [escola.enderecoLocalizacao ? escola.enderecoLocalizacao : escola.endereco], // Destino
+                destinations: [destino], // Destino
                 travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
                 unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
             }, (response, status) => {
@@ -611,7 +613,7 @@ $(() => {
                     await sleep(500);
                     i++;
                 }
-            }).catch(razao => {
+           }).catch(razao => {
                 MostrarAlerta(razao);
                 return;
             });

@@ -176,7 +176,7 @@
       </div>
 
       <div class='row' style="margin: 10px;">
-        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">      
           <li class="nav-item">
             <a class="nav-link active" id="pills-primeira-tab" data-toggle="pill" href="#pills-primeira" role="tab"
               aria-controls="pills-primeira" aria-selected="true" style="display:none;">1</a>
@@ -198,10 +198,10 @@
               aria-controls="pills-quinta" aria-selected="false" style="display:none;">5</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="pills-vizinhas-tab" data-toggle="pill" href="#pills-vizinhas" role="tab"
-              aria-controls="pills-vizinhas" aria-selected="false" style="display:none;">6</a>
+            <a class="nav-link" id="pills-vizinha-tab" data-toggle="pill" href="#pills-vizinha" role="tab"
+              aria-controls="pills-vizinha" aria-selected="false" style="display:none;">6</a>
           </li>
-          <div class="tab-content" id="pills-tabContent">
+          <div class="tab-content" id="pills-tabContent" style="width:100%">
             <div class="tab-pane fade show active" id="pills-primeira" role="tabpanel"
               aria-labelledby="pills-primeira-tab">
               <div class="containerPrimeira">
@@ -452,16 +452,15 @@
                 </div>
               </div>
             </div>
-            <div class="tab-pane fade" id="pills-vizinha" role="tabpanel" aria-labelledby="pills-vizinha-tab">
+            <div class="tab-pane fade" id="pills-vizinha" role="tabpanel" aria-labelledby="pills-vizinha-tab" style="width:100%">
               <div class="containerVizinha">
-                <div class="card" style="margin:10px">
-                  <h5 class="card-title" style="margin-left:10px">Destino</h5>
+                <div class="card" style="margin:10px;width:100%">
+                  <h5 class="card-title" style="margin-left:10px">Outras Escolas</h5>
                   <div class="card-body">
                     <form class="form-inline">
-                      <div class="form-group col-lg-12 col-md-12 col-sm-12">
-                        <label for="txtVizinhas" style="margin: 0px 10px 0px 10px;">Escolas de outra DE</label>
-                        <textarea name="vizinhas" readonly="readonly" type="text" id="txtVizinhas" value=""
-                          class="form-control form-control-sm" style="width:98%;margin:0px 10px 5px 10px;"
+                      <div class="form-group col-12">                        
+                        <textarea name="vizinha" readonly="readonly" type="text" id="txtVizinha" value=""
+                          class="form-control form-control-sm" style="width:100%;margin:0px 10px 5px 10px;"
                           rows="20"></textarea>
                       </div>
                     </form>
@@ -469,12 +468,8 @@
                 </div>
               </div>
             </div>
-  
-  
           </div>
-        </ul>
-
-        
+        </ul> 
       </div>
       <div id="map" style="width:98%;height:98%;position:absolute;margin:10px 10px auto"></div>
     </div>
