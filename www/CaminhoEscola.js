@@ -1,6 +1,6 @@
 "use strict";
-let mapa
-$(() => {
+(() => {
+    let mapa;
     initMap = function () {
         var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
         var mapOptions = {
@@ -10,7 +10,8 @@ $(() => {
         }
         mapa = new google.maps.Map(document.getElementById('map'), mapOptions);
     }
-    $(window).load(function () {
+
+    document.addEventListener('DOMContentLoaded', () => {
         let escolas = [];
         let escolasRaio = [];
         let distanciaProximas = [];
@@ -649,6 +650,6 @@ $(() => {
         }
 
     });
-});
+})();
 
 
