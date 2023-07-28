@@ -1,7 +1,7 @@
 "use strict";
 (() => {
     let mapa;
-    initMap = function () {
+    const initMap = () => {
         var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
         var mapOptions = {
             zoom: 12,
@@ -12,7 +12,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        let escolas = [];
+        let escolas = [];       
         let escolasRaio = [];
         let distanciaProximas = [];
         let anos = [];
@@ -250,25 +250,25 @@
         }
 
         //Events
-        $(".btnCalcular").on("click", function () {
+        document.querySelector(".btnCalcular").addEventListener("click", () => {
             Atualizar();
         });
 
-        $("#btnAlert").click(function () {
+        document.querySelector("#btnAlert").addEventListener("click", () => {
             $("#alert").hide('fade');
         });
 
-        $("#txtOrigem").keyup(function (e) {
+        document.querySelector("#txtOrigem").addEventListener("keyup", (e) => {
             if (e.keyCode === 13)
-                $(".btnCalcular").trigger("click");
+                document.querySelector(".btnCalcular").dispatchEvent(new Event("click"));
         });
 
         let markersArray = [];
 
-        google.maps.Map.prototype.clearMarkers = function () {
-            for (var i = 0; i < markersArray.length; i++) {
-                markersArray[i].setMap(null);
-            }
+        google.maps.Map.prototype.clearMarkers = () => {
+            markersArray.forEach(markerArray=> {
+                markerArray.setMap(null);
+            });
             markersArray.length = 0;
         };
 
