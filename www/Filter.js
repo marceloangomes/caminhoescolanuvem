@@ -1,6 +1,8 @@
-export {CreateFilter}
+export { CreateFilter }
+import { selector, selectorAll } from './Library.js'
+import { data } from './Data.js'
 
-const CreateFilter = ()=>{
+const CreateFilter = () => {
     let models = [];
     selectorAll("input[type=checkbox]").forEach((e) => {
         if (e.checked == true)
@@ -24,9 +26,9 @@ const CreateFilter = ()=>{
     let shift = selector('#selTurno').value;
     let shiftsT = [];
     if (shift > 0)
-        shiftsT = shifts.filter(t => { return t.id == shift });
+        shiftsT = data.shifts.filter(t => { return t.id == shift });
     else
-        shiftsT = shifts;
+        shiftsT = data.shifts;
 
     let filters = [];
 
