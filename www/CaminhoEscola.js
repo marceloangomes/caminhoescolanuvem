@@ -1,63 +1,12 @@
+import {selector,selectorAll,Show,Hide,Sleep,AsyncForEach} from './Library.js';
+import {GetData, data} from './Data.js';
+import {Populate} from './Populate.js';
+import {AssociateEvents} from './Event.js';
+import {CreateFilter} from './Filter.js';
+
+
 "use strict";
-(() => {
-
-    //Biblioteca
-    const selector = document.querySelector.bind(document);
-    const selectorAll = document.querySelectorAll.bind(document);
-
-    const Fade = (element, duration, clean) => {
-        let opacity = clean ? 1 : 0;
-        const alvoOpacidade = clean ? 0 : 1;
-        const durationFrame = 10;
-        const incrementFrame = durationFrame / duration;
-
-        function animation() {
-            if (alvoOpacidade == 0)
-                if (opacity > alvoOpacidade) {
-                    opacity -= incrementFrame;
-                    element.style.opacity = opacity;
-                    requestAnimationFrame(animation);
-                } else
-                    element.style.opacity = alvoOpacidade;
-            else
-                if (opacity < alvoOpacidade) {
-                    opacity += incrementFrame;
-                    element.style.opacity = opacity;
-                    requestAnimationFrame(animation);
-                } else
-                    element.style.opacity = alvoOpacidade;
-        }
-        animation();
-    };
-
-    const Show = (sel, fade = false) => {
-        let elements = selectorAll(sel);
-        if (elements.length == 0)
-            return;
-        if (fade)
-            elements.forEach(element => Fade(element, 2000, true));
-        elements.forEach(element => element.style.display = '');
-    }
-
-    const Hide = (sel, fade = false) => {
-        let elements = selectorAll(sel);
-        if (elements.length == 0)
-            return;
-        if (fade)
-            elements.forEach(element => Fade(element, 2000, false));
-        elements.forEach(element => element.style.display = 'none');
-    }
-
-    const Sleep = (ms) => {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
-    const AsyncForEach = async (array, callback) => {
-        for (let index = 0; index < array.length; index++) {
-            await callback(array[index], index, array);
-        }
-    }
-
+(() => {        
     let mapa;
     const initMap = async () => {
         var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
@@ -68,9 +17,8 @@
         }
         mapa = new google.maps.Map(selector('#map'), mapOptions);
     }
-
-    //document.addEventListener('DOMContentLoaded', () => {
-    window.addEventListener('load', () => {
+    
+    window.addEventListener('load', async () => {
         let schoolsRay = [];
         let distanceCloses = [];
         let geocoder = new google.maps.Geocoder();
@@ -80,349 +28,83 @@
             //suppressMarkers: true
         });
 
-        directionsDisplay.setMap(mapa);
-        Hide("#Map");
+        //directionsDisplay.setMap(mapa);        
         Hide("#alert");
 
-        const PopulateSchools = (schools) => {
-            //Não filtra pela cidade devido a poder haver school em São Bernardo 
-            //mais próxima de um aluno do que São Caetano e vice-versa
-            schools.sort((escolaA, escolaB) => {
-                if (escolaA.nome < escolaB.nome)
-                    return -1
-                else if (escolaA.nome > escolaB.nome)
-                    return 1
-                else
-                    return 0
-            });
+        // let markersArray = [];
 
-            schools.forEach(school => {
-                if (!school.vizinha) {
-                    school.de = "SAO BERNARDO DO CAMPO";
-                    school.selected = false;
-                    const selEscola = document.getElementById("selEscola");
-                    const option = document.createElement("option");
-                    option.value = school.codigo_cie;
-                    option.text = school.nome;
-                    selEscola.add(option);
-                }
-            })
-        }
-        let schools = localStorage.getItem('schools');
-        if (schools) {
-            schools = JSON.parse(schools);
-            PopulateSchools(schools);
-        }
-        else {
-            fetch('Escola.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            schools = JSON.parse(data);
-                            schools.forEach(school => {
-                                school.vizinha = false;
-                            });
-                            PopulateSchools(schools);
-                        })
-                        .then(() => {
-                            fetch('EscolaVizinha.json')
-                                .then(response => {
-                                    response.text()
-                                        .then(data => {
-                                            const escolaVizinhas = JSON.parse(data);
-                                            escolaVizinhas.forEach(escolaVizinha => {
-                                                const school = {
-                                                    "de": escolaVizinha.DE,
-                                                    "codigo_cie": escolaVizinha.codigo_cie,
-                                                    "nome": escolaVizinha.nome,
-                                                    "address": escolaVizinha.COMPLEND + " " + escolaVizinha.ENDESC + ", " + escolaVizinha.NUMESC + " - " + escolaVizinha.BAIESC,
-                                                    "contato": "",
-                                                    "lat": parseFloat(escolaVizinha.lat.replace(",", ".")),
-                                                    "lng": parseFloat(escolaVizinha.lng.replace(",", ".")),
-                                                    "selecionada": false,
-                                                    "vizinha": true
-                                                };
-                                                schools.push(school);
-                                            })
-                                        })
-                                        .then(() => {
-                                            localStorage.setItem('schools', JSON.stringify(schools));
-                                        })
-                                })
-                        })
-                })
-        }
+        // google.maps.Map.prototype.clearMarkers = () => {
+        //     markersArray.forEach(markerArray => {
+        //         markerArray.setMap(null);
+        //     });
+        //     markersArray.length = 0;
+        // };
 
-        const PopulateYears = (years) => {
-            //Preencher controles                
-            years.forEach((ano) => {
-                const selAno = document.getElementById("selAno");
-                const option = document.createElement("option");
-                option.value = ano.id;
-                option.text = ano.descricao;
-                selAno.add(option);
-            })
-        }
-        let years = localStorage.getItem('years');
-        if (years) {
-            years = JSON.parse(years);
-            PopulateYears(years);
-        }
-        else
-            fetch('Ano.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('years', data);
-                            years = JSON.parse(data)
-                        })
-                        .then(() => {
-                            PopulateYears(years)
-                        });
-                })
-
-
-        const PopulateShifts = (shifts) => {
-            //Preencher controles                
-            shifts.forEach((shift) => {
-                const selTurno = document.getElementById("selTurno");
-                const option = document.createElement("option");
-                option.value = shift.id;
-                option.text = shift.descricao;
-                selTurno.add(option);
-            });
-        }
-        let shifts = localStorage.getItem('shifts');
-        if (shifts) {
-            shifts = JSON.parse(shifts);
-            PopulateShifts(shifts);
-        }
-        else
-            fetch('Turno.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('shifts', data);
-                            shifts = JSON.parse(data)
-                        })
-                        .then(() => {
-                            PopulateShifts(shifts);
-                        })
-                })
-
-        let junctions = localStorage.getItem('junctions');
-        if (junctions)
-            junctions = JSON.parse(junctions);
-        else
-            fetch('Juncao.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('junctions', data);
-                            junctions = JSON.parse(data)
-                        })
-                })
-
-
-        let models = localStorage.getItem('models');
-        if (models)
-            models = JSON.parse(models);
-        else
-            fetch('Modelo.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('models', data);
-                            models = JSON.parse(data)
-                        })
-                })
-
-        let modelShifts = localStorage.getItem('modelShifts');
-        if (modelShifts)
-            modelShifts = JSON.parse(modelShifts);
-        else
-            fetch('ModeloTurno.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('modelShifts', data);
-                            modelShifts = JSON.parse(data)
-                        })
-                })
-
-
-        let schoolJunctions = localStorage.getItem('schoolJunctions');
-        if (schoolJunctions)
-            schoolJunctions = JSON.parse(schoolJunctions);
-        else
-            fetch('EscolaJuncao.json')
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('schoolJunctions', data);
-                            schoolJunctions = JSON.parse(data)
-                        })
-                })
-
-
-        let message = localStorage.getItem('message');
-        if (message)
-            message = JSON.parse(message);
-        else
-            fetch("Mensagem.json")
-                .then(response => {
-                    response.text()
-                        .then(data => {
-                            localStorage.setItem('message', data);
-                            message = JSON.parse(data)
-                        })
-                });
-
-
-        const ShowAlert = (m) => {
-            Hide("#aguarde");
-            selector('#mensageAlert').innerHTML = m;
-            selector('#txtOrigem').focus();
-            Show('#alert', true);
-            // setTimeout(function () {
-            //     $("#alert").hide('fade');
-            // }, 5000)
-        }
-
-        //Events
-        selector(".btnCalcular").addEventListener("click", async () => {
-            await Update();
-        });
-
-        selector("#btnAlert").addEventListener("click", () => {
-            Hide("#alert", true);
-        });
-
-        selector("#txtOrigem").addEventListener("keyup", (e) => {
-            if (e.keyCode === 13)
-                selector(".btnCalcular").dispatchEvent(new Event("click"));
-        });
-
-        let markersArray = [];
-
-        google.maps.Map.prototype.clearMarkers = () => {
-            markersArray.forEach(markerArray => {
-                markerArray.setMap(null);
-            });
-            markersArray.length = 0;
-        };
-
-        const Update = async () => {
-            //ClearResult();
+        const Update = async () => {            
             distanceCloses = [];
             let schoolsFiltered = [];
             if (!selector("#txtOrigem").value) {
-                ShowAlert(message.enderecoVazio);
+                ShowAlert(data.message.enderecoVazio);
                 return;
             }
 
             let year = selector('#selAno').value;
             if (year == 0) {
-                ShowAlert(message.selecioneAno)
+                ShowAlert(data.message.selecioneAno)
                 return;
             }
 
-            let models = [];
-            selectorAll("input[type=checkbox]").forEach((e) => {
-                if (e.checked == true)
-                    models.push(e.value);
-            });
-
-            if (models.length == 0) {
-                selector("#chkModeloParcial").checked = true;
-                selector("#chkModeloIntegral").checked = true
-                models = [1, 2];
-            }
-
-            var addressOrigin = selector("#txtOrigem").value;
-            if (isNaN(parseFloat(addressOrigin))) {
-                var cidade = selector("#selCidadeOrigem").value;
-                if (cidade !== "Todas") {
-                    addressOrigin += ', ' + selector("#selCidadeOrigem").value + ', SP';
-                }
-            }
-
-            schools.forEach(school => {
-                if (school.selected)
-                    school.selected = false;
-            });
-
+            const filters = CreateFilter();
+            
+            const schoolFound = data.schools.find(school => {school.selected});
+            if(schoolFound)
+                schoolFound.selected = false;
+            
             const schoolSelected = selector('#selEscola').value;
             if (schoolSelected > 0) {
-                schools.every(school => {
-                    if (school.codigo_cie == schoolSelected) {
-                        school.selected = true;
-                        school.junctionsId = [];
-                        schoolsFiltered.push(school)
-                        return false
-                    }
-                    return true;
-                })
+                const schoolFound = data.schools.find(school => {school.codigo_cie == schoolSelected});                 
+                if(schoolFound)
+                    {
+                        schoolFound.selected = true;
+                        schoolFound.junctionsId = [];
+                        schoolsFiltered.push(schoolFound);                        
+                    }                                   
             }
-
-            let shift = selector('#selTurno').value;
-            let shiftsT = [];
-            if (shift > 0)
-                shiftsT = shifts.filter(t => { return t.id == shift });
-            else
-                shiftsT = shifts;
-
-            let filters = [];
-
-            models.forEach(model => {
-                shiftsT.forEach(shift => {
-                    filters.push({ "id_modelo": model, "id_turno": shift.id, "id_ano": year });
-                })
-            })
 
             Show("#aguarde");
             const junctionsId = [];
             filters.forEach(filter => {
-                junctions.filter(junction => {
+                data.junctions.filter(junction => {
                     return junction.id_modelo == filter.id_modelo && junction.id_turno == filter.id_turno && junction.id_ano == filter.id_ano;
                 }).forEach(junction => {
                     junctionsId.push(junction.id);
                 })
             })
 
-            schools.forEach(school => {
+            data.schools.forEach(school => {
                 if (school.vizinha)
                     schoolsFiltered.push(school);
                 else {
-                    const schoolJunction = schoolJunctions.filter(schoolJunction => { return school.codigo_cie == schoolJunction.codigo_cie })[0]
-                    junctionsId.every(id => {
-                        if (schoolJunction.juncao.indexOf(id) > -1) {
-                            let insert = true;
-                            schoolsFiltered.every(schoolFiltered => {
-                                if (school.codigo_cie == schoolFiltered.codigo_cie) {
-                                    if (!schoolFiltered.junctionsId)
-                                        schoolFiltered.junctionsId = [];
-                                    schoolFiltered.junctionsId.push(id)
-                                    insert = false;
-                                    return false;
-                                }
-                                return true;
-                            });
-                            if (insert) {
-                                let schoolFiltered = school;
-                                schoolFiltered.junctionsId = [];
-                                schoolFiltered.junctionsId.push(id)
-                                schoolsFiltered.push(schoolFiltered);
-                            }
-                            return false;
-                        }
-                        return true;
-                    })
+                    const schoolJunction = data.schoolJunctions.find(schoolJunction => {school.codigo_cie == schoolJunction.codigo_cie })
+                    const junctionsIdFound = junctionsId.find(id => {schoolJunction.juncao.indexOf(id) > -1});
+                    if(junctionsIdFound){
+                        const schoolFound = schoolsFiltered.find(schoolFiltered => {school.codigo_cie == schoolFiltered.codigo_cie})
+                        if(schoolFound){
+                            if (!schoolFound.junctionsId)
+                                schoolFound.junctionsId = [];
+                            schoolFound.junctionsId.push(id)                                                       
+                        } else {
+                            let schoolFiltered = school;
+                            schoolFiltered.junctionsId = [];
+                            schoolFiltered.junctionsId.push(id)
+                            schoolsFiltered.push(schoolFiltered);
+                        }                       
+                    }
                 }
             })
 
             // Verificar se o Local de origin é válido
-            VerifyLocalOrigin(geocoder, addressOrigin, schoolsRay, schoolsFiltered, FilterSchools, ShowAlert, message, ProcessSchoolsRay, AsyncForEach, Sleep, CalculateDistance, FormatResult);
+            VerifyLocalOrigin(geocoder, addressOrigin, schoolsRay, schoolsFiltered, FilterSchoolsByRay, ShowAlert, message, ProcessSchoolsRay, AsyncForEach, Sleep, CalculateDistance, FormatResult);
         };
         const CalculateRoute = (start, end) => {
             var request = {
@@ -464,13 +146,25 @@
             });
         }
 
-        const FilterSchools = (origin, school) => {
-            if (school.lat && school.lng) {
-                let destiny = new google.maps.LatLng(school.lat, school.lng);
-                let d = google.maps.geometry.spherical.computeDistanceBetween(origin, destiny);
-                return d && d <= 2000;
+        const FilterSchoolsByRay = (origin, schoolsRay) => {
+            let distanceRay = 2000;
+            while (schoolsRay.length > 7) {
+                distanceRay -= 50;
+                schoolsRay = schoolsRay.filter(school => school.selected == true || 
+                (() => {
+                    if (school.lat && school.lng) {
+                        let destiny = new google.maps.LatLng(school.lat, school.lng);
+                        let d = google.maps.geometry.spherical.computeDistanceBetween(origin, destiny);
+                        return d && d <= distanceRay;
+                    }
+                    return false;
+                }));
             }
-            return false;
+            
+            if (schoolsRay.length === 0) {
+                ShowAlert(message.escolaNaoEncontrada);
+                return;
+            }
         };
 
         const ClearResult = async () => {
@@ -522,11 +216,11 @@
                     el.href += "-" + i;
                     el.textContent = "Outra DE";
                     Show("#" + el.id)
-                    let container = document.querySelector("#tContainer").content.cloneNode(true);
+                    let container = document.querySelector("#tContainerNeighbor").content.cloneNode(true);
                     el = container.querySelector("#pills");
                     el.id += "-" + i;
                     el.setAttribute("aria-labelledby", el.id + "-tab")
-                    el.querySelector("#txtOther").value = neighbors;
+                    el.querySelector("#txtNeighbor").value = neighbors;
                     Show("#" + el.id)
                 }
 
@@ -665,16 +359,12 @@
             });
         }
 
-        const VerifyLocalOrigin = (geocoder, addressOrigin, schoolsRay, schools, FilterSchools, ShowAlert, message, ProcessSchoolsRay, asyncForEach, sleep, CalculateDistance, FormatResult) => {
+        const VerifyLocalOrigin = (geocoder, addressOrigin, schoolsRay, schools, FilterSchoolsByRay, ShowAlert, message, ProcessSchoolsRay, asyncForEach, sleep, CalculateDistance, FormatResult) => {
             geocoder.geocode({ 'address': addressOrigin, 'region': 'BR' }, async function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK && results[0]) {
                     const origin = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-                    //Filtrar schools fora do raio de 2 KM, mantendo a school selecionada.
-                    schoolsRay = schools.filter(school => school.selected == true || FilterSchools(origin, school));
-                    if (schoolsRay.length === 0) {
-                        ShowAlert(message.escolaNaoEncontrada);
-                        return;
-                    }
+                    //Filtrar schools fora do raio de 2 KM, mantendo a school selecionada e limitando as dez mais próximas.
+                    schoolsRay = 
 
                     ProcessSchoolsRay(asyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin);
                 }
@@ -689,6 +379,11 @@
             });
         }
 
+        Show("#aguade");
+        await GetData()
+        Populate()
+        AssociateEvents(Update);                                    
+        Hide("#aguade");
     });
 })();
 
