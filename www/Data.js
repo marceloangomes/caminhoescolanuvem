@@ -1,6 +1,6 @@
 export {GetData, data}
 class Data{
-    constructor(schools,years,shifts,junctions,models,modelShifts,schoolJunctions,message){
+    constructor(schools=[],years=[],shifts=[],junctions=[],models=[],modelShifts=[],schoolJunctions=[],message={}){
     this.schools=schools;
     this.years=years;
     this.shifts=shifts;

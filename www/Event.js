@@ -1,9 +1,9 @@
 import {selector, Hide} from './Library.js'
 
 export {AssociateEvents}
-const AssociateEvents = async (Update) => {    
+const AssociateEvents = async (Update, data) => {    
     selector(".btnCalcular").addEventListener("click", async () => {
-        await Update();
+        await Update(data);
     });
 
     selector("#btnAlert").addEventListener("click", () => {

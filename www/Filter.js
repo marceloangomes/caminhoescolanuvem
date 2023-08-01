@@ -1,41 +1,46 @@
 export { CreateFilter }
 import { selector, selectorAll } from './Library.js'
-import { data } from './Data.js'
 
-const CreateFilter = () => {
+class Filter{
+    constructor(adressOrigin="", parameters=[]){
+        this.adressOrigin=adressOrigin;
+        this.parameters=parameters;
+    }
+};
+let filter = new Filter();
+const CreateFilter = (data, year) => {
     let models = [];
     selectorAll("input[type=checkbox]").forEach((e) => {
         if (e.checked == true)
-            models.push(e.value);
+            models.push(data.models.find(model=>model.id==e.value));
     });
 
     if (models.length == 0) {
         selector("#chkModeloParcial").checked = true;
         selector("#chkModeloIntegral").checked = true
-        models = [1, 2];
+        models = data.models.filter(model=>{return model.id in [1,2]})
     }
 
-    var addressOrigin = selector("#txtOrigem").value;
+    let addressOrigin = selector("#txtOrigem").value;    
     if (isNaN(parseFloat(addressOrigin))) {
         var cidade = selector("#selCidadeOrigem").value;
         if (cidade !== "Todas") {
             addressOrigin += ', ' + selector("#selCidadeOrigem").value + ', SP';
         }
     }
+    filter.addressOrigin = addressOrigin;
 
     let shift = selector('#selTurno').value;
-    let shiftsT = [];
+    let shifts = [];
     if (shift > 0)
-        shiftsT = data.shifts.filter(t => { return t.id == shift });
+        shifts = data.shifts.filter(t => { return t.id == shift });
     else
-        shiftsT = data.shifts;
-
-    let filters = [];
+        shifts = data.shifts;
 
     models.forEach(model => {
-        shiftsT.forEach(shift => {
-            filters.push({ "id_modelo": model, "id_turno": shift.id, "id_ano": year });
+        shifts.forEach(shift => {
+            filter.parameters.push({ "model_id": model.id, "shift_id": shift.id, "year_id": year });
         })
     })
-    return filters;
+    return filter;
 }

@@ -1,7 +1,6 @@
 export {Populate}
-import {data} from './Data.js'
 
-const Populate = async () => {       
+const Populate = async (data) => {       
     (() => {    
         data.schools.forEach(school => {
             if (!school.vizinha) {

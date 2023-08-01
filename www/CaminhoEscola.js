@@ -1,12 +1,12 @@
-import {selector,selectorAll,Show,Hide,Sleep,AsyncForEach} from './Library.js';
-import {GetData, data} from './Data.js';
-import {Populate} from './Populate.js';
-import {AssociateEvents} from './Event.js';
-import {CreateFilter} from './Filter.js';
+import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './Library.js';
+import { GetData } from './Data.js';
+import { Populate } from './Populate.js';
+import { AssociateEvents } from './Event.js';
+import { CreateFilter } from './Filter.js';
 
 
 "use strict";
-(() => {        
+(() => {
     let mapa;
     const initMap = async () => {
         var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
@@ -17,7 +17,7 @@ import {CreateFilter} from './Filter.js';
         }
         mapa = new google.maps.Map(selector('#map'), mapOptions);
     }
-    
+
     window.addEventListener('load', async () => {
         let schoolsRay = [];
         let distanceCloses = [];
@@ -40,7 +40,7 @@ import {CreateFilter} from './Filter.js';
         //     markersArray.length = 0;
         // };
 
-        const Update = async () => {            
+        const Update = async (data) => {
             distanceCloses = [];
             let schoolsFiltered = [];
             if (!selector("#txtOrigem").value) {
@@ -54,28 +54,26 @@ import {CreateFilter} from './Filter.js';
                 return;
             }
 
-            const filters = CreateFilter();
-            
-            const schoolFound = data.schools.find(school => {school.selected});
-            if(schoolFound)
+            const schoolFound = data.schools.find(school => school.selected);
+            if (schoolFound)
                 schoolFound.selected = false;
-            
+
             const schoolSelected = selector('#selEscola').value;
             if (schoolSelected > 0) {
-                const schoolFound = data.schools.find(school => {school.codigo_cie == schoolSelected});                 
-                if(schoolFound)
-                    {
-                        schoolFound.selected = true;
-                        schoolFound.junctionsId = [];
-                        schoolsFiltered.push(schoolFound);                        
-                    }                                   
+                const schoolFound = data.schools.find(school => school.codigo_cie == schoolSelected);
+                if (schoolFound) {
+                    schoolFound.selected = true;
+                    schoolFound.junctionsId = [];
+                    schoolsFiltered.push(schoolFound);
+                }
             }
+            const filter = CreateFilter(data, year);
 
             Show("#aguarde");
             const junctionsId = [];
-            filters.forEach(filter => {
+            filter.parameters.forEach(parameter => {
                 data.junctions.filter(junction => {
-                    return junction.id_modelo == filter.id_modelo && junction.id_turno == filter.id_turno && junction.id_ano == filter.id_ano;
+                    return junction.id_modelo == parameter.model_id && junction.id_turno == parameter.shift_id && junction.id_ano == parameter.year_id;
                 }).forEach(junction => {
                     junctionsId.push(junction.id);
                 })
@@ -85,27 +83,36 @@ import {CreateFilter} from './Filter.js';
                 if (school.vizinha)
                     schoolsFiltered.push(school);
                 else {
-                    const schoolJunction = data.schoolJunctions.find(schoolJunction => {school.codigo_cie == schoolJunction.codigo_cie })
-                    const junctionsIdFound = junctionsId.find(id => {schoolJunction.juncao.indexOf(id) > -1});
-                    if(junctionsIdFound){
-                        const schoolFound = schoolsFiltered.find(schoolFiltered => {school.codigo_cie == schoolFiltered.codigo_cie})
-                        if(schoolFound){
+                    const schoolJunction = data.schoolJunctions.find(schoolJunction => school.codigo_cie == schoolJunction.codigo_cie)
+                    const junctionsIdFound = junctionsId.find(id => schoolJunction.juncao.indexOf(id) > -1);
+                    if (junctionsIdFound) {
+                        const schoolFound = schoolsFiltered.find(schoolFiltered => school.codigo_cie == schoolFiltered.codigo_cie)
+                        if (schoolFound) {
                             if (!schoolFound.junctionsId)
                                 schoolFound.junctionsId = [];
-                            schoolFound.junctionsId.push(id)                                                       
+                            schoolFound.junctionsId.push(junctionsIdFound);
                         } else {
                             let schoolFiltered = school;
                             schoolFiltered.junctionsId = [];
-                            schoolFiltered.junctionsId.push(id)
+                            schoolFiltered.junctionsId.push(junctionsIdFound);
                             schoolsFiltered.push(schoolFiltered);
-                        }                       
+                        }
                     }
                 }
             })
 
-            // Verificar se o Local de origin é válido
-            VerifyLocalOrigin(geocoder, addressOrigin, schoolsRay, schoolsFiltered, FilterSchoolsByRay, ShowAlert, message, ProcessSchoolsRay, AsyncForEach, Sleep, CalculateDistance, FormatResult);
-        };
+            //POC
+            filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
+
+            const location =  AddressOriginToLocation(filter.addressOrigin, data.schools);
+            //Filtrar schools fora do raio de 2,1 KM, mantendo a school selecionada e limitando as sete mais próximas.
+            schoolsRay = FilterSchoolsByRay(location, data.schools, data.message);
+            if (!schoolsRay)
+                return;
+            const distancesClose = ProcessSchoolsRay(schoolsRay);//asyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin);
+            FormatResult(distancesClose);
+        }
+
         const CalculateRoute = (start, end) => {
             var request = {
                 origin: start,
@@ -146,25 +153,27 @@ import {CreateFilter} from './Filter.js';
             });
         }
 
-        const FilterSchoolsByRay = (origin, schoolsRay) => {
-            let distanceRay = 2000;
-            while (schoolsRay.length > 7) {
-                distanceRay -= 50;
-                schoolsRay = schoolsRay.filter(school => school.selected == true || 
-                (() => {
-                    if (school.lat && school.lng) {
-                        let destiny = new google.maps.LatLng(school.lat, school.lng);
-                        let d = google.maps.geometry.spherical.computeDistanceBetween(origin, destiny);
-                        return d && d <= distanceRay;
-                    }
-                    return false;
-                }));
-            }
-            
+        const FilterSchoolsByRay = (origin, schools, message) => {
+            let schoolsRay = schools;
+            let distanceRay = 2100;
+            const Validation = (school, origin, distanceRay) => {
+                if (school.lat && school.lng) {
+                    let destiny = new google.maps.LatLng(school.lat, school.lng);
+                    let distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destiny);
+                    return distance && distance <= distanceRay;
+                }
+                return false;
+            };
+            do {
+                schoolsRay = schoolsRay.filter(school => school.selected || Validation(school, origin, distanceRay));
+                distanceRay -= 10;
+            } while (schoolsRay.length > 7 || distanceRay === 10);
+
             if (schoolsRay.length === 0) {
                 ShowAlert(message.escolaNaoEncontrada);
-                return;
+                return false;
             }
+            return schoolsRay;
         };
 
         const ClearResult = async () => {
@@ -183,8 +192,8 @@ import {CreateFilter} from './Filter.js';
             return true;
         }
 
-        const FormatResult = (schoolsRay) => {
-            if (distanceCloses.length === schoolsRay.length) {
+        const FormatResult = (distanceCloses) => {
+            try {
                 distanceCloses.sort((a, b) => {
                     if (a.school.selected < b.school.selected)
                         return 1
@@ -267,16 +276,10 @@ import {CreateFilter} from './Filter.js';
                     selector("#pills-tabContent").appendChild(el);
                     Show("#" + el.id);
                 })
-                //Update o mapa.   
-                // if (DistancesVision[0]) {
-                //     selector("#txtOrigemResultado").value = distanceCloses[0].addressOrigin;
-                //     distanceCloses[0].addressDestiny += ' escola';
-                //     UpdateMap(DistancesVision[0])
-                // }
-                // else
-                return true;
+            } catch (error) {
+                Hide("#aguade");
+                ShowAlert(error);
             }
-            return false;
         }
 
         const FormatSelected = (d, i) => {
@@ -317,72 +320,96 @@ import {CreateFilter} from './Filter.js';
             Hide("#aguarde", true);
         }
 
-        const CalculateDistance = async (school, origin) => {
-            const destiny = new google.maps.LatLng(school.lat, school.lng);
-            // Executa o DistanceMatrixService.
-            await service.getDistanceMatrix({
-                origins: [origin], // Origem
-                destinations: [destiny], // Destino
-                travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
-                unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
-            }, (response, status) => {
-                TrateSchools(response, status, school)
+
+        const GetDistanceMatrixPromise = (service, options) => {
+            return new Promise((resolve, reject) => {
+                service.getDistanceMatrix(options, (response, status) => {
+                    if (status === google.maps.DistanceMatrixStatus.OK) {
+                        resolve(response);
+                    } else {
+                        reject(new Error('Não foi possível calcular as distâncias, tente novamente.'));
+                    }
+                });
             });
         }
 
-        const TrateSchools = (response, status, school) => {
-            // Verificar o status.
-            if (status != google.maps.DistanceMatrixStatus.OK) { // Se o status não for "OK".            
-                ShowAlert(status);
-            } else { // Se o status for "OK".      
-                var time = response.rows[0].elements[0].duration.text;
-                // Popula o objeto distance.            
-                distanceCloses.push({ "school": school, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": time });
+        const CalculateDistance = async (school, origin) => {
+            const destiny = new google.maps.LatLng(school.lat, school.lng);
+            try {
+                const response = await GetDistanceMatrixPromise(service, {
+                    origins: [origin], // Origem
+                    destinations: [destiny], // Destino
+                    travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
+                    unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
+                });
+                return { "school": school, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
+            } catch (error) {
+                console.error('Error:', error.message);
             }
         }
 
-        const ProcessSchoolsRay = (AsyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin) => {
-            let i = 0;
-            AsyncForEach(schoolsRay, async (school) => {
-                i++;
-                if (i % 2 === 0)
-                    await sleep(1010);
-                await CalculateDistance(school, origin);
-            }).then(async () => {
-                if (!FormatResult(schoolsRay)) {
-                    ShowAlert(message.estouroTempo);
-                }
-            }).catch(reason => {
+        const ProcessSchoolsRay = (schoolsRay) => {// (AsyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin) => {
+            try {
+                let i = 0;
+                let distances = [];
+                AsyncForEach(schoolsRay, async (school) => {
+                    i++;
+                    if (i % 4 === 0)
+                        await Sleep(1010);
+                    distances.push(CalculateDistance(school, origin));
+                });
+                return distances;
+            } catch {
                 ShowAlert(reason);
-            }).finally(() => {
+            } finally {
                 Hide("#aguarde");
-            });
+            };
         }
 
-        const VerifyLocalOrigin = (geocoder, addressOrigin, schoolsRay, schools, FilterSchoolsByRay, ShowAlert, message, ProcessSchoolsRay, asyncForEach, sleep, CalculateDistance, FormatResult) => {
-            geocoder.geocode({ 'address': addressOrigin, 'region': 'BR' }, async function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK && results[0]) {
-                    const origin = new google.maps.LatLng(results[0].geometry.location.lat(), results[0].geometry.location.lng());
-                    //Filtrar schools fora do raio de 2 KM, mantendo a school selecionada e limitando as dez mais próximas.
-                    schoolsRay = 
+        function GeocodePromise(service, options) {
+            return new Promise((resolve, reject) => {
+                geocoder.geocode(options, (response, status) => {
+                if (status === google.maps.GeocoderStatus.OK) 
+                  resolve(response);
+                else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) 
+                  reject data.message.enderecoAlunoNaoEncontrado
+                else
+                        reject(new Error('Não foi possível geolocalizar, tente novamente.'));
+                }
+              });
+            });
+          }
 
-                    ProcessSchoolsRay(asyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin);
+
+        const AddressOriginToLocation = async (addressOrigin) => {
+            try {
+                
+            
+            const response = await GeocodePromise(service, { 'address': addressOrigin, 'region': 'BR' });
+            const lat = response.results[0].geometry.location.lat();
+            const lng = response.results[0].geometry.location.lng();
+                
+            return await google.maps.LatLng(lat,lng);
                 }
                 else {
                     if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                        ShowAlert(message.enderecoAlunoNaoEncontrado);
+                        ShowAlert(data.message.enderecoAlunoNaoEncontrado);
                     }
                     else {
                         ShowAlert(status);
                     }
                 }
+                return false;
             });
+        } catch (error) {
+                
+        }
         }
 
         Show("#aguade");
-        await GetData()
-        Populate()
-        AssociateEvents(Update);                                    
+        const data = await GetData();
+        Populate(data);
+        AssociateEvents(Update, data);
         Hide("#aguade");
     });
 })();
