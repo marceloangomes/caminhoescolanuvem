@@ -34,7 +34,7 @@
             return;
         if (fade)
             elements.forEach(element => Fade(element, 2000, true));
-        elements.forEach(element => element.style.display = '');
+        elements.forEach(element => element.setAttribute('style',"display:display;"));
     }
 
     const Hide = (sel, fade = false) => {
@@ -43,7 +43,7 @@
             return;
         if (fade)
             elements.forEach(element => Fade(element, 2000, false));
-        elements.forEach(element => element.style.display = 'none');
+        elements.forEach(element => element.setAttribute('style',"display:none;"));
     }
 
     const Sleep = (ms) => {

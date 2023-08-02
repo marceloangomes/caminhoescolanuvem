@@ -4,5 +4,6 @@
     "enderecoVazio": "Entre com o endereço do aluno.",
     "selecioneAno": "Selecione o Ano !",
     "estouroTempo": "O Mapa demorou muito para responder, tente novamente.",
-    "erroGenerico": "Houve um problema, tente novamente."
+    "erroGenerico": "Houve um problema, tente novamente.",
+    "noLocation":"Não foi possível geolocalizar, tente novamente."
 }

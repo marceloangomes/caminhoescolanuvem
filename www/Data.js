@@ -67,7 +67,7 @@ const GetData = async ()=>{
     }
     else {
         const response = await fetch('Turno.json');
-        const _data = response.text();
+        const _data = await response.text();
         localStorage.setItem('shifts', _data);
         data.shifts = JSON.parse(_data)
     }
@@ -112,7 +112,7 @@ const GetData = async ()=>{
         data.message = JSON.parse(localStorage.getItem('message'));
     else{
         const response = await fetch("Mensagem.json");
-        const _data = response.text();
+        const _data = await response.text();
         localStorage.setItem('message', _data);
         data.message = JSON.parse(_data)
     }
