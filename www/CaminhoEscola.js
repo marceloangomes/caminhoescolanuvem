@@ -104,12 +104,11 @@ import { CreateFilter } from './Filter.js';
             //POC
             filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
 
-            const location =  AddressOriginToLocation(filter.addressOrigin, data.schools);
-            //Filtrar schools fora do raio de 2,1 KM, mantendo a school selecionada e limitando as sete mais próximas.
-            schoolsRay = FilterSchoolsByRay(location, data.schools, data.message);
+            const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
+            schoolsRay = FilterSchoolsByRay(locationOrigin, data.schools, data.message);
             if (!schoolsRay)
                 return;
-            const distancesClose = ProcessSchoolsRay(schoolsRay);//asyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin);
+            const distancesClose = await ProcessSchoolsRay(locationOrigin, schoolsRay);
             FormatResult(distancesClose);
         }
 
@@ -153,25 +152,25 @@ import { CreateFilter } from './Filter.js';
             });
         }
 
-        const FilterSchoolsByRay = (origin, schools, message) => {
+        const ValidationSchoolsByRay = (school, locationOrigin, distanceRay) => {
+            if (school.lat && school.lng) {
+                let locationDestiny = new google.maps.LatLng(school.lat, school.lng);
+                let distance = google.maps.geometry.spherical.computeDistanceBetween(locationOrigin, locationDestiny);
+                return distance && distance <= distanceRay;
+            }
+            return false;
+        };
+
+        const FilterSchoolsByRay = (locationOrigin, schools, message) => {
             let schoolsRay = schools;
             let distanceRay = 2100;
-            const Validation = (school, origin, distanceRay) => {
-                if (school.lat && school.lng) {
-                    let destiny = new google.maps.LatLng(school.lat, school.lng);
-                    let distance = google.maps.geometry.spherical.computeDistanceBetween(origin, destiny);
-                    return distance && distance <= distanceRay;
-                }
-                return false;
-            };
             do {
-                schoolsRay = schoolsRay.filter(school => school.selected || Validation(school, origin, distanceRay));
+                schoolsRay = schoolsRay.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
                 distanceRay -= 10;
             } while (schoolsRay.length > 7 || distanceRay === 10);
 
             if (schoolsRay.length === 0) {
-                ShowAlert(message.escolaNaoEncontrada);
-                return false;
+                throw new Error(message.escolaNaoEncontrada);
             }
             return schoolsRay;
         };
@@ -193,93 +192,88 @@ import { CreateFilter } from './Filter.js';
         }
 
         const FormatResult = (distanceCloses) => {
-            try {
-                distanceCloses.sort((a, b) => {
-                    if (a.school.selected < b.school.selected)
-                        return 1
-                    else if (a.school.selected > b.school.selected)
-                        return -1
-                    else
-                        return a.distance - b.distance
-                });
-                let DistancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha });
-                DistancesVision = DistancesVision.slice(0, 3 + DistancesVision.filter(distance => { return distance.school.selected == true }).length);
-                const distanceNeighbor = distanceCloses.filter(distance => { return distance.school.vizinha == true });
-                selectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
-                    e.value = "";
-                })
+            distanceCloses.sort((a, b) => {
+                if (a.school.selected < b.school.selected)
+                    return 1
+                else if (a.school.selected > b.school.selected)
+                    return -1
+                else
+                    return a.distance - b.distance
+            });
+            let DistancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha });
+            DistancesVision = DistancesVision.slice(0, 3 + DistancesVision.filter(distance => { return distance.school.selected == true }).length);
+            const distanceNeighbor = distanceCloses.filter(distance => { return distance.school.vizinha == true });
+            selectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
+                e.value = "";
+            })
 
-                let neighbors = ""
-                distanceNeighbor.forEach(distance => {
-                    neighbors += "Escola: " + distance.school.nome + " - DE: " + distance.school.de + "\n";
-                    neighbors += "   Distância: " + distance.distanceLong + "\n";
-                    neighbors += "   Endereço: " + distance.school.endereco + "\n";
-                    neighbors += "   Caminhando: " + distance.time + "\n";
-                });
+            let neighbors = ""
+            distanceNeighbor.forEach(distance => {
+                neighbors += "Escola: " + distance.school.nome + " - DE: " + distance.school.de + "\n";
+                neighbors += "   Distância: " + distance.distanceLong + "\n";
+                neighbors += "   Endereço: " + distance.school.endereco + "\n";
+                neighbors += "   Caminhando: " + distance.time + "\n";
+            });
 
-                if (neighbors.length > 0) {
-                    const i = DistancesVision.length;
-                    let tab = document.querySelector("#tTab").content.cloneNode(true);
-                    let el = tab.querySelector("#pills");
-                    el.id += "-" + i + "-tab";
-                    el.href += "-" + i;
-                    el.textContent = "Outra DE";
-                    Show("#" + el.id)
-                    let container = document.querySelector("#tContainerNeighbor").content.cloneNode(true);
-                    el = container.querySelector("#pills");
-                    el.id += "-" + i;
-                    el.setAttribute("aria-labelledby", el.id + "-tab")
-                    el.querySelector("#txtNeighbor").value = neighbors;
-                    Show("#" + el.id)
-                }
-
-                DistancesVision.forEach((d, i) => {
-                    let tab = document.querySelector("#tTab").content.cloneNode(true);
-                    let el = tab.querySelector("#pills");
-                    el.id += "-" + i + "-tab";
-                    el.href += "-" + i;
-                    el.setAttribute("aria-controls", "pills-" + i);
-                    el.textContent = d.school.nome;
-                    selector("#pills-tab").appendChild(el);
-                    Show("#" + el.id)
-                    let container = document.querySelector("#tContainer").content.cloneNode(true);
-                    el = container.querySelector("#pills");
-                    el.id += "-" + i;
-                    el.setAttribute("aria-labelledby", el.id + "-tab")
-                    container.querySelector("#txtDestinoResultado").value = d.school.endereco;
-                    container.querySelector("#txtDistancia").value = d.distanceLong;
-                    container.querySelector("#txtDestinoEscola").value = d.school.nome;
-                    container.querySelector("#txtDestinoContato").value = d.school.contato;
-                    container.querySelector("#txtTempo").value = d.time;
-                    const informations = d.school.junctionsId.map(juncaoId => {
-                        const junction = junctions.filter(junction => { return junction.id == juncaoId })[0];
-                        const modelShift = modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
-                        const shift = shifts.filter(shift => { return shift.id == junction.id_turno })[0];
-                        const model = models.filter(model => { return model.id == junction.id_modelo })[0];
-                        if (modelShift)
-                            return "Modelo: " + model.descricao + " Período: " + shift.descricao + " de: " + modelShift.horario.inicio.substring(0, 5) + " até " + modelShift.horario.fim.substring(0, 5) + "\n";
-                        return;
-                    });
-
-                    if (informations)
-                        informations.forEach(information => {
-                            if (information) {
-                                container.querySelector("#txtInformacoes").value += information;
-                            }
-                        })
-                    if (i == 0) {
-                        selector("#txtOrigemResultado").value = d.addressOrigin;
-                        d.addressDestiny += ' escola';
-                        FormatSelected(d, i);
-                    }
-                    el.addEventListener('click', () => { UpdateMap(distanceCloses[i]) });
-                    selector("#pills-tabContent").appendChild(el);
-                    Show("#" + el.id);
-                })
-            } catch (error) {
-                Hide("#aguade");
-                ShowAlert(error);
+            if (neighbors.length > 0) {
+                const i = DistancesVision.length;
+                let tab = document.querySelector("#tTab").content.cloneNode(true);
+                let el = tab.querySelector("#pills");
+                el.id += "-" + i + "-tab";
+                el.href += "-" + i;
+                el.textContent = "Outra DE";
+                Show("#" + el.id)
+                let container = document.querySelector("#tContainerNeighbor").content.cloneNode(true);
+                el = container.querySelector("#pills");
+                el.id += "-" + i;
+                el.setAttribute("aria-labelledby", el.id + "-tab")
+                el.querySelector("#txtNeighbor").value = neighbors;
+                Show("#" + el.id)
             }
+
+            DistancesVision.forEach((d, i) => {
+                let tab = document.querySelector("#tTab").content.cloneNode(true);
+                let el = tab.querySelector("#pills");
+                el.id += "-" + i + "-tab";
+                el.href += "-" + i;
+                el.setAttribute("aria-controls", "pills-" + i);
+                el.textContent = d.school.nome;
+                selector("#pills-tab").appendChild(el);
+                Show("#" + el.id)
+                let container = document.querySelector("#tContainer").content.cloneNode(true);
+                el = container.querySelector("#pills");
+                el.id += "-" + i;
+                el.setAttribute("aria-labelledby", el.id + "-tab")
+                container.querySelector("#txtDestinoResultado").value = d.school.endereco;
+                container.querySelector("#txtDistancia").value = d.distanceLong;
+                container.querySelector("#txtDestinoEscola").value = d.school.nome;
+                container.querySelector("#txtDestinoContato").value = d.school.contato;
+                container.querySelector("#txtTempo").value = d.time;
+                const informations = d.school.junctionsId.map(juncaoId => {
+                    const junction = junctions.filter(junction => { return junction.id == juncaoId })[0];
+                    const modelShift = modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
+                    const shift = shifts.filter(shift => { return shift.id == junction.id_turno })[0];
+                    const model = models.filter(model => { return model.id == junction.id_modelo })[0];
+                    if (modelShift)
+                        return "Modelo: " + model.descricao + " Período: " + shift.descricao + " de: " + modelShift.horario.inicio.substring(0, 5) + " até " + modelShift.horario.fim.substring(0, 5) + "\n";
+                    return;
+                });
+
+                if (informations)
+                    informations.forEach(information => {
+                        if (information) {
+                            container.querySelector("#txtInformacoes").value += information;
+                        }
+                    })
+                if (i == 0) {
+                    selector("#txtOrigemResultado").value = d.addressOrigin;
+                    d.addressDestiny += ' escola';
+                    FormatSelected(d, i);
+                }
+                el.addEventListener('click', () => { UpdateMap(distanceCloses[i]) });
+                selector("#pills-tabContent").appendChild(el);
+                Show("#" + el.id);
+            })
         }
 
         const FormatSelected = (d, i) => {
@@ -333,77 +327,51 @@ import { CreateFilter } from './Filter.js';
             });
         }
 
-        const CalculateDistance = async (school, origin) => {
-            const destiny = new google.maps.LatLng(school.lat, school.lng);
-            try {
-                const response = await GetDistanceMatrixPromise(service, {
-                    origins: [origin], // Origem
-                    destinations: [destiny], // Destino
-                    travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
-                    unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
-                });
-                return { "school": school, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
-            } catch (error) {
-                console.error('Error:', error.message);
-            }
+        const CalculateDistance = async (school, locationOrigin, locationDestiny) => {
+            const response = await GetDistanceMatrixPromise(service, {
+                origins: [locationOrigin],
+                destinations: [locationDestiny],
+                travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
+                unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
+            });
+            return { "school": school, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
         }
 
-        const ProcessSchoolsRay = (schoolsRay) => {// (AsyncForEach, schoolsRay, sleep, CalculateDistance, FormatResult, ShowAlert, origin) => {
-            try {
-                let i = 0;
-                let distances = [];
+        const ProcessSchoolsRay = async (locationOrigin, schoolsRay) => {
+            let i = 0;
+            let distances = [];
+            await new Promise((resolve) => {
                 AsyncForEach(schoolsRay, async (school) => {
                     i++;
                     if (i % 4 === 0)
                         await Sleep(1010);
-                    distances.push(CalculateDistance(school, origin));
+                    const locationDestiny = new google.maps.LatLng(school.lat, school.lng);
+                    distances.push(await CalculateDistance(school, locationOrigin, locationDestiny));
+                    if (i === schoolsRay.length)
+                        resolve();
                 });
-                return distances;
-            } catch {
-                ShowAlert(reason);
-            } finally {
-                Hide("#aguarde");
-            };
+            });
+            return distances;
         }
 
-        function GeocodePromise(service, options) {
+        const GeocodePromise = (service, options) => {
             return new Promise((resolve, reject) => {
                 geocoder.geocode(options, (response, status) => {
-                if (status === google.maps.GeocoderStatus.OK) 
-                  resolve(response);
-                else if (status === google.maps.GeocoderStatus.ZERO_RESULTS) 
-                  reject data.message.enderecoAlunoNaoEncontrado
-                else
+                    if (status === google.maps.GeocoderStatus.OK)
+                        resolve(response);
+                    else if (status === google.maps.GeocoderStatus.ZERO_RESULTS)
+                        reject(new Error(data.message.enderecoAlunoNaoEncontrado));
+                    else
                         reject(new Error('Não foi possível geolocalizar, tente novamente.'));
-                }
-              });
+                });
             });
-          }
-
+        };
 
         const AddressOriginToLocation = async (addressOrigin) => {
-            try {
-                
-            
             const response = await GeocodePromise(service, { 'address': addressOrigin, 'region': 'BR' });
-            const lat = response.results[0].geometry.location.lat();
-            const lng = response.results[0].geometry.location.lng();
-                
-            return await google.maps.LatLng(lat,lng);
-                }
-                else {
-                    if (status === google.maps.GeocoderStatus.ZERO_RESULTS) {
-                        ShowAlert(data.message.enderecoAlunoNaoEncontrado);
-                    }
-                    else {
-                        ShowAlert(status);
-                    }
-                }
-                return false;
-            });
-        } catch (error) {
-                
-        }
+            const lat = response[0].geometry.location.lat();
+            const lng = response[0].geometry.location.lng();
+            return new google.maps.LatLng(lat, lng);
         }
 
         Show("#aguade");
