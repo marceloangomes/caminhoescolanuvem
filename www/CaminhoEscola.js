@@ -1,8 +1,8 @@
-import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './App/Library.js';
-import { GetData } from './App/Data.js';
-import { Populate } from './App/Populate.js';
-import { AssociateEvents } from './App/Event.js';
-import { CreateFilter } from './App/Filter.js';
+import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './Library.js';
+import { GetData } from './Data.js';
+import { Populate } from './Populate.js';
+import { AssociateEvents } from './Event.js';
+import { CreateFilter } from './Filter.js';
 export { FormatResult };
 
 "use strict";
@@ -218,6 +218,7 @@ const FormatResult = (distanceCloses, data) => {
         el.id += "-" + i + "-tab";
         el.href += "-" + i;
         el.textContent = "Outra DE";
+        el.classList.remove("active")
         Show("#" + el.id)
         let container = document.querySelector("#tContainerNeighbor").content.cloneNode(true);
         el = container.querySelector("#pills");

@@ -1,5 +1,5 @@
 export { CreateFilter }
-import { selector, selectorAll } from './Library.js'
+import { selector, selectorAll } from './App/Library.js'
 
 class Filter{
     constructor(adressOrigin="", parameters=[]){
