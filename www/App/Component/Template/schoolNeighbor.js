@@ -1,4 +1,6 @@
-<template id="tContainerNeighbor">
+export { schoolNeighbor }
+const schoolNeighbor =
+  <template id="schoolNeighbor">
     <div class="tab-pane fade" id="pills" role="tabpanel" aria-labelledby="pills" style="width:100%">
       <div class="container">
         <div class="card" style="margin:10px;width:100%">
@@ -15,4 +17,3 @@
       </div>
     </div>
   </template>
-  

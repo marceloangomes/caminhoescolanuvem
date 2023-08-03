@@ -1,4 +1,4 @@
-import { selector, Hide } from './App/Library.js'
+import { selector, Hide } from './Library.js'
 
 export { AssociateEvents }
 const AssociateEvents = (Update, data) => {

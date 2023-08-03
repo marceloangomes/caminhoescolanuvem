@@ -1,12 +1,14 @@
-import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './App/Library.js';
-import { GetData } from './App/Data.js';
-import { Populate } from './App/Populate.js';
-import { AssociateEvents } from './App/Event.js';
-import { CreateFilter } from './App/Filter.js';
+import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './Library.js';
+import { GetData } from './Data.js';
+import { Populate } from './Populate.js';
+import { AssociateEvents } from './Event.js';
+import { CreateFilter } from './Filter.js';
+import {schoolHead} from './Component/schoolHeadTemplate.js'
+import { schoolClose } from './Component/schoolCloseTemplate.js';
+import { schoolNeighbor } from './Component/schoolNeighborTemplate.js';
 export { FormatResult };
 
 "use strict";
-
 let mapa;
 const initMap = async () => {
     var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
@@ -212,69 +214,11 @@ const FormatResult = (distanceCloses, data) => {
     });
 
     if (neighbors.length > 0) {
-        const i = DistancesVision.length;
-        let tab = document.querySelector("#tTab").content.cloneNode(true);
-        let el = tab.querySelector("#pills");
-        el.id += "-" + i + "-tab";
-        el.href += "-" + i;
-        el.textContent = "Outra DE";
-        Show("#" + el.id)
-        let container = document.querySelector("#tContainerNeighbor").content.cloneNode(true);
-        el = container.querySelector("#pills");
-        el.id += "-" + i;
-        el.setAttribute("aria-labelledby", el.id + "-tab")
-        el.querySelector("#txtNeighbor").value = neighbors;
-        Show("#" + el.id)
+        
     }
 
     DistancesVision.forEach((d, i) => {
-        let tab = document.querySelector("#tTab").content.cloneNode(true);
-        let el = tab.querySelector("#pills");
-        el.id += "-" + i + "-tab";
-        el.href += "-" + i;
-        el.setAttribute("aria-controls", "pills-" + i);
-        el.textContent = d.school.nome;
-        selector("#pills-tab").appendChild(el);
-        if(i===0)
-            el.classList.add('active')
-        else
-            el.classList.remove('active');
-        Show("#" + el.id)
-        let container = document.querySelector("#tContainer").content.cloneNode(true);
-        el = container.querySelector("#pills");
-        el.id += "-" + i;
-        el.setAttribute("aria-labelledby", el.id + "-tab")
-        container.querySelector("#txtDestinoResultado").value = d.school.endereco;
-        container.querySelector("#txtDistancia").value = d.distanceLong;
-        container.querySelector("#txtDestinoEscola").value = d.school.nome;
-        container.querySelector("#txtDestinoContato").value = d.school.contato;
-        container.querySelector("#txtTempo").value = d.time;
-        const informations = d.school.junctionsId.map(juncaoId => {
-            const junction = data.junctions.filter(junction => { return junction.id == juncaoId })[0];
-            const modelShift = data.modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
-            const shift = data.shifts.filter(shift => { return shift.id == junction.id_turno })[0];
-            const model = data.models.filter(model => { return model.id == junction.id_modelo })[0];
-            if (modelShift)
-                return "Modelo: " + model.descricao + " Período: " + shift.descricao + " de: " + modelShift.horario.inicio.substring(0, 5) + " até " + modelShift.horario.fim.substring(0, 5) + "\n";
-            return;
-        });
-
-        if (informations)
-            informations.forEach(information => {
-                if (information) {
-                    container.querySelector("#txtInformacoes").value += information;
-                }
-            })
-        el.addEventListener('click', () => { UpdateMap(distanceCloses[i]) });
-        selector("#pills-tabContent").appendChild(el);
-        if (i == 0) {
-            selector("#txtOrigemResultado").value = d.addressOrigin;
-            d.addressDestiny += ' escola';
-            FormatSelected(d, i);
-            Show("#" + el.id);
-        }
-        else
-            Hide("#" + el.id);    
+            
     })
 }
 
