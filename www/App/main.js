@@ -3,9 +3,9 @@ import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
 import { CreateFilter } from './Filter.js';
-import {schoolHead} from './Component/schoolHeadTemplate.js'
-import { schoolClose } from './Component/schoolCloseTemplate.js';
-import { schoolNeighbor } from './Component/schoolNeighborTemplate.js';
+import { schoolHead } from './Component/schoolHead.js'
+import { schoolClose } from './Component/schoolClose.js';
+import { schoolNeighbor } from './Component/schoolNeighbor.js';
 export { FormatResult };
 
 "use strict";
@@ -31,7 +31,7 @@ Hide("#alert");
 //     markersArray.length = 0;
 // };
 
-const Update = async (data) => {   
+const Update = async (data) => {
     if (!selector("#txtOrigem").value) {
         ShowAlert(data.message.enderecoVazio);
         return;
@@ -42,31 +42,31 @@ const Update = async (data) => {
         ShowAlert(data.message.selecioneAno)
         return;
     }
-    Show("#aguarde"); 
-    const filter = CreateFilter(data, year);        
+    Show("#aguarde");
+    const filter = CreateFilter(data, year);
     const schoolSelected = SchoolSelected(data.schools, selector('#selEscola').value);
     const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
-    
+
     //POC
     filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
 
     const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
     const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered, data.message);
     if (!schoolsRay)
-        throw(new Error(data.message.escolaNaoEncontrada));
+        throw (new Error(data.message.escolaNaoEncontrada));
     const distancesClose = await ProcessSchoolsRay(locationOrigin, schoolsRay);
     if (!distancesClose)
-        throw(new Error(data.message.noLocation));
-    const dataT = {'junctions':data.junctions,'modelShifts':data.modelShifts,'shifts':data.shifts,'models':data.models};
+        throw (new Error(data.message.noLocation));
+    const dataT = { 'junctions': data.junctions, 'modelShifts': data.modelShifts, 'shifts': data.shifts, 'models': data.models };
     FormatResult(distancesClose, dataT);
 }
 
-const SchoolSelected = (schools, school_id)=>{
+const SchoolSelected = (schools, school_id) => {
     const schoolFound = schools.find(school => school.selected);
     if (schoolFound)
         schoolFound.selected = false;
 
-    if (school_id == 0) {        
+    if (school_id == 0) {
         const schoolFound = schools.find(school => school.codigo_cie == school_id);
         if (schoolFound) {
             schoolFound.selected = true;
@@ -76,9 +76,9 @@ const SchoolSelected = (schools, school_id)=>{
     return schoolFound;;
 }
 
-const ApplyFilter = (filter, data, schoolSelected)=>{
-    let schoolsFiltered=[];
-    if(schoolSelected)
+const ApplyFilter = (filter, data, schoolSelected) => {
+    let schoolsFiltered = [];
+    if (schoolSelected)
         schoolsFiltered.push(schoolSelected);
     const junctionsId = [];
     filter.parameters.forEach(parameter => {
@@ -189,7 +189,7 @@ const ClearResult = async () => {
     return true;
 }
 
-const FormatResult = (distanceCloses, data) => {
+const FormatResult = (distanceCloses) => {
     distanceCloses.sort((a, b) => {
         if (a.school.selected < b.school.selected)
             return 1
@@ -198,48 +198,23 @@ const FormatResult = (distanceCloses, data) => {
         else
             return a.distance - b.distance
     });
-    let DistancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha });
-    DistancesVision = DistancesVision.slice(0, 3 + DistancesVision.filter(distance => { return distance.school.selected == true }).length);
-    const distanceNeighbor = distanceCloses.filter(distance => { return distance.school.vizinha == true });
-    selectorAll("#pills-tabContent #txtInformacoes").forEach(e => {
-        e.value = "";
+
+    const distancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha })
+        .slice(0, 3 + distancesVision.filter(distance => { return distance.school.selected == true }).length);
+    selector("#txtOrigemResultado").value = distancesVision[0].addressOrigin;
+    distancesVision.forEach((distance, i) => {
+        distance.addressDestiny += ' escola';
+        selector("#pills-tab").appendChild(new schoolHead(distance.school.nome, i));
+        selector("#pills-tabContent").appendChild(new schoolClose(distancesVision, distance, i));
     })
 
-    let neighbors = ""
-    distanceNeighbor.forEach(distance => {
-        neighbors += "Escola: " + distance.school.nome + " - DE: " + distance.school.de + "\n";
-        neighbors += "   Distância: " + distance.distanceLong + "\n";
-        neighbors += "   Endereço: " + distance.school.endereco + "\n";
-        neighbors += "   Caminhando: " + distance.time + "\n";
-    });
-
-    if (neighbors.length > 0) {
-        
-    }
-
-    DistancesVision.forEach((d, i) => {
-            
-    })
-}
-
-const FormatSelected = (d, i) => {
-    if (d.school.selected) {
-        let tab = selector("#pills-" + i + "-tab");
-        const neighborDistances = DistancesVision.filter(distanceVision => { return distanceVision.school.selected == false });
-        const maior = neighborDistances.filter((neighborDistance) => { return d.distance > neighborDistance.distance }).length > 0;
-        tab.textContent += "  ";
-        let el = document.createElement("i");
-        tab.appendChild(el);
-        el.classList.add("fa-regular");
-        el.classList.add("fa-shake");
-        if (maior) {
-            el.classList.add("fa-thumbs-down");
-        }
-        else {
-            el.classList.add("fa-thumbs-up");
-        }
+    const distanceNeighbors = distanceCloses.filter(distance => { return distance.school.vizinha == true });
+    if (distanceNeighbors.length > 0) {
+        selector("#pills-tab").appendChild(new schoolHead("Outras Diretorias de Ensino", distancesVision.length));
+        selector("#pills-tabContent").appendChild(new schoolNeighbor(distanceNeighbors, distancesVision.length));
     }
 }
+
 
 const UpdateMap = (address) => {
     let map = selector('#map');

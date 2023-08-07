@@ -1,17 +1,20 @@
-export {GetData}
-class Data{
-    constructor(schools=[],years=[],shifts=[],junctions=[],models=[],modelShifts=[],schoolJunctions=[],message={}){
-    this.schools=schools;
-    this.years=years;
-    this.shifts=shifts;
-    this.junctions=junctions;
-    this.models=models;
-    this.modelShifts=modelShifts;
-    this.schoolJunctions=schoolJunctions;
-    this.message=message;
-}};
+export { GetData };
+export { GetInformation };
+
+class Data {
+    constructor(schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}) {
+        this.schools = schools;
+        this.years = years;
+        this.shifts = shifts;
+        this.junctions = junctions;
+        this.models = models;
+        this.modelShifts = modelShifts;
+        this.schoolJunctions = schoolJunctions;
+        this.message = message;
+    }
+};
 let data = new Data();
-const GetData = async ()=>{    
+const GetData = async () => {
     if (localStorage.getItem('schools')) {
         data.schools = JSON.parse(localStorage.getItem('schools'));
     }
@@ -19,11 +22,11 @@ const GetData = async ()=>{
         //Doens't filter for city, because can there is school in São Bernardo 
         //next a student than São Caetano and vice-versa
         let response = await fetch('./Data/Escola.json');
-        let  _data = await response.text();
+        let _data = await response.text();
         data.schools = JSON.parse(_data);
         data.schools.forEach(school => {
             school.vizinha = false
-         });                        
+        });
         response = await fetch('./Data/EscolaVizinha.json');
         _data = await response.text();
         const escolaVizinhas = JSON.parse(_data);
@@ -48,22 +51,22 @@ const GetData = async ()=>{
                 return 1
             else
                 return 0
-        })    
-        localStorage.setItem('schools', JSON.stringify(data.schools));                                        
+        })
+        localStorage.setItem('schools', JSON.stringify(data.schools));
     }
 
     if (localStorage.getItem('years')) {
-        data.years = JSON.parse(localStorage.getItem('years'));    
+        data.years = JSON.parse(localStorage.getItem('years'));
     }
-    else{
+    else {
         const response = await fetch('./Data/Ano.json');
-        const _data =  await response.text();
+        const _data = await response.text();
         localStorage.setItem('years', _data);
         data.years = JSON.parse(_data)
     }
 
     if (localStorage.getItem('shifts')) {
-        data.shifts = JSON.parse(localStorage.getItem('shifts'));   
+        data.shifts = JSON.parse(localStorage.getItem('shifts'));
     }
     else {
         const response = await fetch('./Data/Turno.json');
@@ -74,25 +77,25 @@ const GetData = async ()=>{
 
     if (localStorage.getItem('junctions'))
         data.junctions = JSON.parse(localStorage.getItem('junctions'));
-    else{
+    else {
         const response = await fetch('./Data/Juncao.json');
-        const _data= await  response.text();
+        const _data = await response.text();
         localStorage.setItem('junctions', _data);
         data.junctions = JSON.parse(_data)
     }
 
     if (localStorage.getItem('models'))
         data.models = JSON.parse(localStorage.getItem('models'));
-    else{
+    else {
         const response = await fetch('./Data/Modelo.json');
-        const _data =  await response.text();
+        const _data = await response.text();
         localStorage.setItem('models', _data);
         data.models = JSON.parse(_data)
     }
 
     if (localStorage.getItem('modelShifts'))
         data.modelShifts = JSON.parse(localStorage.getItem('modelShifts'));
-    else{
+    else {
         const response = await fetch('./Data/ModeloTurno.json');
         const _data = await response.text();
         localStorage.setItem('modelShifts', _data);
@@ -101,7 +104,7 @@ const GetData = async ()=>{
 
     if (localStorage.getItem('schoolJunctions'))
         data.schoolJunctions = JSON.parse(localStorage.getItem('schoolJunctions'));
-    else{
+    else {
         const response = await fetch('./Data/EscolaJuncao.json');
         const _data = await response.text();
         localStorage.setItem('schoolJunctions', _data);
@@ -110,11 +113,22 @@ const GetData = async ()=>{
 
     if (localStorage.getItem('message'))
         data.message = JSON.parse(localStorage.getItem('message'));
-    else{
+    else {
         const response = await fetch("./Data/Mensagem.json");
         const _data = await response.text();
         localStorage.setItem('message', _data);
         data.message = JSON.parse(_data)
     }
     return data;
+}
+const GetInformation = (school) => {
+    school.junctionsId.map(juncaoId => {
+        const junction = data.junctions.filter(junction => { return junction.id == juncaoId })[0];
+        const modelShift = data.modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
+        if (!modelShift)
+            return '';
+        const shift = data.shifts.filter(shift => { return shift.id == junction.id_turno })[0];
+        const model = data.models.filter(model => { return model.id == junction.id_modelo })[0];
+        return "   Modelo: " + model.descricao + "   período: " + shift.descricao + "   horário de: " + modelShift.horario.inicio.substring(0, 5) + "   até: " + modelShift.horario.fim.substring(0, 5) + "\n";
+    });
 }
