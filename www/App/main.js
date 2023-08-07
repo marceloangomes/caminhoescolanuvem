@@ -3,9 +3,9 @@ import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
 import { CreateFilter } from './Filter.js';
-import { schoolHead } from './Component/schoolHead.js'
-import { schoolClose } from './Component/schoolClose.js';
-import { schoolNeighbor } from './Component/schoolNeighbor.js';
+import { SchoolHead } from './Component/schoolHead.js'
+import { SchoolClose } from './Component/schoolClose.js';
+import { SchoolNeighbor } from './Component/schoolNeighbor.js';
 export { FormatResult };
 
 "use strict";
@@ -204,14 +204,14 @@ const FormatResult = (distanceCloses) => {
     selector("#txtOrigemResultado").value = distancesVision[0].addressOrigin;
     distancesVision.forEach((distance, i) => {
         distance.addressDestiny += ' escola';
-        selector("#pills-tab").appendChild(new schoolHead(distance.school.nome, i));
-        selector("#pills-tabContent").appendChild(new schoolClose(distancesVision, distance, i));
+        selector("#pills-tab").appendChild(new SchoolHead(distance.school.nome, i));
+        selector("#pills-tabContent").appendChild(new SchoolClose(distancesVision, distance, i));
     })
 
     const distanceNeighbors = distanceCloses.filter(distance => { return distance.school.vizinha == true });
     if (distanceNeighbors.length > 0) {
-        selector("#pills-tab").appendChild(new schoolHead("Outras Diretorias de Ensino", distancesVision.length));
-        selector("#pills-tabContent").appendChild(new schoolNeighbor(distanceNeighbors, distancesVision.length));
+        selector("#pills-tab").appendChild(new SchoolHead("Outras Diretorias de Ensino", distancesVision.length));
+        selector("#pills-tabContent").appendChild(new SchoolNeighbor(distanceNeighbors, distancesVision.length));
     }
 }
 

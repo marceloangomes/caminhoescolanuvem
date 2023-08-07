@@ -4,7 +4,7 @@ export { SchoolHead };
 class SchoolHead extends HTMLElement {
     constructor(textContent, i) {
         super();
-        this = new SchoolHeadTemplate().content.cloneNode(true).querySelector("#pills");
+        this.innerHTML = new SchoolHeadTemplate().content.cloneNode(true).querySelector("#pills");
         this.id += "-" + i + "-tab";
         this.href += "-" + i;
         this.setAttribute("aria-controls", "pills-" + i);

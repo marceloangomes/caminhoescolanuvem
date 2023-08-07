@@ -1,4 +1,5 @@
-import { schoolNeighbor } from './Template/schoolNeighbor.js';
+import { SchoolNeighborTemplate } from './Template/schoolNeighbor.js';
+export {SchoolNeighbor};
 
 class SchoolNeighbor extends HTMLElement {
     constructor(distances, i) {
@@ -12,7 +13,7 @@ class SchoolNeighbor extends HTMLElement {
         });
 
         if (neighbors.length > 0) {
-            this = schoolNeighbor.content.cloneNode(true).querySelector("#pills");
+            this.innerHTML = new SchoolNeighborTemplate.content.cloneNode(true).querySelector("#pills");
             this.id += "-" + i;
             this.setAttribute("aria-labelledby", this.id + "-tab")
             this.querySelector("#txtNeighbor").value = neighbors;

@@ -1,5 +1,6 @@
 import { SchoolCloseTemplate } from './Template/schoolClose.js';
 import { GetInformation } from '../Data.js';
+export {SchoolClose};
 
 class SchoolClose extends HTMLElement {
     constructor(distancesVision, distance, i) {
@@ -7,7 +8,7 @@ class SchoolClose extends HTMLElement {
         this.distance=distance;
         this.i=i;
         this.distancesVision=distancesVision;
-        this = new SchoolCloseTemplate().content.cloneNode(true);
+        this.innerHTML = new SchoolCloseTemplate().content.cloneNode(true);
         const el = this.querySelector("#pills");
         el.id += "-" + i;
         el.attribute("aria-labelledby", el.id + "-tab");

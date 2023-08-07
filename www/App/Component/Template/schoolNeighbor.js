@@ -1,8 +1,9 @@
 export { SchoolNeighborTemplate }
+
 class SchoolNeighborTemplate extends HTMLElement {
   constructor() {
     super();
-    this.innerHTML =
+    this.innerHTML =`
       <template>
         <div class="tab-pane fade" id="pills" role="tabpanel" aria-labelledby="pills" style="width:100%">
           <div class="container">
@@ -19,6 +20,6 @@ class SchoolNeighborTemplate extends HTMLElement {
             </div>
           </div>
         </div>
-      </template>
+      </template>`;
   }
 }

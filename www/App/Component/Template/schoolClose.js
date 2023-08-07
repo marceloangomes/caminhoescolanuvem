@@ -1,7 +1,7 @@
 export { SchoolCloseTemplate };
 class SchoolCloseTemplate extends HTMLElement {
   constructor() {
-    this.innerHTML =
+    this.innerHTML =`
       <template>
         <div class='tab-pane fade' id='pills' role='tabpanel' aria-labelledby='pills-tab'>
           <div class='card' style='margin:10px'>
@@ -49,6 +49,6 @@ class SchoolCloseTemplate extends HTMLElement {
             </div>
           </div>
         </div>
-      </template>;
+      </template>`;
   }
 }
