@@ -7,40 +7,37 @@ class SchoolClose extends HTMLElement {
         super();
     }
 
-    static Init(el, ways) {        
+    static Init(el, ways) {
         ways.forEach((way, i) => {
-            el = SchoolCloseTemplate(el);
-            el.querySelector("#pills");
-            el.id += "-" + i;
-            el.setAttribute("aria-labelledby", el.id + "-tab");
-            el.querySelector("#txtDestinoResultado").value = parameter.way.school.endereco;
-            el.querySelector("#txtDistancia").value = parameter.way.distanceLong;
-            el.querySelector("#txtDestinoEscola").value = parameter.way.school.nome;
-            el.querySelector("#txtDestinoContato").value = parameter.way.school.contato;
-            el.querySelector("#txtTempo").value = parameter.way.time;
-            const informations = GetInformation(parameter.way.school);
+            el = SchoolCloseTemplate(el, i);
+            el.querySelector("#pills-" + i + " #txtDestinoResultado").value = way.school.endereco;
+            el.querySelector("#pills-" + i + " #txtDistancia").value = way.distanceLong;
+            el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
+            el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
+            el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
+            const informations = GetInformation(way.school);
 
             if (informations)
                 informations.forEach(information => {
                     if (information) {
-                        el.querySelector("#txtInformacoes").value += information;
+                        el.querySelector("#pills-" + i + " #txtInformacoes").value += information;
                     }
                 })
             if (i == 0) {
                 SchoolClose.FormatSelected(way, i);
-                el.style.display = 'initial';
+                el.querySelector("#pills-" + i).style.display = 'initial';
             }
             else
-                el.style.display = 'none';
-            return el;
+                el.querySelector("#pills-" + i).style.display = 'none';            
         })
+        return el;
     }
 
     static FormatSelected = (way, i) => {
         if (way.school.selected) {
             let tab = el.querySelector("#pills-" + i + "-tab");
-            const otherWays = parameter.waysVision.filter(wayVision => { return wayVision.school.selected == false });
-            const longer = otherWays.filter((otherWay) => { return parameter.way.distance > otherWay.distance }).length > 0;
+            const otherWays = waysVision.filter(wayVision => { return wayVision.school.selected == false });
+            const longer = otherWays.filter((otherWay) => { return way.distance > otherWay.distance }).length > 0;
             tab.textContent += "  ";
             let el = document.createElement("i");
             tab.appendChild(el);

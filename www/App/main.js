@@ -6,7 +6,7 @@ import { CreateFilter } from './Filter.js';
 import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
-import {CreateComponent} from './Component/factoryComponent.js'
+import { CreateComponent } from './Component/factoryComponent.js'
 export { FormatResult };
 
 "use strict";
@@ -190,8 +190,8 @@ const ClearResult = async () => {
     return true;
 }
 
-const FormatResult = (distanceCloses) => {
-    distanceCloses.sort((a, b) => {
+const FormatResult = (wayCloses) => {
+    wayCloses.sort((a, b) => {
         if (a.school.selected < b.school.selected)
             return 1
         else if (a.school.selected > b.school.selected)
@@ -199,23 +199,24 @@ const FormatResult = (distanceCloses) => {
         else
             return a.distance - b.distance
     });
-    const schoolSelected = distanceCloses.find(distance => { return distance.school.selected == true })
-    const distancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha })
+    const schoolSelected = wayCloses.find(way => { return way.school.selected == true })
+    const wayVisions = wayCloses.filter(way => { return !way.school.vizinha })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
-    selector("#txtOrigemResultado").value = distancesVision[0].addressOrigin;
+    selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
 
-    distancesVision.map((distance)=>{
-        distance.addressDestiny+=' escola'; 
+    wayVisions.map((way) => {
+        way.addressDestiny += ' escola';
     })
-    
-    selector("#pills-tab").appendChild(CreateComponent('school-head', SchoolHead, distancesVision));
-    selector("#pills-tabContent").appendChild(CreateComponent('school-close', SchoolClose, distancesVision));
+    const wayNeighbors = wayCloses.filter(way => { return way.school.vizinha == true });
+    const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1 ;
+    selector("#ways").appendChild(CreateComponent('school-head', SchoolHead, wayVisions, indNeighbors));
+    selector("#ways").appendChild(CreateComponent('school-close', SchoolClose, wayVisions));
 
-    const distanceNeighbors = distanceCloses.filter(distance => { return distance.school.vizinha == true });
-    if (distanceNeighbors.length > 0) {
-        const i = distancesVision.length;
-        selector("#pills-tab").appendChild(CreateComponent('school-head' + i, SchoolHead,{textContent:'Outras Diretorias de Ensino',i: i}));     
-        selector("#pills-tabContent").appendChild(CreateComponent('school-neighbor' + i, SchoolNeighbor, {wayNeighbors:distanceNeighbors, i:i}));
+    
+    if (wayNeighbors.length > 0) {
+        const i = wayVisions.length;
+        selector("#ways").appendChild(CreateComponent('school-head' + i, SchoolHead, { textContent: 'Outras Diretorias de Ensino', i: i }));
+        selector("#ways").appendChild(CreateComponent('school-neighbor' + i, SchoolNeighbor, { wayNeighbors: wayNeighbors, i: i }));
     }
 }
 

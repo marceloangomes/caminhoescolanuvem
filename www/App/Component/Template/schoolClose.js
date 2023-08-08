@@ -1,9 +1,11 @@
 export { SchoolCloseTemplate };
-const SchoolCloseTemplate = (el) => {
+const SchoolCloseTemplate = (el,i) => {
+  if(i==0)
+    el.innerHTML = `<div class="tab-content" id="pills-tabContent" style="width:100%"></div>`;
   let elChild = document.createElement('div');
-  elChild.id ='pills';
+  elChild.id ='pills-' + i;
   elChild.setAttribute('role','tabpanel');
-  elChild.setAttribute('aria-labelledby','pills-tab')
+  elChild.setAttribute('aria-labelledby', elChild.id + "-tab")
   elChild.innerHTML = `              
           <div class='card' style='margin:10px'>
             <h5 class='card-title' style='margin-left:10px'>Destino</h5>
@@ -49,6 +51,6 @@ const SchoolCloseTemplate = (el) => {
               </form>
             </div>
           </div>`;
-  el.appendChild(elChild);
+  el.querySelector('#pills-tabContent').appendChild(elChild);
   return el;
 }
