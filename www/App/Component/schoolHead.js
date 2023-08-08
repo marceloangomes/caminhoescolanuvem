@@ -1,17 +1,21 @@
 import { SchoolHeadTemplate } from './Template/schoolHead.js';
-export { SchoolHead }; 
+export { SchoolHead };
 
 class SchoolHead extends HTMLElement {
-    constructor(textContent, i) {
+    constructor() {
         super();
-        this.innerHTML = new SchoolHeadTemplate().content.cloneNode(true).querySelector("#pills");
-        this.id += "-" + i + "-tab";
-        this.href += "-" + i;
-        this.setAttribute("aria-controls", "pills-" + i);
-        this.textContent = textContent;
+    }
+
+    static Init(el, textContent, i) {
+        const schoolHeadTemplate = new SchoolHeadTemplate();
+        el.innerHTML = schoolHeadTemplate.content.cloneNode(true).querySelector("#pills");
+        el.id += "-" + i + "-tab";
+        el.href += "-" + i;
+        el.setAttribute("aria-controls", "pills-" + i);
+        el.textContent = textContent;
         if (i == 0)
-            this.classList.add("active");
-        this.style.display = '';
+            el.classList.add("active");
+        el.style.display = 'initial';
     }
 }
 

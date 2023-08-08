@@ -1,43 +1,46 @@
 import { SchoolCloseTemplate } from './Template/schoolClose.js';
 import { GetInformation } from '../Data.js';
-export {SchoolClose};
+export { SchoolClose };
 
 class SchoolClose extends HTMLElement {
-    constructor(distancesVision, distance, i) {
+    constructor() {
         super();
-        this.distance=distance;
-        this.i=i;
-        this.distancesVision=distancesVision;
-        this.innerHTML = new SchoolCloseTemplate().content.cloneNode(true);
-        const el = this.querySelector("#pills");
-        el.id += "-" + i;
-        el.attribute("aria-labelledby", el.id + "-tab");
-        this.querySelector("#txtDestinoResultado").value = distance.school.endereco;
-        this.querySelector("#txtDistancia").value = distance.distanceLong;
-        this.querySelector("#txtDestinoEscola").value = distance.school.nome;
-        this.querySelector("#txtDestinoContato").value = distance.school.contato;
-        this.querySelector("#txtTempo").value = distance.time;
+    }
+
+    static Init(el, distancesVision, distance, i) {
+        el.distance = distance;
+        el.i = i;
+        el.distancesVision = distancesVision;
+        el.innerHTML = new SchoolCloseTemplate().content.cloneNode(true).outerHTML;
+        const elChild = el.querySelector("#pills");
+        elChild.id += "-" + i;
+        elChild.attribute("aria-labelledby", elChild.id + "-tab");
+        el.querySelector("#txtDestinoResultado").value = distance.school.endereco;
+        el.querySelector("#txtDistancia").value = distance.distanceLong;
+        el.querySelector("#txtDestinoEscola").value = distance.school.nome;
+        el.querySelector("#txtDestinoContato").value = distance.school.contato;
+        el.querySelector("#txtTempo").value = distance.time;
         const informations = GetInformation(distance.school);
 
         if (informations)
             informations.forEach(information => {
                 if (information) {
-                    this.querySelector("#txtInformacoes").value += information;
+                    el.querySelector("#txtInformacoes").value += information;
                 }
-            })                
-        if (i == 0) {            
+            })
+        if (i == 0) {
             FormatSelected();
-            Show("#" + el.id);
+            Show("#" + elChild.id);
         }
         else
-            Hide("#" + el.id);
+            Hide("#" + elChild.id);
     }
 
     FormatSelected = () => {
-        if (this.distance.school.selected) {
-            let tab = this.querySelector("#pills-" + this.i + "-tab");
-            const otherDistances = this.distancesVision.filter(distanceVision => { return distanceVision.school.selected == false });
-            const maior = otherDistances.filter((otherDistance) => { return this.distance.distance > otherDistance.distance }).length > 0;
+        if (el.distance.school.selected) {
+            let tab = el.querySelector("#pills-" + el.i + "-tab");
+            const otherDistances = el.distancesVision.filter(distanceVision => { return distanceVision.school.selected == false });
+            const maior = otherDistances.filter((otherDistance) => { return el.distance.distance > otherDistance.distance }).length > 0;
             tab.textContent += "  ";
             let el = document.createElement("i");
             tab.appendChild(el);
@@ -50,5 +53,5 @@ class SchoolClose extends HTMLElement {
                 el.classList.add("fa-thumbs-up");
             }
         }
-    }    
+    }
 }

@@ -1,9 +1,13 @@
 import { SchoolNeighborTemplate } from './Template/schoolNeighbor.js';
-export {SchoolNeighbor};
+export { SchoolNeighbor };
 
 class SchoolNeighbor extends HTMLElement {
-    constructor(distances, i) {
+    constructor() {
         super();
+
+    }
+
+    static Init(el, distances, i) {
         let neighbors = ""
         distances.forEach(distance => {
             neighbors += "Escola: " + distance.school.nome + " - DE: " + distance.school.de + "\n";
@@ -13,11 +17,11 @@ class SchoolNeighbor extends HTMLElement {
         });
 
         if (neighbors.length > 0) {
-            this.innerHTML = new SchoolNeighborTemplate.content.cloneNode(true).querySelector("#pills");
-            this.id += "-" + i;
-            this.setAttribute("aria-labelledby", this.id + "-tab")
-            this.querySelector("#txtNeighbor").value = neighbors;
-            this.style.display = '';
+            el.innerHTML = new SchoolNeighborTemplate.content.cloneNode(true).querySelector("#pills").outerHTML;
+            el.id += "-" + i;
+            el.setAttribute("aria-labelledby", el.id + "-tab")
+            el.querySelector("#txtNeighbor").value = neighbors;
+            el.style.display = '';
         }
     }
 }

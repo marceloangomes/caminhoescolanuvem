@@ -198,23 +198,33 @@ const FormatResult = (distanceCloses) => {
         else
             return a.distance - b.distance
     });
-
+    const schoolSelected = distanceCloses.find(distance => { return distance.school.selected == true })
     const distancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha })
-        .slice(0, 3 + distancesVision.filter(distance => { return distance.school.selected == true }).length);
+        .slice(0, 3 + (schoolSelected ? 1 : 0));
     selector("#txtOrigemResultado").value = distancesVision[0].addressOrigin;
     distancesVision.forEach((distance, i) => {
         distance.addressDestiny += ' escola';
-        selector("#pills-tab").appendChild(new SchoolHead(distance.school.nome, i));
-        selector("#pills-tabContent").appendChild(new SchoolClose(distancesVision, distance, i));
+        let el = DefineComponent('school-head' + i, SchoolHead);
+        selector("#pills-tab").appendChild(SchoolHead.Init(el, distance.school.nome, i));
+        el = DefineComponent('school-close' + i, SchoolClose);
+        selector("#pills-tabContent").appendChild(SchoolClose.Init(el, distancesVision, distance, i));
     })
 
     const distanceNeighbors = distanceCloses.filter(distance => { return distance.school.vizinha == true });
     if (distanceNeighbors.length > 0) {
-        selector("#pills-tab").appendChild(new SchoolHead("Outras Diretorias de Ensino", distancesVision.length));
-        selector("#pills-tabContent").appendChild(new SchoolNeighbor(distanceNeighbors, distancesVision.length));
+        const i = distancesVision.length;
+        let el = DefineComponent('school-head' + i, SchoolHead);
+        selector("#pills-tab").appendChild(SchoolHead.Init(el,"Outras Diretorias de Ensino", i));
+        el = DefineComponent('school-neighbor' + i, SchoolNeighbor);
+        selector("#pills-tabContent").appendChild(SchoolNeighbor.Init(el, distanceNeighbors, i));
     }
 }
 
+const DefineComponent = (tag, ComponentClass, Init) => {
+    customElements.define(tag, ComponentClass);
+    const el = document.createElement(tag);
+    return el;
+};
 
 const UpdateMap = (address) => {
     let map = selector('#map');
