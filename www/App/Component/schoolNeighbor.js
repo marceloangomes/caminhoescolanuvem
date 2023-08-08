@@ -4,21 +4,20 @@ export { SchoolNeighbor };
 class SchoolNeighbor extends HTMLElement {
     constructor() {
         super();
-
     }
 
-    static Init(el, distances, i) {
+    static Init(el, parameter) {
         let neighbors = ""
-        distances.forEach(distance => {
-            neighbors += "Escola: " + distance.school.nome + " - DE: " + distance.school.de + "\n";
-            neighbors += "   Distância: " + distance.distanceLong + "\n";
-            neighbors += "   Endereço: " + distance.school.endereco + "\n";
-            neighbors += "   Caminhando: " + distance.time + "\n";
+        parameter.ways.forEach(way => {
+            neighbors += "Escola: " + way.school.nome + " - DE: " + way.school.de + "\n";
+            neighbors += "   Distância: " + way.distanceLong + "\n";
+            neighbors += "   Endereço: " + way.school.endereco + "\n";
+            neighbors += "   Caminhando: " + way.time + "\n";
         });
 
         if (neighbors.length > 0) {
-            el.innerHTML = new SchoolNeighborTemplate.content.cloneNode(true).querySelector("#pills").outerHTML;
-            el.id += "-" + i;
+            el.innerHTML = SchoolNeighborTemplate(el).querySelector("#pills")
+            el.id += "-" + parameter.i;
             el.setAttribute("aria-labelledby", el.id + "-tab")
             el.querySelector("#txtNeighbor").value = neighbors;
             el.style.display = '';

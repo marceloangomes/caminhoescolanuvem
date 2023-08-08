@@ -1,9 +1,10 @@
 export { SchoolCloseTemplate };
-class SchoolCloseTemplate extends HTMLElement {
-  constructor() {
-    this.innerHTML =`
-      <template>
-        <div class='tab-pane fade' id='pills' role='tabpanel' aria-labelledby='pills-tab'>
+const SchoolCloseTemplate = (el) => {
+  let elChild = document.createElement('div');
+  elChild.id ='pills';
+  elChild.setAttribute('role','tabpanel');
+  elChild.setAttribute('aria-labelledby','pills-tab')
+  elChild.innerHTML = `              
           <div class='card' style='margin:10px'>
             <h5 class='card-title' style='margin-left:10px'>Destino</h5>
             <div class='card-body'>
@@ -47,8 +48,7 @@ class SchoolCloseTemplate extends HTMLElement {
                 </div>
               </form>
             </div>
-          </div>
-        </div>
-      </template>`;
-  }
+          </div>`;
+  el.appendChild(elChild);
+  return el;
 }

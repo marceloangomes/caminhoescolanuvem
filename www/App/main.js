@@ -6,6 +6,7 @@ import { CreateFilter } from './Filter.js';
 import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
+import {CreateComponent} from './Component/factoryComponent.js'
 export { FormatResult };
 
 "use strict";
@@ -202,29 +203,21 @@ const FormatResult = (distanceCloses) => {
     const distancesVision = distanceCloses.filter(distance => { return !distance.school.vizinha })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
     selector("#txtOrigemResultado").value = distancesVision[0].addressOrigin;
-    distancesVision.forEach((distance, i) => {
-        distance.addressDestiny += ' escola';
-        let el = DefineComponent('school-head' + i, SchoolHead);
-        selector("#pills-tab").appendChild(SchoolHead.Init(el, distance.school.nome, i));
-        el = DefineComponent('school-close' + i, SchoolClose);
-        selector("#pills-tabContent").appendChild(SchoolClose.Init(el, distancesVision, distance, i));
+
+    distancesVision.map((distance)=>{
+        distance.addressDestiny+=' escola'; 
     })
+    
+    selector("#pills-tab").appendChild(CreateComponent('school-head', SchoolHead, distancesVision));
+    selector("#pills-tabContent").appendChild(CreateComponent('school-close', SchoolClose, distancesVision));
 
     const distanceNeighbors = distanceCloses.filter(distance => { return distance.school.vizinha == true });
     if (distanceNeighbors.length > 0) {
         const i = distancesVision.length;
-        let el = DefineComponent('school-head' + i, SchoolHead);
-        selector("#pills-tab").appendChild(SchoolHead.Init(el,"Outras Diretorias de Ensino", i));
-        el = DefineComponent('school-neighbor' + i, SchoolNeighbor);
-        selector("#pills-tabContent").appendChild(SchoolNeighbor.Init(el, distanceNeighbors, i));
+        selector("#pills-tab").appendChild(CreateComponent('school-head' + i, SchoolHead,{textContent:'Outras Diretorias de Ensino',i: i}));     
+        selector("#pills-tabContent").appendChild(CreateComponent('school-neighbor' + i, SchoolNeighbor, {wayNeighbors:distanceNeighbors, i:i}));
     }
 }
-
-const DefineComponent = (tag, ComponentClass, Init) => {
-    customElements.define(tag, ComponentClass);
-    const el = document.createElement(tag);
-    return el;
-};
 
 const UpdateMap = (address) => {
     let map = selector('#map');
