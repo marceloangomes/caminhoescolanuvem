@@ -33,33 +33,46 @@ Hide("#alert");
 // };
 
 const Update = async (data) => {
-    if (!selector("#txtOrigem").value) {
-        ShowAlert(data.message.enderecoVazio);
-        return;
+    try {
+
+        if (!selector("#txtOrigem").value) {
+            ShowAlert(data.message.enderecoVazio);
+            return;
+        }
+
+        let year = selector('#selAno').value;
+        if (year == 0) {
+            ShowAlert(data.message.selecioneAno)
+            return;
+        }
+        Show("#aguarde");
+        const filter = CreateFilter(data, year);
+        const schoolSelected = SchoolSelected(data.schools, selector('#selEscola').value);
+        const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
+
+        //POC
+        filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
+
+        const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
+        const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered, data.message);
+        if (!schoolsRay)
+            throw (new Error(data.message.escolaNaoEncontrada));
+        const wayCloses = await ProcessSchoolsRay(locationOrigin, schoolsRay);
+        if (!wayCloses)
+            throw (new Error(data.message.noLocation));
+
+        FormatResult(FilterWays(wayCloses), FilterNeighbors(wayCloses),
+            {
+                'junctions': data.junctions,
+                'modelShifts': data.modelShifts,
+                'shifts': data.shifts,
+                'models': data.models
+            });
+    // } catch (error) {
+    //     ShowAlert(error);
+    } finally{
+        Hide("#aguarde");
     }
-
-    let year = selector('#selAno').value;
-    if (year == 0) {
-        ShowAlert(data.message.selecioneAno)
-        return;
-    }
-    Show("#aguarde");
-    const filter = CreateFilter(data, year);
-    const schoolSelected = SchoolSelected(data.schools, selector('#selEscola').value);
-    const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
-
-    //POC
-    filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
-
-    const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
-    const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered, data.message);
-    if (!schoolsRay)
-        throw (new Error(data.message.escolaNaoEncontrada));
-    const distancesClose = await ProcessSchoolsRay(locationOrigin, schoolsRay);
-    if (!distancesClose)
-        throw (new Error(data.message.noLocation));
-    const dataT = { 'junctions': data.junctions, 'modelShifts': data.modelShifts, 'shifts': data.shifts, 'models': data.models };
-    FormatResult(distancesClose, dataT);
 }
 
 const SchoolSelected = (schools, school_id) => {
@@ -190,7 +203,7 @@ const ClearResult = async () => {
     return true;
 }
 
-const FormatResult = (wayCloses) => {
+const FilterWays = (wayCloses) => {
     wayCloses.sort((a, b) => {
         if (a.school.selected < b.school.selected)
             return 1
@@ -202,22 +215,25 @@ const FormatResult = (wayCloses) => {
     const schoolSelected = wayCloses.find(way => { return way.school.selected == true })
     const wayVisions = wayCloses.filter(way => { return !way.school.vizinha })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
+    wayVisions.map(way =>
+        way.addressDestiny += ' escola'
+    );
+    return wayVisions;
+}
+
+const FilterNeighbors = (wayCloses) => {
+    return wayCloses.filter(way => { return way.school.vizinha == true });
+}
+
+const FormatResult = (wayVisions, wayNeighbors, data) => {
     selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
-
-    wayVisions.map((way) => {
-        way.addressDestiny += ' escola';
-    })
-    const wayNeighbors = wayCloses.filter(way => { return way.school.vizinha == true });
-    const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1 ;
-    selector("#ways").appendChild(CreateComponent('school-head', SchoolHead, wayVisions, indNeighbors));
-    selector("#ways").appendChild(CreateComponent('school-close', SchoolClose, wayVisions));
-
-    
-    if (wayNeighbors.length > 0) {
-        const i = wayVisions.length;
-        selector("#ways").appendChild(CreateComponent('school-head' + i, SchoolHead, { textContent: 'Outras Diretorias de Ensino', i: i }));
-        selector("#ways").appendChild(CreateComponent('school-neighbor' + i, SchoolNeighbor, { wayNeighbors: wayNeighbors, i: i }));
-    }
+    const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
+    const elWaysHead = selector("#ways");
+    elWaysHead.appendChild(CreateComponent('school-head', SchoolHead, { wayVisions: wayVisions, indNeighbors: indNeighbors }));
+    const elWaysContainer = elWaysHead.querySelector('ul');
+    elWaysContainer.appendChild(CreateComponent('school-close', SchoolClose, { wayVisions: wayVisions, data: data }));
+    if (wayNeighbors.length > 0)
+        elWaysContainer.appendChild(CreateComponent('school-neighbor', SchoolNeighbor, { wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
 }
 
 const UpdateMap = (address) => {

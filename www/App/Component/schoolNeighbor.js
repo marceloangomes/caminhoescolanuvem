@@ -6,9 +6,11 @@ class SchoolNeighbor extends HTMLElement {
         super();
     }
 
-    static Init(el, parameter) {
+    static Init(el, parameters) {
+        const wayNeighbors = parameters.wayNeighbors;
+        const indNeighbors = parameters.indNeighbors; 
         let neighbors = ""
-        parameter.ways.forEach(way => {
+        wayNeighbors.forEach(way => {
             neighbors += "Escola: " + way.school.nome + " - DE: " + way.school.de + "\n";
             neighbors += "   Distância: " + way.distanceLong + "\n";
             neighbors += "   Endereço: " + way.school.endereco + "\n";
@@ -16,12 +18,13 @@ class SchoolNeighbor extends HTMLElement {
         });
 
         if (neighbors.length > 0) {
-            el.innerHTML = SchoolNeighborTemplate(el).querySelector("#pills")
-            el.id += "-" + parameter.i;
-            el.setAttribute("aria-labelledby", el.id + "-tab")
-            el.querySelector("#txtNeighbor").value = neighbors;
-            el.style.display = '';
+            el = SchoolNeighborTemplate(el);
+            let elChild = el.querySelector("#pills");
+            elChild.id += "-" + indNeighbors;
+            elChild.setAttribute("aria-labelledby", el.id + "-tab");
+            elChild.querySelector("#txtNeighbor").value = neighbors;
+            elChild.style.display = 'initial';
         }
+        return el;
     }
 }
-

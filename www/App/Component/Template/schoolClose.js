@@ -1,12 +1,15 @@
 export { SchoolCloseTemplate };
-const SchoolCloseTemplate = (el,i) => {
-  if(i==0)
+const SchoolCloseTemplate = (el, i) => {
+  if(i == 0)
     el.innerHTML = `<div class="tab-content" id="pills-tabContent" style="width:100%"></div>`;
   let elChild = document.createElement('div');
   elChild.id ='pills-' + i;
   elChild.setAttribute('role','tabpanel');
-  elChild.setAttribute('aria-labelledby', elChild.id + "-tab")
-  elChild.innerHTML = `              
+  elChild.setAttribute('aria-labelledby', elChild.id + "-tab");
+  elChild.classList.add('tab-pane');
+  elChild.classList.add('fade');
+  elChild.appendChild(document.createElement('div'));
+  elChild.firstChild.innerHTML = `              
           <div class='card' style='margin:10px'>
             <h5 class='card-title' style='margin-left:10px'>Destino</h5>
             <div class='card-body'>

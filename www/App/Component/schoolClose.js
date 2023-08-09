@@ -7,15 +7,17 @@ class SchoolClose extends HTMLElement {
         super();
     }
 
-    static Init(el, ways) {
-        ways.forEach((way, i) => {
+    static Init(el, parameters) {
+        const wayVisions = parameters.wayVisions;
+        const data = parameters.data;
+        wayVisions.forEach((way, i) => {
             el = SchoolCloseTemplate(el, i);
             el.querySelector("#pills-" + i + " #txtDestinoResultado").value = way.school.endereco;
             el.querySelector("#pills-" + i + " #txtDistancia").value = way.distanceLong;
             el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
             el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
             el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
-            const informations = GetInformation(way.school);
+            const informations = GetInformation(way.school, data);
 
             if (informations)
                 informations.forEach(information => {

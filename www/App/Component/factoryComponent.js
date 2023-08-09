@@ -5,6 +5,6 @@ const DefineComponent = (tag, componentClass) => {
     return document.createElement(tag);
 };
 
-const CreateComponent = (tag, componentClass, parameter)=>{
-    return componentClass.Init(DefineComponent(tag, componentClass), parameter);
+const CreateComponent = (tag, componentClass, parameters)=>{
+    return componentClass.Init(DefineComponent(tag, componentClass), parameters).firstChild;
 }

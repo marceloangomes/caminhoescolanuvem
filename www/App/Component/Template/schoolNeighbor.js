@@ -17,5 +17,6 @@ const SchoolNeighborTemplate = (el)=> {
             </div>
           </div>
         </div>`;
-  }
+  return el;  
+}
 

@@ -121,7 +121,7 @@ const GetData = async () => {
     }
     return data;
 }
-const GetInformation = (school) => {
+const GetInformation = (school, data) => {
     school.junctionsId.map(juncaoId => {
         const junction = data.junctions.filter(junction => { return junction.id == juncaoId })[0];
         const modelShift = data.modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
