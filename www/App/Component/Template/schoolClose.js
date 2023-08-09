@@ -5,11 +5,10 @@ const SchoolCloseTemplate = (el, i) => {
   let elChild = document.createElement('div');
   elChild.id ='pills-' + i;
   elChild.setAttribute('role','tabpanel');
-  elChild.setAttribute('aria-labelledby', elChild.id + "-tab");
+  elChild.setAttribute('aria-labelledby', elChild.id + "-tab");  
   elChild.classList.add('tab-pane');
   elChild.classList.add('fade');
-  elChild.appendChild(document.createElement('div'));
-  elChild.firstChild.innerHTML = `              
+  elChild.innerHTML = `              
           <div class='card' style='margin:10px'>
             <h5 class='card-title' style='margin-left:10px'>Destino</h5>
             <div class='card-body'>

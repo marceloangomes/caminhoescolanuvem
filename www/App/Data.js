@@ -21,13 +21,13 @@ const GetData = async () => {
     else {
         //Doens't filter for city, because can there is school in São Bernardo 
         //next a student than São Caetano and vice-versa
-        let response = await fetch('./Data/Escola.json');
+        let response = await fetch('./Data/school.json');
         let _data = await response.text();
         data.schools = JSON.parse(_data);
         data.schools.forEach(school => {
             school.vizinha = false
         });
-        response = await fetch('./Data/EscolaVizinha.json');
+        response = await fetch('./Data/schoolNeighbor.json');
         _data = await response.text();
         const escolaVizinhas = JSON.parse(_data);
         escolaVizinhas.forEach(escolaVizinha => {
@@ -59,7 +59,7 @@ const GetData = async () => {
         data.years = JSON.parse(localStorage.getItem('years'));
     }
     else {
-        const response = await fetch('./Data/Ano.json');
+        const response = await fetch('./Data/year.json');
         const _data = await response.text();
         localStorage.setItem('years', _data);
         data.years = JSON.parse(_data)
@@ -69,7 +69,7 @@ const GetData = async () => {
         data.shifts = JSON.parse(localStorage.getItem('shifts'));
     }
     else {
-        const response = await fetch('./Data/Turno.json');
+        const response = await fetch('./Data/shift.json');
         const _data = await response.text();
         localStorage.setItem('shifts', _data);
         data.shifts = JSON.parse(_data)
@@ -78,7 +78,7 @@ const GetData = async () => {
     if (localStorage.getItem('junctions'))
         data.junctions = JSON.parse(localStorage.getItem('junctions'));
     else {
-        const response = await fetch('./Data/Juncao.json');
+        const response = await fetch('./Data/junction.json');
         const _data = await response.text();
         localStorage.setItem('junctions', _data);
         data.junctions = JSON.parse(_data)
@@ -87,7 +87,7 @@ const GetData = async () => {
     if (localStorage.getItem('models'))
         data.models = JSON.parse(localStorage.getItem('models'));
     else {
-        const response = await fetch('./Data/Modelo.json');
+        const response = await fetch('./Data/model.json');
         const _data = await response.text();
         localStorage.setItem('models', _data);
         data.models = JSON.parse(_data)
@@ -96,7 +96,7 @@ const GetData = async () => {
     if (localStorage.getItem('modelShifts'))
         data.modelShifts = JSON.parse(localStorage.getItem('modelShifts'));
     else {
-        const response = await fetch('./Data/ModeloTurno.json');
+        const response = await fetch('./Data/modelShift.json');
         const _data = await response.text();
         localStorage.setItem('modelShifts', _data);
         data.modelShifts = JSON.parse(_data)
@@ -105,7 +105,7 @@ const GetData = async () => {
     if (localStorage.getItem('schoolJunctions'))
         data.schoolJunctions = JSON.parse(localStorage.getItem('schoolJunctions'));
     else {
-        const response = await fetch('./Data/EscolaJuncao.json');
+        const response = await fetch('./Data/schoolJunction.json');
         const _data = await response.text();
         localStorage.setItem('schoolJunctions', _data);
         data.schoolJunctions = JSON.parse(_data);
@@ -114,7 +114,7 @@ const GetData = async () => {
     if (localStorage.getItem('message'))
         data.message = JSON.parse(localStorage.getItem('message'));
     else {
-        const response = await fetch("./Data/Mensagem.json");
+        const response = await fetch("./Data/message.json");
         const _data = await response.text();
         localStorage.setItem('message', _data);
         data.message = JSON.parse(_data)

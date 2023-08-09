@@ -228,12 +228,15 @@ const FilterNeighbors = (wayCloses) => {
 const FormatResult = (wayVisions, wayNeighbors, data) => {
     selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
-    const elWaysHead = selector("#ways");
-    elWaysHead.appendChild(CreateComponent('school-head', SchoolHead, { wayVisions: wayVisions, indNeighbors: indNeighbors }));
-    const elWaysContainer = elWaysHead.querySelector('ul');
-    elWaysContainer.appendChild(CreateComponent('school-close', SchoolClose, { wayVisions: wayVisions, data: data }));
-    if (wayNeighbors.length > 0)
-        elWaysContainer.appendChild(CreateComponent('school-neighbor', SchoolNeighbor, { wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
+    let elWays = selector("#ways");
+    elWays.appendChild(CreateComponent('school-head', SchoolHead, { wayVisions: wayVisions, indNeighbors: indNeighbors }));
+    elWays.appendChild(CreateComponent('school-close', SchoolClose, { wayVisions: wayVisions, data: data }));
+    if (wayNeighbors.length > 0){
+        if(indNeighbors > 0){
+            elWays = elWays.querySelector('#pills-tabContent');
+        }
+        elWays.appendChild(CreateComponent('school-neighbor', SchoolNeighbor, { wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
+    }
 }
 
 const UpdateMap = (address) => {

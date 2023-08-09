@@ -13,7 +13,7 @@ class SchoolHead extends HTMLElement {
             el = SchoolHeadTemplate(el, i);
             let elChild = el.querySelector('#pills');
             elChild.id += "-" + i + "-tab";
-            elChild.href += "-" + i;
+            elChild.href = "#pills-" + i;
             elChild.setAttribute("aria-controls", "pills-" + i);
             elChild.textContent = textContent;
             if (i == 0){

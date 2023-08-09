@@ -6,5 +6,5 @@ const DefineComponent = (tag, componentClass) => {
 };
 
 const CreateComponent = (tag, componentClass, parameters)=>{
-    return componentClass.Init(DefineComponent(tag, componentClass), parameters).firstChild;
+    return componentClass.Init(DefineComponent(tag, componentClass), parameters).firstElementChild;
 }

@@ -26,11 +26,10 @@ class SchoolClose extends HTMLElement {
                     }
                 })
             if (i == 0) {
-                SchoolClose.FormatSelected(way, i);
-                el.querySelector("#pills-" + i).style.display = 'initial';
-            }
-            else
-                el.querySelector("#pills-" + i).style.display = 'none';            
+                SchoolClose.FormatSelected(way, i);                
+                el.querySelector("#pills-" + i).classList.add("active");
+                el.querySelector("#pills-" + i).classList.add("show");
+            }            
         })
         return el;
     }

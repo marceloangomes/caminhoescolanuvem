@@ -19,6 +19,8 @@ class SchoolNeighbor extends HTMLElement {
 
         if (neighbors.length > 0) {
             el = SchoolNeighborTemplate(el);
+            if(indNeighbors == 0)
+                el.innerHTML = `<div class="tab-content" id="pills-tabContent" style="width:100%"></div>`;
             let elChild = el.querySelector("#pills");
             elChild.id += "-" + indNeighbors;
             elChild.setAttribute("aria-labelledby", el.id + "-tab");
