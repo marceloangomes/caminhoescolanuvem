@@ -122,7 +122,7 @@ const GetData = async () => {
     return data;
 }
 const GetInformation = (school, data) => {
-    school.junctionsId.map(juncaoId => {
+    const informations = school.junctionsId.map(juncaoId => {
         const junction = data.junctions.filter(junction => { return junction.id == juncaoId })[0];
         const modelShift = data.modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
         if (!modelShift)
@@ -131,4 +131,5 @@ const GetInformation = (school, data) => {
         const model = data.models.filter(model => { return model.id == junction.id_modelo })[0];
         return "   Modelo: " + model.descricao + "   período: " + shift.descricao + "   horário de: " + modelShift.horario.inicio.substring(0, 5) + "   até: " + modelShift.horario.fim.substring(0, 5) + "\n";
     });
+    return informations;
 }

@@ -1,10 +1,21 @@
-export {CreateComponent};
+export { FactoryComponent };
 
-const DefineComponent = (tag, componentClass) => {
-    customElements.define(tag, componentClass);
-    return document.createElement(tag);
-};
+class FactoryComponent  {
+    constructor(tag, componentClass) {
+       this.tag=tag;
+       this.componentClass = componentClass;       
+       customElements.define(this.tag, this.componentClass);
+    }
+    
+    GetElement () {
+        return document.createElement(this.tag);
+    };
 
-const CreateComponent = (tag, componentClass, parameters)=>{
-    return componentClass.Init(DefineComponent(tag, componentClass), parameters).firstElementChild;
+    Init (parameters) {
+        const elToDestroy = this.componentClass.Init(GetElement(this.tag), parameters);
+        const elToReturn = elToDestroy.firstElementChild;
+        elToDestroy.remove();
+        return elToReturn;
+    }
+
 }

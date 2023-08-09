@@ -4,6 +4,7 @@ export { SchoolNeighbor };
 class SchoolNeighbor extends HTMLElement {
     constructor() {
         super();
+        
     }
 
     static Init(el, parameters) {

@@ -6,7 +6,7 @@ import { CreateFilter } from './Filter.js';
 import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
-import { CreateComponent } from './Component/factoryComponent.js'
+import { FactoryComponent } from './Component/factoryComponent.js'
 export { FormatResult };
 
 "use strict";
@@ -32,7 +32,7 @@ Hide("#alert");
 //     markersArray.length = 0;
 // };
 
-const Update = async (data) => {
+const Update = async (data, components) => {
     try {
 
         if (!selector("#txtOrigem").value) {
@@ -67,7 +67,7 @@ const Update = async (data) => {
                 'modelShifts': data.modelShifts,
                 'shifts': data.shifts,
                 'models': data.models
-            });
+            },components);
     // } catch (error) {
     //     ShowAlert(error);
     } finally{
@@ -225,17 +225,17 @@ const FilterNeighbors = (wayCloses) => {
     return wayCloses.filter(way => { return way.school.vizinha == true });
 }
 
-const FormatResult = (wayVisions, wayNeighbors, data) => {
+const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
     let elWays = selector("#ways");
-    elWays.appendChild(CreateComponent('school-head', SchoolHead, { wayVisions: wayVisions, indNeighbors: indNeighbors }));
-    elWays.appendChild(CreateComponent('school-close', SchoolClose, { wayVisions: wayVisions, data: data }));
+    elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
+    elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data }));
     if (wayNeighbors.length > 0){
         if(indNeighbors > 0){
             elWays = elWays.querySelector('#pills-tabContent');
         }
-        elWays.appendChild(CreateComponent('school-neighbor', SchoolNeighbor, { wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
+        elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
 }
 
@@ -319,12 +319,19 @@ const AddressOriginToLocation = async (addressOrigin) => {
     return new google.maps.LatLng(lat, lng);
 }
 
+const CreateComponents = () =>{
+    const schoolHead = new FactoryComponent('school-head', SchoolHead);
+    const schoolClose = new FactoryComponent('school-close', SchoolClose);
+    const schoolNeighbor = new FactoryComponent('school-neighbor', SchoolNeighbor);
+    return {'schoolHead':schoolHead,'schoolClose':schoolClose,'schoolNeigbor':schoolNeighbor};
+}
+
 (() => {
     window.addEventListener('load', async () => {
         Show("#aguarde");
         const data = await GetData();
-        Populate(data);
-        AssociateEvents(Update, data);
+        Populate(data);        
+        AssociateEvents(Update, data, CreateComponents());
         Hide("#aguarde");
     });
 })();

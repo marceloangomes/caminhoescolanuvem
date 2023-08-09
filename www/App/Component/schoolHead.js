@@ -7,7 +7,7 @@ class SchoolHead extends HTMLElement {
     }
 
     static Init(el, parameters) {
-        const wayVisions=parameters.wayVisions;
+        const wayVisions = parameters.wayVisions;
         const indNeighbors = parameters.indNeighbors;
         const Fill = (el, i, textContent) => {
             el = SchoolHeadTemplate(el, i);
@@ -16,10 +16,10 @@ class SchoolHead extends HTMLElement {
             elChild.href = "#pills-" + i;
             elChild.setAttribute("aria-controls", "pills-" + i);
             elChild.textContent = textContent;
-            if (i == 0){
+            if (i == 0) {
                 elChild.classList.add("active")
-                elChild.classList.add("show");       
-            }     
+                elChild.classList.add("show");
+            }
             elChild.style.display = 'initial';
         }
         wayVisions.forEach((way, i) => {
