@@ -1,11 +1,11 @@
 export { SchoolCloseTemplate };
 const SchoolCloseTemplate = (el, i) => {
-  if(i == 0)
+  if (i == 0)
     el.innerHTML = `<div class="tab-content" id="pills-tabContent" style="width:100%"></div>`;
   let elChild = document.createElement('div');
-  elChild.id ='pills-' + i;
-  elChild.setAttribute('role','tabpanel');
-  elChild.setAttribute('aria-labelledby', elChild.id + "-tab");  
+  elChild.id = 'pills-' + i;
+  elChild.setAttribute('role', 'tabpanel');
+  elChild.setAttribute('aria-labelledby', elChild.id + "-tab");
   elChild.classList.add('tab-pane');
   elChild.classList.add('fade');
   elChild.innerHTML = `              
@@ -39,7 +39,7 @@ const SchoolCloseTemplate = (el, i) => {
                 </div>
                 
                 <div class="form-group col-lg-1 col-md-1 col-sm-12">
-                  <a id='myBtn' href ="#"><i class="fa-sharp fa-solid fa-location-dot fa-fade" style="font-size: xxx-large;"></i></a>
+                  <button id='btnMap'><i class="fa-sharp fa-solid fa-location-dot fa-fade" style="font-size: xxx-large;"></i></button>
                 </div>
 
                 <div class='form-group col-lg-6 col-lg-6 col-sm-12'>

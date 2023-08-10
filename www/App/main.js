@@ -71,8 +71,8 @@ const Update = async (data, components) => {
                 'shifts': data.shifts,
                 'models': data.models
             }, components);
-         } catch (error) {
-             ShowAlert(error);
+        // } catch (error) {
+        //     ShowAlert(error);
     } finally {
         Hide("#aguarde");
     }
@@ -195,7 +195,7 @@ const FilterSchoolsByRay = (locationOrigin, schools) => {
 const ClearResult = async (ways) => {
     while (ways.firstChild) {
         ways.removeChild(ways.firstChild);
-    }    
+    }
     return true;
 }
 
@@ -227,7 +227,7 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     let elWays = selector("#ways");
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
     elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data }));
-    elWays.appendChild(components.modal.Init({}));
+    elWays.appendChild(components.modal.Init({ }));
     if (wayNeighbors.length > 0) {
         if (indNeighbors > 0) {
             elWays = elWays.querySelector('#pills-tabContent');
@@ -321,7 +321,7 @@ const CreateComponents = () => {
     const schoolClose = new FactoryComponent('school-close', SchoolClose);
     const schoolNeighbor = new FactoryComponent('school-neighbor', SchoolNeighbor);
     const modal = new FactoryComponent('modal-close', Modal);
-    return { 'schoolHead': schoolHead, 'schoolClose': schoolClose, 'schoolNeighbor': schoolNeighbor,'modal': modal };
+    return { 'schoolHead': schoolHead, 'schoolClose': schoolClose, 'schoolNeighbor': schoolNeighbor, 'modal': modal };
 }
 
 (() => {

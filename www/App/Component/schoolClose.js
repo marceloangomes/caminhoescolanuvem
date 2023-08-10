@@ -17,6 +17,9 @@ class SchoolClose extends HTMLElement {
             el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
             el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
             el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
+            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (event) => {
+                document.querySelector("#GenModal").style.display = "block";                
+            })
             const informations = GetInformation(way.school, data);
 
             if (informations)
@@ -26,10 +29,10 @@ class SchoolClose extends HTMLElement {
                     }
                 })
             if (i == 0) {
-                SchoolClose.FormatSelected(way, i);                
+                SchoolClose.FormatSelected(way, i);
                 el.querySelector("#pills-" + i).classList.add("active");
                 el.querySelector("#pills-" + i).classList.add("show");
-            }            
+            }
         })
         return el;
     }
