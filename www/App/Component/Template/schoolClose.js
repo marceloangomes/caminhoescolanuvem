@@ -25,17 +25,21 @@ const SchoolCloseTemplate = (el, i) => {
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' value='' />
                 </div>
 
-                <div class='form-group col-lg-2 col-md-2 col-sm-12'>
+                <div class='form-group col-lg-1 col-md-1 col-sm-12'>
                   <label for='txtDistancia' style='margin: 0px 10px 0px 10px'>Dist&acirc;ncia</label>
                   <input name='distancia' readonly='readonly' type='text' id='txtDistancia' value=''
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' />
-                </div>
+                </div>                
 
                 <div class='form-group col-lg-2 col-lg-2 col-sm-12'>
                   <label for='txtTempo' style='margin: 0px 10px 0px 10px;'>Tempo
                     Caminhando</label>
                   <input name='tempo' readonly='readonly' type='text' id='txtTempo' value=''
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' />
+                </div>
+                
+                <div class="form-group col-lg-1 col-md-1 col-sm-12">
+                  <a id='myBtn' href ="#"><i class="fa-sharp fa-solid fa-location-dot fa-fade" style="font-size: xxx-large;"></i></a>
                 </div>
 
                 <div class='form-group col-lg-6 col-lg-6 col-sm-12'>

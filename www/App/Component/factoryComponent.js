@@ -12,7 +12,7 @@ class FactoryComponent  {
     };
 
     Init (parameters) {
-        const elToDestroy = this.componentClass.Init(GetElement(this.tag), parameters);
+        const elToDestroy = this.componentClass.Init(this.GetElement(), parameters);
         const elToReturn = elToDestroy.firstElementChild;
         elToDestroy.remove();
         return elToReturn;

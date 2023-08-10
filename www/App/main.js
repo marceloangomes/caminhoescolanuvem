@@ -6,7 +6,8 @@ import { CreateFilter } from './Filter.js';
 import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
-import { FactoryComponent } from './Component/factoryComponent.js'
+import { FactoryComponent } from './Component/factoryComponent.js';
+import { Modal } from './Component/modal.js';
 export { FormatResult };
 
 "use strict";
@@ -34,6 +35,8 @@ Hide("#alert");
 
 const Update = async (data, components) => {
     try {
+
+        ClearResult(selector("#ways"));
 
         if (!selector("#txtOrigem").value) {
             ShowAlert(data.message.enderecoVazio);
@@ -67,10 +70,10 @@ const Update = async (data, components) => {
                 'modelShifts': data.modelShifts,
                 'shifts': data.shifts,
                 'models': data.models
-            },components);
-    // } catch (error) {
-    //     ShowAlert(error);
-    } finally{
+            }, components);
+         } catch (error) {
+             ShowAlert(error);
+    } finally {
         Hide("#aguarde");
     }
 }
@@ -189,17 +192,10 @@ const FilterSchoolsByRay = (locationOrigin, schools) => {
     return schoolsRay;
 };
 
-const ClearResult = async () => {
-    distanceCloses = [];
-    schoolsRay = [];
-    Hide("#pills-tab li a");
-    selector("#txtDestinoResultado").value = ""
-    selector("#txtDistancia").value = "";
-    selector("#txtDestinoEscola").value = "";
-    selector("#txtDestinoContato").value = "";
-    selector("#txtTempo").value = "";
-    selector("#txtOrigemResultado").value = "";
-    Hide("#alert");
+const ClearResult = async (ways) => {
+    while (ways.firstChild) {
+        ways.removeChild(ways.firstChild);
+    }    
     return true;
 }
 
@@ -231,8 +227,9 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     let elWays = selector("#ways");
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
     elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data }));
-    if (wayNeighbors.length > 0){
-        if(indNeighbors > 0){
+    elWays.appendChild(components.modal.Init({}));
+    if (wayNeighbors.length > 0) {
+        if (indNeighbors > 0) {
             elWays = elWays.querySelector('#pills-tabContent');
         }
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
@@ -319,18 +316,19 @@ const AddressOriginToLocation = async (addressOrigin) => {
     return new google.maps.LatLng(lat, lng);
 }
 
-const CreateComponents = () =>{
+const CreateComponents = () => {
     const schoolHead = new FactoryComponent('school-head', SchoolHead);
     const schoolClose = new FactoryComponent('school-close', SchoolClose);
     const schoolNeighbor = new FactoryComponent('school-neighbor', SchoolNeighbor);
-    return {'schoolHead':schoolHead,'schoolClose':schoolClose,'schoolNeigbor':schoolNeighbor};
+    const modal = new FactoryComponent('modal-close', Modal);
+    return { 'schoolHead': schoolHead, 'schoolClose': schoolClose, 'schoolNeighbor': schoolNeighbor,'modal': modal };
 }
 
 (() => {
     window.addEventListener('load', async () => {
         Show("#aguarde");
         const data = await GetData();
-        Populate(data);        
+        Populate(data);
         AssociateEvents(Update, data, CreateComponents());
         Hide("#aguarde");
     });
