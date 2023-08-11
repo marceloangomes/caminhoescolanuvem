@@ -17,8 +17,9 @@ class SchoolClose extends HTMLElement {
             el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
             el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
             el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
-            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (event) => {
-                document.querySelector("#GenModal").style.display = "block";                
+            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", () => {
+                elWays.appendChild(components.modal.Init({wayVisions: wayVisions }));
+                document.querySelector("#mapModal").style.display = "block";                
             })
             const informations = GetInformation(way.school, data);
 

@@ -7,31 +7,19 @@ import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
 import { FactoryComponent } from './Component/factoryComponent.js';
-import { Modal } from './Component/modal.js';
-export { FormatResult };
+import { Map } from './Component/map.js';
+//export { FormatResult };
 
 "use strict";
-let mapa;
-const initMap = async () => {
-    var saoBernardo = new google.maps.LatLng(-23.69389, -46.565);
-    var mapOptions = {
-        zoom: 12,
-        center: saoBernardo,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    mapa = new google.maps.Map(selector('#map'), mapOptions);
-}
-
 Hide("#alert");
 
-// let markersArray = [];
-
-// google.maps.Map.prototype.clearMarkers = () => {
-//     markersArray.forEach(markerArray => {
-//         markerArray.setMap(null);
-//     });
-//     markersArray.length = 0;
-// };
+function InitMap (){
+    var mapOptions = {
+        zoom: 12,       
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
+    const map = new google.maps.Map(mapOptions);
+}
 
 const Update = async (data, components) => {
     try {
@@ -130,48 +118,6 @@ const ApplyFilter = (filter, data, schoolSelected) => {
     return schoolsFiltered;
 }
 
-const CalculateRoute = (start, end) => {
-    var request = {
-        origin: start,
-        destination: end,
-        provideRouteAlternatives: true,
-        travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
-        unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)                                     
-    };
-    const directionsService = new google.maps.DirectionsService();
-    directionsService.route(request, function (result, status) {
-        if (status == 'OK') {
-            let directionsDisplay = new google.maps.DirectionsRenderer();
-            directionsDisplay.setDirections(result);
-            mapa.setCenter(result.routes[0].legs[0].start_location);
-            // mapa.clearMarkers();                          
-            // let markerAluno = new google.maps.Marker({
-            //     map: mapa,
-            //     position: result.routes[0].legs[0].start_location,
-            //     title:"Aluno",
-            //     animation:google.maps.Animation.DROP,
-            //     // label:"Aluno",
-            //     icon: new google.maps.MarkerImage('aluno.png',
-            //         new google.maps.Size(32, 32),
-            //         new google.maps.Point(0, 0),
-            //         new google.maps.Point(0, 32))                
-            // });                 
-            // let markerEscola = new google.maps.Marker({
-            //     map: mapa,
-            //     position: result.routes[0].legs[0].end_location,
-            //     title:"Escola",
-            //     // label:"Escola",
-            //     icon: new google.maps.MarkerImage('school.png',
-            //         new google.maps.Size(32, 32),
-            //         new google.maps.Point(0, 0),
-            //         new google.maps.Point(0, 32))   
-            // });                 
-            // markersArray=[markerAluno, markerEscola]
-            Hide("#aguarde", true);
-        }
-    });
-}
-
 const ValidationSchoolsByRay = (school, locationOrigin, distanceRay) => {
     if (school.lat && school.lng) {
         let locationDestiny = new google.maps.LatLng(school.lat, school.lng);
@@ -227,32 +173,12 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     let elWays = selector("#ways");
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
     elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data }));
-    elWays.appendChild(components.modal.Init({ }));
     if (wayNeighbors.length > 0) {
         if (indNeighbors > 0) {
             elWays = elWays.querySelector('#pills-tabContent');
         }
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
-}
-
-const UpdateMap = (address) => {
-    let map = selector('#map');
-    $(map).show();
-    function loaded() {
-        $("#aguarde").hide('fade');
-    };
-
-    CalculateRoute(address.addressOrigin.toStrinHideg(), address.addressDestiny.toString());
-    //$("#map").attr("src", "https://maps.google.com/maps?saddr=" + address.addressOrigin + "&daddr=" + address.addressDestiny + "&output=embed" + "&dirflg=w");                                           
-
-    if (map.complete) {
-        loaded();
-    }
-    else {
-        map.addEventListener('load', loaded);
-    }
-    Hide("#aguarde", true);
 }
 
 const GetDistanceMatrixPromise = (options) => {
@@ -320,8 +246,8 @@ const CreateComponents = () => {
     const schoolHead = new FactoryComponent('school-head', SchoolHead);
     const schoolClose = new FactoryComponent('school-close', SchoolClose);
     const schoolNeighbor = new FactoryComponent('school-neighbor', SchoolNeighbor);
-    const modal = new FactoryComponent('modal-close', Modal);
-    return { 'schoolHead': schoolHead, 'schoolClose': schoolClose, 'schoolNeighbor': schoolNeighbor, 'modal': modal };
+    const map = new FactoryComponent('map-close', Map);
+    return { 'schoolHead': schoolHead, 'schoolClose': schoolClose, 'schoolNeighbor': schoolNeighbor, 'map': map };
 }
 
 (() => {

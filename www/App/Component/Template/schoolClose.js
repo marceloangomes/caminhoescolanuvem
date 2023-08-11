@@ -39,7 +39,7 @@ const SchoolCloseTemplate = (el, i) => {
                 </div>
                 
                 <div class="form-group col-lg-1 col-md-1 col-sm-12">
-                  <button id='btnMap'><i class="fa-sharp fa-solid fa-location-dot fa-fade" style="font-size: xxx-large;"></i></button>
+                  <button id='btnMap' type='button'><i class="fa-sharp fa-solid fa-location-dot" style="font-size: xx-large;"></i></button>
                 </div>
 
                 <div class='form-group col-lg-6 col-lg-6 col-sm-12'>
