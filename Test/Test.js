@@ -1,14 +1,14 @@
-import {FormatResult} from '../../../www/CaminhoEscola.js'
+import { FormatResult } from '/App/main.js'
 
 // A simple test function
 const Test = (description, actual, expected) => {
     if (actual === expected) {
-      console.log(`✔️ Test passed: ${description}`);
+        console.log(`✔️ Test passed: ${description}`);
     } else {
-      console.error(`❌ Test failed: ${description}. Expected ${expected}, but got ${actual}`);
+        console.error(`❌ Test failed: ${description}. Expected ${expected}, but got ${actual}`);
     }
-  }
-  
+}
+
 const distanceCloses = [
     {
         "school": {
@@ -237,76 +237,76 @@ const distanceCloses = [
     }
 ]
 
-const junctions = [    
-    {"id":1,"id_turno":1,"id_tipoensino": 1,"id_modelo":1,"id_ano":6},
-    {"id":2,"id_turno":1,"id_tipoensino": 1,"id_modelo":1,"id_ano":7},
-    {"id":3,"id_turno":1,"id_tipoensino": 1,"id_modelo":1,"id_ano":8},
-    {"id":4,"id_turno":1,"id_tipoensino": 1,"id_modelo":1,"id_ano":9},
+const junctions = [
+    { "id": 1, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 6 },
+    { "id": 2, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 7 },
+    { "id": 3, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 8 },
+    { "id": 4, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 9 },
 
-    {"id":5,"id_turno": 2,"id_tipoensino": 1,"id_modelo":1,"id_ano":6},
-    {"id":6,"id_turno": 2,"id_tipoensino": 1,"id_modelo":1,"id_ano":7},
-    {"id":7,"id_turno": 2,"id_tipoensino": 1,"id_modelo":1,"id_ano":8},
-    {"id":8,"id_turno": 2,"id_tipoensino": 1,"id_modelo":1,"id_ano":9},
+    { "id": 5, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 6 },
+    { "id": 6, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 7 },
+    { "id": 7, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 8 },
+    { "id": 8, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 9 },
 
-    {"id":9,"id_turno": 1,"id_tipoensino": 2,"id_modelo":1,"id_ano":10},
-    {"id":10,"id_turno": 1,"id_tipoensino": 2,"id_modelo":1,"id_ano":11},
-    {"id":11,"id_turno": 1,"id_tipoensino": 2,"id_modelo":1,"id_ano":12},
+    { "id": 9, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
+    { "id": 10, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
+    { "id": 11, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
 
-    {"id":12,"id_turno": 2,"id_tipoensino": 2,"id_modelo":1,"id_ano":10},
-    {"id":13,"id_turno": 2,"id_tipoensino": 2,"id_modelo":1,"id_ano":11},
-    {"id":14,"id_turno": 2,"id_tipoensino": 2,"id_modelo":1,"id_ano":12},
+    { "id": 12, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
+    { "id": 13, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
+    { "id": 14, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
 
-    {"id":15,"id_turno": 3,"id_tipoensino": 2,"id_modelo":1,"id_ano":10},
-    {"id":16,"id_turno": 3,"id_tipoensino": 2,"id_modelo":1,"id_ano":11},
-    {"id":17,"id_turno": 3,"id_tipoensino": 2,"id_modelo":1,"id_ano":12},
+    { "id": 15, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
+    { "id": 16, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
+    { "id": 17, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
 
-    {"id":18,"id_turno":1 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":6},
-    {"id":19,"id_turno":1 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":7},
-    {"id":20,"id_turno":1 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":8},
-    {"id":21,"id_turno":1 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":9},
-    
-    {"id":22,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":10},
-    {"id":23,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":11},
-    {"id":24,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":12},
+    { "id": 18, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 6 },
+    { "id": 19, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 7 },
+    { "id": 20, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 8 },
+    { "id": 21, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 9 },
 
-    {"id":25,"id_turno":4 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":6},
-    {"id":26,"id_turno":4 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":7},
-    {"id":27,"id_turno":4 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":8},
-    {"id":28,"id_turno":4 ,"id_tipoensino": 1,"id_modelo":2,"id_ano":9},
+    { "id": 22, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 10 },
+    { "id": 23, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 11 },
+    { "id": 24, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 12 },
 
-    {"id":29,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":10},
-    {"id":30,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":11},
-    {"id":31,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":2,"id_ano":12},
+    { "id": 25, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 6 },
+    { "id": 26, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 7 },
+    { "id": 27, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 8 },
+    { "id": 28, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 9 },
 
-    {"id":32,"id_turno":3 ,"id_tipoensino": 1,"id_modelo":3,"id_ano":6},
-    {"id":33,"id_turno":3 ,"id_tipoensino": 1,"id_modelo":3,"id_ano":7},
-    {"id":34,"id_turno":3 ,"id_tipoensino": 1,"id_modelo":3,"id_ano":8},
-    {"id":35,"id_turno":3 ,"id_tipoensino": 1,"id_modelo":3,"id_ano":9},
+    { "id": 29, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 10 },
+    { "id": 30, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 11 },
+    { "id": 31, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 12 },
 
-    {"id":36,"id_turno":3 ,"id_tipoensino": 2,"id_modelo":3,"id_ano":10},
-    {"id":37,"id_turno":3 ,"id_tipoensino": 2,"id_modelo":3,"id_ano":11},
-    {"id":38,"id_turno":3 ,"id_tipoensino": 2,"id_modelo":3,"id_ano":12},
-    {"id":54,"id_turno":3 ,"id_tipoensino": 2,"id_modelo":3,"id_ano":20},
+    { "id": 32, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 6 },
+    { "id": 33, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 7 },
+    { "id": 34, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 8 },
+    { "id": 35, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 9 },
 
-    {"id":39,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":10},
-    {"id":40,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":11},
-    {"id":41,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":12},
+    { "id": 36, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 10 },
+    { "id": 37, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 11 },
+    { "id": 38, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 12 },
+    { "id": 54, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 20 },
 
-    {"id":42,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":10},
-    {"id":43,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":11},
-    {"id":44,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":12},
+    { "id": 39, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
+    { "id": 40, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
+    { "id": 41, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
 
-    {"id":45,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":10},
-    {"id":46,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":11},
-    {"id":47,"id_turno":4 ,"id_tipoensino": 2,"id_modelo":4,"id_ano":12},
+    { "id": 42, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
+    { "id": 43, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
+    { "id": 44, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
 
-    {"id":48,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":10},
-    {"id":49,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":11},
-    {"id":50,"id_turno":1 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":12},
+    { "id": 45, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
+    { "id": 46, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
+    { "id": 47, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
 
-    {"id":51,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":10},
-    {"id":52,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":11},
-    {"id":53,"id_turno":2 ,"id_tipoensino": 2,"id_modelo":1,"id_ano":12}
+    { "id": 48, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
+    { "id": 49, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
+    { "id": 50, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
+
+    { "id": 51, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
+    { "id": 52, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
+    { "id": 53, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 }
 
 ]
 
@@ -377,20 +377,21 @@ const modelShifts = [
 ]
 
 const shifts = [
-    {"id":1,"descricao":"MANHÃ", "ordem":1},
-    {"id":2,"descricao":"TARDE", "ordem":2},
-    {"id":3,"descricao":"NOITE", "ordem":3},
-    {"id":4,"descricao":"INTEGRAL", "ordem":4}
-    ]
+    { "id": 1, "descricao": "MANHÃ", "ordem": 1 },
+    { "id": 2, "descricao": "TARDE", "ordem": 2 },
+    { "id": 3, "descricao": "NOITE", "ordem": 3 },
+    { "id": 4, "descricao": "INTEGRAL", "ordem": 4 }
+]
 const models = [
-    {"id": 1,"descricao": "Parcial"},
-    {"id": 2,"descricao": "Integral"},
-    {"id": 3,"descricao": "EJA"},
-    {"id": 4,"descricao": "NOVOTEC"}    
+    { "id": 1, "descricao": "Parcial" },
+    { "id": 2, "descricao": "Integral" },
+    { "id": 3, "descricao": "EJA" },
+    { "id": 4, "descricao": "NOVOTEC" }
 ]
 
-const data = {'junctions':junctions,'modelShifts':modelShifts,'shifts':shifts,'models':models };
+const data = { 'junctions': junctions, 'modelShifts': modelShifts, 'shifts': shifts, 'models': models };
 
-  // Test cases
-  Test("FormatResult: ", FormatResult(distanceCloses, data), null);
-  
+// Test cases
+Test("FormatResult: ", FormatResult(distanceCloses, data), null);
+
+wayVisions, wayNeighbors, data, components)
