@@ -13,13 +13,13 @@ import { Map } from './Component/map.js';
 "use strict";
 Hide("#alert");
 
-function InitMap (){
-    var mapOptions = {
-        zoom: 12,       
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-    const map = new google.maps.Map(mapOptions);
+const InitMap = async () => {
+    const { Map } = await google.maps.importLibrary("maps");
+    const { Geometry } = await google.maps.importLibrary("geometry");
+    const { AdvancedMarkerView } = await google.maps.importLibrary("marker");
 }
+
+InitMap();
 
 const Update = async (data, components) => {
     try {
@@ -172,7 +172,7 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
     let elWays = selector("#ways");
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
-    elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data }));
+    elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data, componentMap: components.map }));
     if (wayNeighbors.length > 0) {
         if (indNeighbors > 0) {
             elWays = elWays.querySelector('#pills-tabContent');
@@ -201,7 +201,7 @@ const CalculateDistance = async (school, locationOrigin, locationDestiny) => {
         travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
         unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)            
     });
-    return { "school": school, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
+    return { "school": school, "locationOrigin": locationOrigin, "locationDestiny": locationDestiny, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
 }
 
 const ProcessSchoolsRay = async (locationOrigin, schoolsRay) => {

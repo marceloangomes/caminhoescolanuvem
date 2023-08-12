@@ -1,5 +1,6 @@
 import { SchoolCloseTemplate } from './Template/schoolClose.js';
 import { GetInformation } from '../Data.js';
+import { selector } from '../Library.js';
 export { SchoolClose };
 
 class SchoolClose extends HTMLElement {
@@ -10,6 +11,7 @@ class SchoolClose extends HTMLElement {
     static Init(el, parameters) {
         const wayVisions = parameters.wayVisions;
         const data = parameters.data;
+        const componentMap = parameters.componentMap;
         wayVisions.forEach((way, i) => {
             el = SchoolCloseTemplate(el, i);
             el.querySelector("#pills-" + i + " #txtDestinoResultado").value = way.school.endereco;
@@ -17,9 +19,10 @@ class SchoolClose extends HTMLElement {
             el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
             el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
             el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
-            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", () => {
-                elWays.appendChild(components.modal.Init({wayVisions: wayVisions }));
-                document.querySelector("#mapModal").style.display = "block";                
+            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (ev) => {                
+                const frm = ev.target.parentElement.parentElement.parentElement;                
+                frm.appendChild(componentMap.Init({ 'locationOrigin': way.locationOrigin, 'locationDestiny': way.locationDestiny }));
+                frm.querySelector('#mapModal').style.display = "block";
             })
             const informations = GetInformation(way.school, data);
 
