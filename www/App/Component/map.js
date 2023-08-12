@@ -25,40 +25,42 @@ class Map extends HTMLElement {
         }
 
         const CalculateRoute = async (start, end) => {
-        var mapOptions = {
-            zoom: 12,
-            center: start,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        const elMap = el.querySelector('#map');
-        const map = await new google.maps.Map(elMap, mapOptions);
+            var mapOptions = {
+                zoom: 12,
+                center: start,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            const elMap = el.querySelector('#map');
+            const map = await new google.maps.Map(elMap, mapOptions);
 
-        var request = {
-            origin: start,
-            destination: end,
-            provideRouteAlternatives: true,
-            travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
-            unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)                                     
-        };
+            var request = {
+                origin: start,
+                destination: end,
+                provideRouteAlternatives: true,
+                travelMode: google.maps.TravelMode.WALKING, // Modo (DRIVING | WALKING | BICYCLING)
+                unitSystem: google.maps.UnitSystem.METRIC // Sistema de medida (METRIC | IMPERIAL)                                     
+            };
 
-        const response = await DirectionsPromise(request);
-        let directionsDisplay = await new google.maps.DirectionsRenderer();
-        await directionsDisplay.setDirections(response);
-        map.setCenter(response.routes[0].legs[0].start_location);
+            const response = await DirectionsPromise(request);
+            let directionsDisplay = await new google.maps.DirectionsRenderer();
+            await directionsDisplay.setDirections(response);
+            map.setCenter(response.routes[0].legs[0].start_location);
         }
 
         let markersArray = [];
 
-        google.maps.Map.prototype.clearMarkers = () => {
-            markersArray.forEach(markerArray => {
-                markerArray.setMap(null);
-            });
-            markersArray.length = 0;
-        };
+        // google.maps.Map.prototype.clearMarkers = () => {
+        //     markersArray.forEach(markerArray => {
+        //         markerArray.setMap(null);
+        //     });
+        //     markersArray.length = 0;
+        // };
 
         CalculateRoute(locationOrigin, locationDestiny);
 
         var mapModal = el.querySelector("#mapModal");
+        mapModal.style.width = window.innerWidth;
+        mapModal.style.height = window.innerHeight;
 
         var span = el.querySelector(".close");
 
