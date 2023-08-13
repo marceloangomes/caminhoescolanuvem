@@ -1,4 +1,4 @@
-import { selector, Hide } from './Library.js'
+import { selector, Hide, Collapse } from './Library.js'
 
 export { AssociateEvents }
 const AssociateEvents = (Update, data, components) => {
@@ -14,4 +14,9 @@ const AssociateEvents = (Update, data, components) => {
         if (e.keyCode === 13)
             selector(".btnCalcular").dispatchEvent(new Event("click"));
     });
+
+    selector('.card-header.collapsible').addEventListener("click", function (e) {
+        Collapse(e.target);
+    })
+
 }

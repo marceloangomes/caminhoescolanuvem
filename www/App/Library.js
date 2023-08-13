@@ -1,4 +1,4 @@
-export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert }
+export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse }
 
 const selector = document.querySelector.bind(document);
 const selectorAll = document.querySelectorAll.bind(document);
@@ -28,12 +28,12 @@ const Fade = (element, duration, clean) => {
     animation();
 };
 
-const Show = (sel, fade = false) => {
+const Show = async (sel, fade = false) => {
     let elements = selectorAll(sel);
     if (elements.length == 0)
         return;
     elements.forEach(element => {
-        element.setAttribute('style', "display:initial;")
+        element.setAttribute('style', "display:flex;")
         if (fade)
             Fade(element, 5000, true);
     });
@@ -66,4 +66,16 @@ const ShowAlert = (m) => {
     // setTimeout(function () {
     //     $("#alert").hide('fade');
     // }, 5000)
+}
+
+const Collapse = (el) => {
+    el.classList.toggle("active");
+    var content = el.nextElementSibling;
+    if (content.style.maxHeight) {
+        content.style.maxHeight = null;
+        content.style.padding = '0rem';
+    } else {
+        content.style.maxHeight = (content.scrollHeight + 40) + "px";
+        content.style.padding = '1.25rem';
+    }
 }

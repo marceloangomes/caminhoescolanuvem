@@ -12,13 +12,13 @@ const Test = (description, actual, expected) => {
 const distanceCloses = [
     {
         "school": {
-            "codigo_cie": 42055,
-            "nome": "EE Brazilia Tondi de Lima",
-            "endereco": "Rua Izabel de Andrade Lima, 733 – Vila São José, Ferrazópolis, São Bernardo do Campo",
-            "contato": "(11)4127-9190 (11)4335-3868",
+            "school_id": 42055,
+            "name": "EE Brazilia Tondi de Lima",
+            "address": "Rua Izabel de Andrade Lima, 733 – Vila São José, Ferrazópolis, São Bernardo do Campo",
+            "contact": "(11)4127-9190 (11)4335-3868",
             "lat": -23.732824,
             "lng": -46.535157,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -37,13 +37,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 9246,
-            "nome": "EE Carlos Pezzolo, Prof.",
-            "endereco": "Rua Tiradentes, 1755 – Vila do Tanque, Santa Terezinha, São Bernardo do Campo",
-            "contato": "(11)4127-4636 (11)4127-1241",
+            "school_id": 9246,
+            "name": "EE Carlos Pezzolo, Prof.",
+            "address": "Rua Tiradentes, 1755 – Vila do Tanque, Santa Terezinha, São Bernardo do Campo",
+            "contact": "(11)4127-4636 (11)4127-1241",
             "lat": -23.724709,
             "lng": -46.534068,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -62,13 +62,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 9167,
-            "nome": "EE Joaquim Moreira Bernardes, Prof.",
-            "endereco": "Avenida Conde de São Lourenço, 65 – Jardim Silvina, Montanhão, São Bernardo do Campo",
-            "contato": "(11)4127-3242 (11)4335-4005",
+            "school_id": 9167,
+            "name": "EE Joaquim Moreira Bernardes, Prof.",
+            "address": "Avenida Conde de São Lourenço, 65 – Jardim Silvina, Montanhão, São Bernardo do Campo",
+            "contact": "(11)4127-3242 (11)4335-4005",
             "lat": -23.738233,
             "lng": -46.531196,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -87,13 +87,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 902020,
-            "nome": "EE Luis dos Santos, Metalúrgico",
-            "endereco": "Rua Primo Bechelli, 133 – Parque Selecta, Montanhão, São Bernardo do Campo",
-            "contato": "(11)4127-7268 (11)4335-4208",
+            "school_id": 902020,
+            "name": "EE Luis dos Santos, Metalúrgico",
+            "address": "Rua Primo Bechelli, 133 – Parque Selecta, Montanhão, São Bernardo do Campo",
+            "contact": "(11)4127-7268 (11)4335-4208",
             "lat": -23.741424,
             "lng": -46.527942,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -112,13 +112,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 9155,
-            "nome": "EE Luiza Collaço Queiroz Fonseca, Profª.",
-            "endereco": "Rua Vicente Moreira da Rocha, 44 – Ferrazópolis, São Bernardo do Campo",
-            "contato": "(11)4127-9122 (11)4335-3787",
+            "school_id": 9155,
+            "name": "EE Luiza Collaço Queiroz Fonseca, Profª.",
+            "address": "Rua Vicente Moreira da Rocha, 44 – Ferrazópolis, São Bernardo do Campo",
+            "contact": "(11)4127-9122 (11)4335-3787",
             "lat": -23.726979,
             "lng": -46.542492,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -137,13 +137,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 38519,
-            "nome": "EE Maria Cristina Schmidt Miranda, Profª.",
-            "endereco": "Rua Abramo Luchesi, 12 – Jardim Leblon, Ferrazópolis, São Bernardo do Campo",
-            "contato": "(11)4127-7544 (11)4335-1847",
+            "school_id": 38519,
+            "name": "EE Maria Cristina Schmidt Miranda, Profª.",
+            "address": "Rua Abramo Luchesi, 12 – Jardim Leblon, Ferrazópolis, São Bernardo do Campo",
+            "contact": "(11)4127-7544 (11)4335-1847",
             "lat": -23.723466,
             "lng": -46.539456,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -162,13 +162,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 924428,
-            "nome": "EE Mauricio de Castro",
-            "endereco": "Rua do Oleoduto, s/n – Vila São Pedro, Montanhão, São Bernardo do Campo",
-            "contato": "(11)4335-9235 (11)4335-4426",
+            "school_id": 924428,
+            "name": "EE Mauricio de Castro",
+            "address": "Rua do Oleoduto, s/n – Vila São Pedro, Montanhão, São Bernardo do Campo",
+            "contact": "(11)4335-9235 (11)4335-4426",
             "lat": -23.717734,
             "lng": -46.526362,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -187,13 +187,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 921543,
-            "nome": "EE Nelson Monteiro Palma, Prof.",
-            "endereco": "Rua Francisco Bonicio, s/n – Jardim Irajá, Santa Terezinha, São Bernardo do Campo",
-            "contato": "(11)4335-3684 (11)4335-3627",
+            "school_id": 921543,
+            "name": "EE Nelson Monteiro Palma, Prof.",
+            "address": "Rua Francisco Bonicio, s/n – Jardim Irajá, Santa Terezinha, São Bernardo do Campo",
+            "contact": "(11)4335-3684 (11)4335-3627",
             "lat": -23.723931,
             "lng": -46.533096,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -212,13 +212,13 @@ const distanceCloses = [
     },
     {
         "school": {
-            "codigo_cie": 42043,
-            "nome": "EE Palmira Grassiotto Ferreira da Silva, Profª.",
-            "endereco": "Rua Almeida Leme, 100 – Parque São Bernardo, São Bernardo do Campo",
-            "contato": "(11)4121-1848 (11)4330-5426",
+            "school_id": 42043,
+            "name": "EE Palmira Grassiotto Ferreira da Silva, Profª.",
+            "address": "Rua Almeida Leme, 100 – Parque São Bernardo, São Bernardo do Campo",
+            "contact": "(11)4121-1848 (11)4330-5426",
             "lat": -23.709007,
             "lng": -46.524704,
-            "vizinha": false,
+            "neighbor": false,
             "de": "SAO BERNARDO DO CAMPO",
             "selected": false,
             "junctionsId": [
@@ -238,155 +238,155 @@ const distanceCloses = [
 ]
 
 const junctions = [
-    { "id": 1, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 6 },
-    { "id": 2, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 7 },
-    { "id": 3, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 8 },
-    { "id": 4, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 9 },
+    { "id": 1, "shift_id": 1, "teachingType_id": 1, "model_id": 1, "year_id": 6 },
+    { "id": 2, "shift_id": 1, "teachingType_id": 1, "model_id": 1, "year_id": 7 },
+    { "id": 3, "shift_id": 1, "teachingType_id": 1, "model_id": 1, "year_id": 8 },
+    { "id": 4, "shift_id": 1, "teachingType_id": 1, "model_id": 1, "year_id": 9 },
 
-    { "id": 5, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 6 },
-    { "id": 6, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 7 },
-    { "id": 7, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 8 },
-    { "id": 8, "id_turno": 2, "id_tipoensino": 1, "id_modelo": 1, "id_ano": 9 },
+    { "id": 5, "shift_id": 2, "teachingType_id": 1, "model_id": 1, "year_id": 6 },
+    { "id": 6, "shift_id": 2, "teachingType_id": 1, "model_id": 1, "year_id": 7 },
+    { "id": 7, "shift_id": 2, "teachingType_id": 1, "model_id": 1, "year_id": 8 },
+    { "id": 8, "shift_id": 2, "teachingType_id": 1, "model_id": 1, "year_id": 9 },
 
-    { "id": 9, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
-    { "id": 10, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
-    { "id": 11, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
+    { "id": 9, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 10 },
+    { "id": 10, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 11 },
+    { "id": 11, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 12 },
 
-    { "id": 12, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
-    { "id": 13, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
-    { "id": 14, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
+    { "id": 12, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 10 },
+    { "id": 13, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 11 },
+    { "id": 14, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 12 },
 
-    { "id": 15, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
-    { "id": 16, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
-    { "id": 17, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
+    { "id": 15, "shift_id": 3, "teachingType_id": 2, "model_id": 1, "year_id": 10 },
+    { "id": 16, "shift_id": 3, "teachingType_id": 2, "model_id": 1, "year_id": 11 },
+    { "id": 17, "shift_id": 3, "teachingType_id": 2, "model_id": 1, "year_id": 12 },
 
-    { "id": 18, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 6 },
-    { "id": 19, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 7 },
-    { "id": 20, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 8 },
-    { "id": 21, "id_turno": 1, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 9 },
+    { "id": 18, "shift_id": 1, "teachingType_id": 1, "model_id": 2, "year_id": 6 },
+    { "id": 19, "shift_id": 1, "teachingType_id": 1, "model_id": 2, "year_id": 7 },
+    { "id": 20, "shift_id": 1, "teachingType_id": 1, "model_id": 2, "year_id": 8 },
+    { "id": 21, "shift_id": 1, "teachingType_id": 1, "model_id": 2, "year_id": 9 },
 
-    { "id": 22, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 10 },
-    { "id": 23, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 11 },
-    { "id": 24, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 12 },
+    { "id": 22, "shift_id": 2, "teachingType_id": 2, "model_id": 2, "year_id": 10 },
+    { "id": 23, "shift_id": 2, "teachingType_id": 2, "model_id": 2, "year_id": 11 },
+    { "id": 24, "shift_id": 2, "teachingType_id": 2, "model_id": 2, "year_id": 12 },
 
-    { "id": 25, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 6 },
-    { "id": 26, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 7 },
-    { "id": 27, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 8 },
-    { "id": 28, "id_turno": 4, "id_tipoensino": 1, "id_modelo": 2, "id_ano": 9 },
+    { "id": 25, "shift_id": 4, "teachingType_id": 1, "model_id": 2, "year_id": 6 },
+    { "id": 26, "shift_id": 4, "teachingType_id": 1, "model_id": 2, "year_id": 7 },
+    { "id": 27, "shift_id": 4, "teachingType_id": 1, "model_id": 2, "year_id": 8 },
+    { "id": 28, "shift_id": 4, "teachingType_id": 1, "model_id": 2, "year_id": 9 },
 
-    { "id": 29, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 10 },
-    { "id": 30, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 11 },
-    { "id": 31, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 2, "id_ano": 12 },
+    { "id": 29, "shift_id": 4, "teachingType_id": 2, "model_id": 2, "year_id": 10 },
+    { "id": 30, "shift_id": 4, "teachingType_id": 2, "model_id": 2, "year_id": 11 },
+    { "id": 31, "shift_id": 4, "teachingType_id": 2, "model_id": 2, "year_id": 12 },
 
-    { "id": 32, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 6 },
-    { "id": 33, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 7 },
-    { "id": 34, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 8 },
-    { "id": 35, "id_turno": 3, "id_tipoensino": 1, "id_modelo": 3, "id_ano": 9 },
+    { "id": 32, "shift_id": 3, "teachingType_id": 1, "model_id": 3, "year_id": 6 },
+    { "id": 33, "shift_id": 3, "teachingType_id": 1, "model_id": 3, "year_id": 7 },
+    { "id": 34, "shift_id": 3, "teachingType_id": 1, "model_id": 3, "year_id": 8 },
+    { "id": 35, "shift_id": 3, "teachingType_id": 1, "model_id": 3, "year_id": 9 },
 
-    { "id": 36, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 10 },
-    { "id": 37, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 11 },
-    { "id": 38, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 12 },
-    { "id": 54, "id_turno": 3, "id_tipoensino": 2, "id_modelo": 3, "id_ano": 20 },
+    { "id": 36, "shift_id": 3, "teachingType_id": 2, "model_id": 3, "year_id": 10 },
+    { "id": 37, "shift_id": 3, "teachingType_id": 2, "model_id": 3, "year_id": 11 },
+    { "id": 38, "shift_id": 3, "teachingType_id": 2, "model_id": 3, "year_id": 12 },
+    { "id": 54, "shift_id": 3, "teachingType_id": 2, "model_id": 3, "year_id": 20 },
 
-    { "id": 39, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
-    { "id": 40, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
-    { "id": 41, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
+    { "id": 39, "shift_id": 1, "teachingType_id": 2, "model_id": 4, "year_id": 10 },
+    { "id": 40, "shift_id": 1, "teachingType_id": 2, "model_id": 4, "year_id": 11 },
+    { "id": 41, "shift_id": 1, "teachingType_id": 2, "model_id": 4, "year_id": 12 },
 
-    { "id": 42, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
-    { "id": 43, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
-    { "id": 44, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
+    { "id": 42, "shift_id": 2, "teachingType_id": 2, "model_id": 4, "year_id": 10 },
+    { "id": 43, "shift_id": 2, "teachingType_id": 2, "model_id": 4, "year_id": 11 },
+    { "id": 44, "shift_id": 2, "teachingType_id": 2, "model_id": 4, "year_id": 12 },
 
-    { "id": 45, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 10 },
-    { "id": 46, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 11 },
-    { "id": 47, "id_turno": 4, "id_tipoensino": 2, "id_modelo": 4, "id_ano": 12 },
+    { "id": 45, "shift_id": 4, "teachingType_id": 2, "model_id": 4, "year_id": 10 },
+    { "id": 46, "shift_id": 4, "teachingType_id": 2, "model_id": 4, "year_id": 11 },
+    { "id": 47, "shift_id": 4, "teachingType_id": 2, "model_id": 4, "year_id": 12 },
 
-    { "id": 48, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
-    { "id": 49, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
-    { "id": 50, "id_turno": 1, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 },
+    { "id": 48, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 10 },
+    { "id": 49, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 11 },
+    { "id": 50, "shift_id": 1, "teachingType_id": 2, "model_id": 1, "year_id": 12 },
 
-    { "id": 51, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 10 },
-    { "id": 52, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 11 },
-    { "id": 53, "id_turno": 2, "id_tipoensino": 2, "id_modelo": 1, "id_ano": 12 }
+    { "id": 51, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 10 },
+    { "id": 52, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 11 },
+    { "id": 53, "shift_id": 2, "teachingType_id": 2, "model_id": 1, "year_id": 12 }
 
 ]
 
 const modelShifts = [
     {
         "id": 1,
-        "id_turno": 1,
-        "id_modelo": 1,
-        "horario": {
-            "inicio": "07:00:00",
-            "fim": "12:35:00"
+        "shift_id": 1,
+        "model_id": 1,
+        "classSchedule": {
+            "begin": "07:00:00",
+            "end": "12:35:00"
         }
     },
     {
         "id": 2,
-        "id_turno": 2,
-        "id_modelo": 1,
-        "horario": {
-            "inicio": "13:00:00",
-            "fim": "18:35:00"
+        "shift_id": 2,
+        "model_id": 1,
+        "classSchedule": {
+            "begin": "13:00:00",
+            "end": "18:35:00"
         }
     },
     {
         "id": 3,
-        "id_turno": 3,
-        "id_modelo": 1,
-        "horario": {
-            "inicio": "19:00:00",
-            "fim": "23:00:00"
+        "shift_id": 3,
+        "model_id": 1,
+        "classSchedule": {
+            "begin": "19:00:00",
+            "end": "23:00:00"
         }
     },
     {
         "id": 4,
-        "id_turno": 4,
-        "id_modelo": 2,
-        "horario": {
-            "inicio": "07:00:00",
-            "fim": "16:00:00"
+        "shift_id": 4,
+        "model_id": 2,
+        "classSchedule": {
+            "begin": "07:00:00",
+            "end": "16:00:00"
         }
     },
     {
         "id": 5,
-        "id_turno": 1,
-        "id_modelo": 2,
-        "horario": {
-            "inicio": "07:00:00",
-            "fim": "14:00:00"
+        "shift_id": 1,
+        "model_id": 2,
+        "classSchedule": {
+            "begin": "07:00:00",
+            "end": "14:00:00"
         }
     },
     {
         "id": 6,
-        "id_turno": 2,
-        "id_modelo": 2,
-        "horario": {
-            "inicio": "14:15:00",
-            "fim": "21:15:00"
+        "shift_id": 2,
+        "model_id": 2,
+        "classSchedule": {
+            "begin": "14:15:00",
+            "end": "21:15:00"
         }
     },
     {
         "id": 7,
-        "id_turno": 3,
-        "id_modelo": 3,
-        "horario": {
-            "inicio": "19:00:00",
-            "fim": "23:00:00"
+        "shift_id": 3,
+        "model_id": 3,
+        "classSchedule": {
+            "begin": "19:00:00",
+            "end": "23:00:00"
         }
     }
 ]
 
 const shifts = [
-    { "id": 1, "descricao": "MANHÃ", "ordem": 1 },
-    { "id": 2, "descricao": "TARDE", "ordem": 2 },
-    { "id": 3, "descricao": "NOITE", "ordem": 3 },
-    { "id": 4, "descricao": "INTEGRAL", "ordem": 4 }
+    { "id": 1, "description": "MANHÃ", "order": 1 },
+    { "id": 2, "description": "TARDE", "order": 2 },
+    { "id": 3, "description": "NOITE", "order": 3 },
+    { "id": 4, "description": "INTEGRAL", "order": 4 }
 ]
 const models = [
-    { "id": 1, "descricao": "Parcial" },
-    { "id": 2, "descricao": "Integral" },
-    { "id": 3, "descricao": "EJA" },
-    { "id": 4, "descricao": "NOVOTEC" }
+    { "id": 1, "description": "Parcial" },
+    { "id": 2, "description": "Integral" },
+    { "id": 3, "description": "EJA" },
+    { "id": 4, "description": "NOVOTEC" }
 ]
 
 const data = { 'junctions': junctions, 'modelShifts': modelShifts, 'shifts': shifts, 'models': models };

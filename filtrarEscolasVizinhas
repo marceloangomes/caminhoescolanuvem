@@ -4,7 +4,7 @@ const EscolasVizinhas = (escola) => {
         let destino = new google.maps.LatLng(escola.lat, escola.lng);
         let d = google.maps.geometry.spherical.computeDistanceBetween(origem, destino);
         if(d && d <= 16000)
-            return escola.codigo_cie;
+            return escola.school_id;
     }
     return;
 };

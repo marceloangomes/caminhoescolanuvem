@@ -43,6 +43,7 @@ class Map extends HTMLElement {
 
             const response = await DirectionsPromise(request);
             let directionsDisplay = await new google.maps.DirectionsRenderer();
+            directionsDisplay.setMap(map);
             await directionsDisplay.setDirections(response);
             map.setCenter(response.routes[0].legs[0].start_location);
         }

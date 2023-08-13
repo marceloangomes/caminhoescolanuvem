@@ -23,7 +23,7 @@ class SchoolHead extends HTMLElement {
             elChild.style.display = 'initial';
         }
         wayVisions.forEach((way, i) => {
-            Fill(el, i, way.school.nome);
+            Fill(el, i, way.school.name);
         });
         if (indNeighbors > -1)
             Fill(el, indNeighbors, 'Outras Diretorias de Ensino');

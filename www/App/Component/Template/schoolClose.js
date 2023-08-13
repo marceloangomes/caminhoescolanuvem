@@ -13,7 +13,7 @@ const SchoolCloseTemplate = (el, i) => {
             <h5 class='card-title' style='margin-left:10px'>Destino</h5>
             <div class='card-body'>
               <form class='form-inline'>
-                <div class='form-group col-lg-5 col-md-5 col-sm-12'>
+                <div class='form-group col-lg-4 col-md-4 col-sm-12'>
                   <label for='txtDestinoEscola' style='margin: 0px 10px 0px 10px'>Escola</label>
                   <input name='escolaDestino' readonly='readonly' type='text' id='txtDestinoEscola'
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' value='' />
@@ -25,7 +25,7 @@ const SchoolCloseTemplate = (el, i) => {
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' value='' />
                 </div>
 
-                <div class='form-group col-lg-1 col-md-1 col-sm-12'>
+                <div class='form-group col-lg-2 col-md-2 col-sm-12'>
                   <label for='txtDistancia' style='margin: 0px 10px 0px 10px'>Dist&acirc;ncia</label>
                   <input name='distancia' readonly='readonly' type='text' id='txtDistancia' value=''
                     class='form-control form-control-sm' style='width:98%;margin:0px 10px 5px 10px;' />

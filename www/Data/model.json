@@ -1,6 +1,18 @@
 [
-    {"id": 1,"descricao": "Parcial"},
-    {"id": 2,"descricao": "Integral"},
-    {"id": 3,"descricao": "EJA"},
-    {"id": 4,"descricao": "NOVOTEC"}    
+    {
+        "id": 1,
+        "description": "Parcial"
+    },
+    {
+        "id": 2,
+        "description": "Integral"
+    },
+    {
+        "id": 3,
+        "description": "EJA"
+    },
+    {
+        "id": 4,
+        "description": "NOVOTEC"
+    }
 ]

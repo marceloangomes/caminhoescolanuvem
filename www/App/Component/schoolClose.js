@@ -1,6 +1,4 @@
 import { SchoolCloseTemplate } from './Template/schoolClose.js';
-import { GetInformation } from '../Data.js';
-import { selector } from '../Library.js';
 export { SchoolClose };
 
 class SchoolClose extends HTMLElement {
@@ -14,17 +12,17 @@ class SchoolClose extends HTMLElement {
         const componentMap = parameters.componentMap;
         wayVisions.forEach((way, i) => {
             el = SchoolCloseTemplate(el, i);
-            el.querySelector("#pills-" + i + " #txtDestinoResultado").value = way.school.endereco;
+            el.querySelector("#pills-" + i + " #txtDestinoResultado").value = way.school.address;
             el.querySelector("#pills-" + i + " #txtDistancia").value = way.distanceLong;
-            el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.nome;
-            el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contato;
+            el.querySelector("#pills-" + i + " #txtDestinoEscola").value = way.school.name;
+            el.querySelector("#pills-" + i + " #txtDestinoContato").value = way.school.contact;
             el.querySelector("#pills-" + i + " #txtTempo").value = way.time;
-            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (ev) => {                
-                const frm = ev.target.parentElement.parentElement.parentElement;                
+            el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (ev) => {
+                const frm = ev.target.parentElement.parentElement.parentElement;
                 frm.appendChild(componentMap.Init({ 'locationOrigin': way.locationOrigin, 'locationDestiny': way.locationDestiny }));
                 frm.querySelector('#mapModal').style.display = "block";
             })
-            const informations = GetInformation(way.school, data);
+            const informations = data.GetInformation(way.school, data);
 
             if (informations)
                 informations.forEach(information => {

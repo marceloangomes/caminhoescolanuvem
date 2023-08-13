@@ -1,4 +1,4 @@
-import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert } from './Library.js';
+import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse } from './Library.js';
 import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
@@ -8,7 +8,7 @@ import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
 import { FactoryComponent } from './Component/factoryComponent.js';
 import { Map } from './Component/map.js';
-//export { FormatResult };
+export { FormatResult };
 
 "use strict";
 Hide("#alert");
@@ -27,27 +27,31 @@ const Update = async (data, components) => {
         ClearResult(selector("#ways"));
 
         if (!selector("#txtOrigem").value) {
-            ShowAlert(data.message.enderecoVazio);
+            ShowAlert(data.message.emptyAddress);
             return;
         }
 
         let year = selector('#selAno').value;
         if (year == 0) {
-            ShowAlert(data.message.selecioneAno)
+            ShowAlert(data.message.selectYear)
             return;
         }
-        Show("#aguarde");
+        await Show("#aguarde");
         const filter = CreateFilter(data, year);
         const schoolSelected = SchoolSelected(data.schools, selector('#selEscola').value);
         const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
 
         //POC
         filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
+        //filter.addressOrigin = 'R. Me. de Deus, 263 - Mooca, São Paulo - SP, 03119-000'
+        //filter.addressOrigin = 'Av. Dona Ruyce Ferraz Alvim, 631 - Serraria, Diadema - SP, 09961-540';
+        //filter.addressOrigin = 'Av. Fundibem, 1010 - Casa Grande, Diadema - SP, 09961-390';
+        //filter.addressOrigin = 'Av. Humberto de Alencar Castelo Branco, 2563 - Chácara Dublin Paulista, São Bernardo do Campo - SP, 09851-320';
 
         const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
         const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered, data.message);
         if (!schoolsRay)
-            throw (new Error(data.message.escolaNaoEncontrada));
+            throw (new Error(data.message.noFindedSchool));
         const wayCloses = await ProcessSchoolsRay(locationOrigin, schoolsRay);
         if (!wayCloses)
             throw (new Error(data.message.noLocation));
@@ -72,7 +76,7 @@ const SchoolSelected = (schools, school_id) => {
         schoolFound.selected = false;
 
     if (school_id == 0) {
-        const schoolFound = schools.find(school => school.codigo_cie == school_id);
+        const schoolFound = schools.find(school => school.school_id == school_id);
         if (schoolFound) {
             schoolFound.selected = true;
             schoolFound.junctionsId = [];
@@ -88,20 +92,20 @@ const ApplyFilter = (filter, data, schoolSelected) => {
     const junctionsId = [];
     filter.parameters.forEach(parameter => {
         data.junctions.filter(junction => {
-            return junction.id_modelo == parameter.model_id && junction.id_turno == parameter.shift_id && junction.id_ano == parameter.year_id;
+            return junction.model_id == parameter.model_id && junction.shift_id == parameter.shift_id && junction.year_id == parameter.year_id;
         }).forEach(junction => {
             junctionsId.push(junction.id);
         })
     })
 
     data.schools.forEach(school => {
-        if (school.vizinha)
+        if (school.neighbor)
             schoolsFiltered.push(school);
         else {
-            const schoolJunction = data.schoolJunctions.find(schoolJunction => school.codigo_cie == schoolJunction.codigo_cie)
-            const junctionsIdFound = junctionsId.find(id => schoolJunction.juncao.indexOf(id) > -1);
+            const schoolJunction = data.schoolJunctions.find(schoolJunction => school.school_id == schoolJunction.school_id)
+            const junctionsIdFound = junctionsId.find(id => schoolJunction.junction.indexOf(id) > -1);
             if (junctionsIdFound) {
-                const schoolFound = schoolsFiltered.find(schoolFiltered => school.codigo_cie == schoolFiltered.codigo_cie)
+                const schoolFound = schoolsFiltered.find(schoolFiltered => school.school_id == schoolFiltered.school_id)
                 if (schoolFound) {
                     if (!schoolFound.junctionsId)
                         schoolFound.junctionsId = [];
@@ -135,8 +139,14 @@ const FilterSchoolsByRay = (locationOrigin, schools) => {
         distanceRay -= 10;
     } while (schoolsRay.length > 7 || distanceRay === 10);
 
+    if (schoolsRay.length < 5) {
+        do {
+            schoolsRay = schools.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
+            distanceRay += 10;
+        } while (schoolsRay.length < 5 || distanceRay === 15000);
+    };
     return schoolsRay;
-};
+}
 
 const ClearResult = async (ways) => {
     while (ways.firstChild) {
@@ -155,7 +165,7 @@ const FilterWays = (wayCloses) => {
             return a.distance - b.distance
     });
     const schoolSelected = wayCloses.find(way => { return way.school.selected == true })
-    const wayVisions = wayCloses.filter(way => { return !way.school.vizinha })
+    const wayVisions = wayCloses.filter(way => { return !way.school.neighbor })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
     wayVisions.map(way =>
         way.addressDestiny += ' escola'
@@ -164,21 +174,26 @@ const FilterWays = (wayCloses) => {
 }
 
 const FilterNeighbors = (wayCloses) => {
-    return wayCloses.filter(way => { return way.school.vizinha == true });
+    return wayCloses.filter(way => { return way.school.neighbor == true });
 }
 
 const FormatResult = (wayVisions, wayNeighbors, data, components) => {
-    selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
+    if (wayVisions.length > 0)
+        selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
+    else
+        selector("#txtOrigemResultado").value = wayNeighbors[0].addressOrigin;
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
     let elWays = selector("#ways");
+    selector('#response').style.display = 'block';
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
-    elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data, componentMap: components.map }));
-    if (wayNeighbors.length > 0) {
-        if (indNeighbors > 0) {
+    if (wayVisions.length > 0)
+        elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data, componentMap: components.map }));
+    if (indNeighbors > -1) {
+        if (wayVisions.length > 0)
             elWays = elWays.querySelector('#pills-tabContent');
-        }
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
+    Collapse(selector('.card-header.collapsible'));
 }
 
 const GetDistanceMatrixPromise = (options) => {
@@ -228,7 +243,7 @@ const GeocodePromisse = (options) => {
             if (status === google.maps.GeocoderStatus.OK)
                 resolve(response);
             else if (status === google.maps.GeocoderStatus.ZERO_RESULTS)
-                reject(new Error(data.message.enderecoAlunoNaoEncontrado));
+                reject(new Error(data.message.noFindedAddress));
             else
                 reject(new Error('Não foi possível geolocalizar, tente novamente.'));
         });
@@ -253,9 +268,10 @@ const CreateComponents = () => {
 (() => {
     window.addEventListener('load', async () => {
         Show("#aguarde");
-        const data = await GetData();
+        const data = await GetData(localStorage);
         Populate(data);
         AssociateEvents(Update, data, CreateComponents());
+        Collapse(selector('.card-header.collapsible'));
         Hide("#aguarde");
     });
 })();

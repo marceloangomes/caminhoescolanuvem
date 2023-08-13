@@ -1,6 +1,22 @@
 [
-{"id":1,"descricao":"MANHÃ", "ordem":1},
-{"id":2,"descricao":"TARDE", "ordem":2},
-{"id":3,"descricao":"NOITE", "ordem":3},
-{"id":4,"descricao":"INTEGRAL", "ordem":4}
+    {
+        "id": 1,
+        "description": "MANHÃ",
+        "order": 1
+    },
+    {
+        "id": 2,
+        "description": "TARDE",
+        "order": 2
+    },
+    {
+        "id": 3,
+        "description": "NOITE",
+        "order": 3
+    },
+    {
+        "id": 4,
+        "description": "INTEGRAL",
+        "order": 4
+    }
 ]

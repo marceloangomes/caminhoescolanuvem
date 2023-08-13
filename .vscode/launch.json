@@ -4,7 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
         {
             "name": "Attach to Chrome",
             "port": 9222,
@@ -18,6 +17,13 @@
             "name": "Launch Chrome against localhost",
             "url": "http://localhost:80",
             "webRoot": "./www/index.html"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost test",
+            "url": "http://localhost:90",
+            "webRoot": "./Test/Test.js"
         }
     ]
 }
