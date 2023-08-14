@@ -31,14 +31,14 @@ const Update = async (data, components) => {
             return;
         }
 
-        let year = selector('#selAno').value;
+        let year = parseInt(selector('#selAno').value);
         if (year == 0) {
             ShowAlert(data.message.selectYear)
             return;
         }
         await Show("#aguarde");
         const filter = CreateFilter(data, year);
-        const schoolSelected = SchoolSelected(data.schools, selector('#selEscola').value);
+        const schoolSelected = SchoolSelected(data, parseInt(selector('#selEscola').value));
         const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
 
         //POC
@@ -64,20 +64,19 @@ const Update = async (data, components) => {
     }
 }
 
-const SchoolSelected = (schools, school_id) => {
-    let schoolFound = schools.find(school => school.selected);
+const SchoolSelected = (data, school_id) => {
+    let schoolFound = data.schools.find(school => school.selected);
     if (schoolFound)
-        schoolFound.selected = false;    
-    if (school_id) {
-        school_id = parseInt(school_id);
-        schoolFound = schools.find(school => school.school_id == school_id);
-        if (schoolFound) {
-            schoolFound.selected = true;
-            schoolFound.junctionsId = [];
-            return schoolFound;
-        }        
-    }    
-    throw Error(message.noFindedSchool);
+        schoolFound.selected = false;
+    if (school_id === 0)
+        return false;
+    schoolFound = data.schools.find(school => school.school_id == school_id);
+    if (schoolFound) {
+        schoolFound.selected = true;
+        schoolFound.junctionsId = [];
+        return schoolFound;
+    }
+    throw Error(data.message.noFindedSchool);
 }
 
 const ApplyFilter = (filter, data, schoolSelected) => {
@@ -132,13 +131,15 @@ const FilterSchoolsByRay = (locationOrigin, schools) => {
     do {
         schoolsRay = schoolsRay.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
         distanceRay -= 10;
-    } while (schoolsRay.length > 7 || distanceRay === 10);
+    } while ((schoolsRay.filter(schoolRay => { return !schoolRay.neighbor && !schoolRay.selected }).length > 7) || distanceRay === 10);
 
-    if (schoolsRay.length < 5) {
+    const counterSchools = schoolsRay.filter(schoolRay => { return !schoolRay.neighbor && !schoolRay.selected }).length
+    if (counterSchools < 3) {
+        distanceRay += 10;
         do {
-            schoolsRay = schools.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
             distanceRay += 10;
-        } while (schoolsRay.length < 5 || distanceRay === 15000);
+            schoolsRay = schools.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
+        } while (schoolsRay.filter(schoolRay => { return !schoolRay.neighbor && !schoolRay.selected }).length < 3 || distanceRay === 15000);
     };
     return schoolsRay;
 }
@@ -159,7 +160,7 @@ const FilterWays = (wayCloses) => {
         else
             return a.distance - b.distance
     });
-    const schoolSelected = wayCloses.find(way => { return way.school.selected == true })
+    const schoolSelected = wayCloses.find(way => way.school.selected);
     const wayVisions = wayCloses.filter(way => { return !way.school.neighbor })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
     wayVisions.map(way =>
@@ -169,7 +170,7 @@ const FilterWays = (wayCloses) => {
 }
 
 const FilterNeighbors = (wayCloses) => {
-    return wayCloses.filter(way => { return way.school.neighbor == true });
+    return wayCloses.filter(way => { return way.school.neighbor === true });
 }
 
 const FormatResult = (wayVisions, wayNeighbors, data, components) => {
@@ -216,19 +217,19 @@ const CalculateDistance = async (school, locationOrigin, locationDestiny) => {
 
 const ProcessSchoolsRay = async (locationOrigin, schoolsRay) => {
     let i = 0;
-    let distances = [];
+    let ways = [];
     await new Promise((resolve) => {
         AsyncForEach(schoolsRay, async (school) => {
             i++;
             if (i % 4 === 0)
                 await Sleep(1010);
             const locationDestiny = new google.maps.LatLng(school.lat, school.lng);
-            distances.push(await CalculateDistance(school, locationOrigin, locationDestiny));
+            ways.push(await CalculateDistance(school, locationOrigin, locationDestiny));
             if (i === schoolsRay.length)
                 resolve();
         });
     });
-    return distances;
+    return ways;
 }
 
 const GeocodePromisse = (options) => {

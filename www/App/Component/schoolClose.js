@@ -30,8 +30,7 @@ class SchoolClose extends HTMLElement {
                         el.querySelector("#pills-" + i + " #txtInformacoes").value += information;
                     }
                 })
-            if (i == 0) {
-                SchoolClose.FormatSelected(way, i);
+            if (i == 0) {                
                 el.querySelector("#pills-" + i).classList.add("active");
                 el.querySelector("#pills-" + i).classList.add("show");
             }
@@ -39,22 +38,5 @@ class SchoolClose extends HTMLElement {
         return el;
     }
 
-    static FormatSelected = (way, i) => {
-        if (way.school.selected) {
-            let tab = el.querySelector("#pills-" + i + "-tab");
-            const otherWays = waysVision.filter(wayVision => { return wayVision.school.selected == false });
-            const longer = otherWays.filter((otherWay) => { return way.distance > otherWay.distance }).length > 0;
-            tab.textContent += "  ";
-            let el = document.createElement("i");
-            tab.appendChild(el);
-            el.classList.add("fa-regular");
-            el.classList.add("fa-shake");
-            if (longer) {
-                el.classList.add("fa-thumbs-down");
-            }
-            else {
-                el.classList.add("fa-thumbs-up");
-            }
-        }
-    }
+   
 }
