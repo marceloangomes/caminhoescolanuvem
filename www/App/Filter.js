@@ -18,7 +18,7 @@ const CreateFilter = (data, year) => {
     if (models.length == 0) {
         selector("#chkModeloParcial").checked = true;
         selector("#chkModeloIntegral").checked = true
-        models = data.models.filter(model => { return model.id in [1, 2] })
+        models = data.models.filter(model => { return model.id === 1 || model.id === 2 })
     }
 
     let addressOrigin = selector("#txtOrigem").value;
