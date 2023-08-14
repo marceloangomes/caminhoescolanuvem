@@ -2,8 +2,8 @@ export { CreateFilter }
 import { selector, selectorAll } from './Library.js'
 
 class Filter {
-    constructor(adressOrigin = "", parameters = []) {
-        this.adressOrigin = adressOrigin;
+    constructor(addressOrigin = "", parameters = []) {
+        this.addressOrigin = addressOrigin;
         this.parameters = parameters;
     }
 };

@@ -56,13 +56,7 @@ const Update = async (data, components) => {
         if (!wayCloses)
             throw (new Error(data.message.noLocation));
 
-        FormatResult(FilterWays(wayCloses), FilterNeighbors(wayCloses),
-            {
-                'junctions': data.junctions,
-                'modelShifts': data.modelShifts,
-                'shifts': data.shifts,
-                'models': data.models
-            }, components);
+        FormatResult(FilterWays(wayCloses), FilterNeighbors(wayCloses), data, components);
         // } catch (error) {
         //     ShowAlert(error);
     } finally {
@@ -71,18 +65,19 @@ const Update = async (data, components) => {
 }
 
 const SchoolSelected = (schools, school_id) => {
-    const schoolFound = schools.find(school => school.selected);
+    let schoolFound = schools.find(school => school.selected);
     if (schoolFound)
-        schoolFound.selected = false;
-
-    if (school_id == 0) {
-        const schoolFound = schools.find(school => school.school_id == school_id);
+        schoolFound.selected = false;    
+    if (school_id) {
+        school_id = parseInt(school_id);
+        schoolFound = schools.find(school => school.school_id == school_id);
         if (schoolFound) {
             schoolFound.selected = true;
             schoolFound.junctionsId = [];
-        }
-    }
-    return schoolFound;;
+            return schoolFound;
+        }        
+    }    
+    throw Error(message.noFindedSchool);
 }
 
 const ApplyFilter = (filter, data, schoolSelected) => {

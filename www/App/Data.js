@@ -31,7 +31,7 @@ class Data {
             escolaVizinhas.forEach(schoolNeighbor => {
                 const school = {
                     "de": schoolNeighbor.DE,
-                    "school_id": schoolNeighbor.school_id,
+                    "school_id": schoolNeighbor.codigo_cie,
                     "name": schoolNeighbor.nome,
                     "address": schoolNeighbor.COMPLEND + " " + schoolNeighbor.ENDESC + ", " + schoolNeighbor.NUMESC + " - " + schoolNeighbor.BAIESC,
                     "contact": "",
@@ -120,15 +120,15 @@ class Data {
         return this;
     }
 
-    async GetInformation(school) {
+    GetInformation(school) {
         const informations = school.junctionsId.map(juncaoId => {
             const junction = this.junctions.filter(junction => { return junction.id == juncaoId })[0];
-            const modelShift = this.modelShifts.filter(modelShift => { return modelShift.id_turno == junction.id_turno && modelShift.id_modelo == junction.id_modelo })[0];
+            const modelShift = this.modelShifts.filter(modelShift => { return modelShift.shift_id == junction.shift_id && modelShift.model_id == junction.model_id })[0];
             if (!modelShift)
                 return '';
-            const shift = this.shifts.filter(shift => { return shift.id == junction.id_turno })[0];
-            const model = this.models.filter(model => { return model.id == junction.id_modelo })[0];
-            return "   Modelo: " + model.descricao + "   período: " + shift.descricao + "   horário de: " + modelShift.horario.inicio.substring(0, 5) + "   até: " + modelShift.horario.fim.substring(0, 5) + "\n";
+            const shift = this.shifts.filter(shift => { return shift.id == junction.shift_id })[0];
+            const model = this.models.filter(model => { return model.id == junction.model_id })[0];
+            return `   Modelo: ${model.description}   período: ${shift.description}   horário de: ${modelShift.classSchedule.begin.substring(0, 5)}  até: ${modelShift.classSchedule.end.substring(0, 5)}\n`;
         });
         return informations;
     }

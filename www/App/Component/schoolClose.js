@@ -22,7 +22,7 @@ class SchoolClose extends HTMLElement {
                 frm.appendChild(componentMap.Init({ 'locationOrigin': way.locationOrigin, 'locationDestiny': way.locationDestiny }));
                 frm.querySelector('#mapModal').style.display = "block";
             })
-            const informations = data.GetInformation(way.school, data);
+            const informations = data.GetInformation(way.school);
 
             if (informations)
                 informations.forEach(information => {
