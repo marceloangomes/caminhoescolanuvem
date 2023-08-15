@@ -2,7 +2,7 @@ import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Coll
 import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
-import { CreateFilter } from './Filter.js';
+import { Filter } from './Filter.js';
 import { SchoolHead } from './Component/schoolHead.js'
 import { SchoolClose } from './Component/schoolClose.js';
 import { SchoolNeighbor } from './Component/schoolNeighbor.js';
@@ -37,25 +37,29 @@ const Update = async (data, components) => {
             return;
         }
         await Show("#aguarde");
-        const filter = CreateFilter(data, year);
+        const filter = new Filter();
+        filter.Init(data, year);
         const schoolSelected = SchoolSelected(data, parseInt(selector('#selEscola').value));
         const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
 
         //POC
-        filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
+        filter.addressOrigin ='lirio dos vales, 106, São Bernardo do Campo, SP'
+        //filter.addressOrigin = "R Simão da mata, 299, São Bernardo do Campo, SP"
+        //filter.addressOrigin = "Av Antonio Toneto, 105, São Bernardo do Campo, SP"
+        //filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
         //filter.addressOrigin = 'R. Me. de Deus, 263 - Mooca, São Paulo - SP, 03119-000'
         //filter.addressOrigin = 'Av. Dona Ruyce Ferraz Alvim, 631 - Serraria, Diadema - SP, 09961-540';
         //filter.addressOrigin = 'Av. Fundibem, 1010 - Casa Grande, Diadema - SP, 09961-390';
         //filter.addressOrigin = 'Av. Humberto de Alencar Castelo Branco, 2563 - Chácara Dublin Paulista, São Bernardo do Campo - SP, 09851-320';
 
-        const locationOrigin = await AddressOriginToLocation(filter.addressOrigin);
+        const locationOrigin = await AddressOriginToLocation(filter.addressOrigin, data.message);
         const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered, data.message);
         if (!schoolsRay)
             throw (new Error(data.message.noFindedSchool));
-        const wayCloses = await ProcessSchoolsRay(locationOrigin, schoolsRay);
+        let wayCloses = await ProcessSchoolsRay(locationOrigin, schoolsRay);
         if (!wayCloses)
             throw (new Error(data.message.noLocation));
-
+        wayCloses = SortWays(wayCloses);
         FormatResult(FilterWays(wayCloses), FilterNeighbors(wayCloses), data, components);
         // } catch (error) {
         //     ShowAlert(error);
@@ -125,6 +129,15 @@ const ValidationSchoolsByRay = (school, locationOrigin, distanceRay) => {
     return false;
 };
 
+const DistanceSchoolsByRay = (school, locationOrigin) => {
+    if (school.lat && school.lng) {
+        let locationDestiny = new google.maps.LatLng(school.lat, school.lng);
+        let distance = google.maps.geometry.spherical.computeDistanceBetween(locationOrigin, locationDestiny);
+        return distance;
+    }
+    return false;
+};
+
 const FilterSchoolsByRay = (locationOrigin, schools) => {
     let schoolsRay = schools;
     let distanceRay = 2100;
@@ -141,6 +154,17 @@ const FilterSchoolsByRay = (locationOrigin, schools) => {
             schoolsRay = schools.filter(school => school.selected || ValidationSchoolsByRay(school, locationOrigin, distanceRay));
         } while (schoolsRay.filter(schoolRay => { return !schoolRay.neighbor && !schoolRay.selected }).length < 3 || distanceRay === 15000);
     };
+
+    schoolsRay.map(school => {
+        school.distanceRay = DistanceSchoolsByRay(school, locationOrigin);
+    });
+    let schoolsNeighbor = schoolsRay.filter(school => { return school.neighbor });
+    schoolsNeighbor.sort((a, b) => {
+        return a.distanceRay - b.distanceRay
+    });
+    schoolsNeighbor = schoolsNeighbor.slice(0, 3);
+    schoolsRay = schoolsRay.filter(school => { return !school.neighbor })
+    schoolsRay = schoolsRay.concat(schoolsNeighbor);
     return schoolsRay;
 }
 
@@ -151,17 +175,21 @@ const ClearResult = async (ways) => {
     return true;
 }
 
-const FilterWays = (wayCloses) => {
-    wayCloses.sort((a, b) => {
+const SortWays = (ways) => {
+    ways.sort((a, b) => {
         if (a.school.selected < b.school.selected)
-            return 1
+            return 1;
         else if (a.school.selected > b.school.selected)
-            return -1
+            return -1;
         else
-            return a.distance - b.distance
+            return a.distance - b.distance;
     });
-    const schoolSelected = wayCloses.find(way => way.school.selected);
-    const wayVisions = wayCloses.filter(way => { return !way.school.neighbor })
+    return ways;
+}
+
+const FilterWays = (ways) => {
+    const schoolSelected = ways.find(way => way.school.selected);
+    const wayVisions = ways.filter(way => { return !way.school.neighbor })
         .slice(0, 3 + (schoolSelected ? 1 : 0));
     wayVisions.map(way =>
         way.addressDestiny += ' escola'
@@ -169,8 +197,8 @@ const FilterWays = (wayCloses) => {
     return wayVisions;
 }
 
-const FilterNeighbors = (wayCloses) => {
-    return wayCloses.filter(way => { return way.school.neighbor === true });
+const FilterNeighbors = (ways) => {
+    return ways.filter(way => { return way.school.neighbor === true });
 }
 
 const FormatResult = (wayVisions, wayNeighbors, data, components) => {
@@ -232,22 +260,22 @@ const ProcessSchoolsRay = async (locationOrigin, schoolsRay) => {
     return ways;
 }
 
-const GeocodePromisse = (options) => {
+const GeocodePromisse = (options, message) => {
     let geocoder = new google.maps.Geocoder();
     return new Promise((resolve, reject) => {
         geocoder.geocode(options, (response, status) => {
             if (status === google.maps.GeocoderStatus.OK)
                 resolve(response);
             else if (status === google.maps.GeocoderStatus.ZERO_RESULTS)
-                reject(new Error(data.message.noFindedAddress));
+                reject(new Error(message.noFindedAddress));
             else
                 reject(new Error('Não foi possível geolocalizar, tente novamente.'));
         });
     });
 };
 
-const AddressOriginToLocation = async (addressOrigin) => {
-    const response = await GeocodePromisse({ 'address': addressOrigin, 'region': 'BR' });
+const AddressOriginToLocation = async (addressOrigin, message) => {
+    const response = await GeocodePromisse({ 'address': addressOrigin, 'region': 'BR'}, message);
     const lat = response[0].geometry.location.lat();
     const lng = response[0].geometry.location.lng();
     return new google.maps.LatLng(lat, lng);
