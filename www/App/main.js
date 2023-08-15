@@ -26,20 +26,20 @@ const Update = async (data, components) => {
 
         ClearResult(selector("#ways"));
 
-        if (!selector("#txtOrigem").value) {
+        if (!selector("#txtOrigin").value) {
             ShowAlert(data.message.emptyAddress);
             return;
         }
 
-        let year = parseInt(selector('#selAno').value);
+        let year = parseInt(selector('#selYear').value);
         if (year == 0) {
             ShowAlert(data.message.selectYear)
             return;
         }
-        await Show("#aguarde");
+        await Show("#wait");
         const filter = new Filter();
         filter.Init(data, year);
-        const schoolSelected = SchoolSelected(data, parseInt(selector('#selEscola').value));
+        const schoolSelected = SchoolSelected(data, parseInt(selector('#selSchool').value));
         const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
 
         //POC
@@ -64,7 +64,7 @@ const Update = async (data, components) => {
         // } catch (error) {
         //     ShowAlert(error);
     } finally {
-        Hide("#aguarde");
+        Hide("#wait");
     }
 }
 
@@ -203,9 +203,9 @@ const FilterNeighbors = (ways) => {
 
 const FormatResult = (wayVisions, wayNeighbors, data, components) => {
     if (wayVisions.length > 0)
-        selector("#txtOrigemResultado").value = wayVisions[0].addressOrigin;
+        selector("#txtResultOrigin").value = wayVisions[0].addressOrigin;
     else
-        selector("#txtOrigemResultado").value = wayNeighbors[0].addressOrigin;
+        selector("#txtResultOrigin").value = wayNeighbors[0].addressOrigin;
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
     let elWays = selector("#ways");
     selector('#response').style.display = 'block';
@@ -291,12 +291,12 @@ const CreateComponents = () => {
 
 (() => {
     window.addEventListener('load', async () => {
-        Show("#aguarde");
+        Show("#wait");
         const data = await GetData(localStorage);
         Populate(data);
         AssociateEvents(Update, data, CreateComponents());
         Collapse(selector('.card-header.collapsible'));
-        Hide("#aguarde");
+        Hide("#wait");
     });
 })();
 

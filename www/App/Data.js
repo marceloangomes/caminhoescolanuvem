@@ -117,6 +117,15 @@ class Data {
             this.cache.setItem('message', _data);
             this.message = JSON.parse(_data)
         }
+
+        if (this.cache.getItem('city'))
+            this.message = JSON.parse(this.cache.getItem('city'));
+        else {
+            const response = await fetch("./Data/city.json");
+            const _data = await response.text();
+            this.cache.setItem('city', _data);
+            this.citys = JSON.parse(_data)
+        }
         return this;
     }
 

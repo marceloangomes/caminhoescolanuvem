@@ -15,21 +15,21 @@ class Filter {
         });
 
         if (models.length == 0) {
-            selector("#chkModeloParcial").checked = true;
-            selector("#chkModeloIntegral").checked = true
+            selector("#chkParcialModel").checked = true;
+            selector("#chkIntegralModel").checked = true
             models = data.models.filter(model => { return model.id === 1 || model.id === 2 })
         }
 
-        let addressOrigin = selector("#txtOrigem").value;
+        let addressOrigin = selector("#txtOrigin").value;
         if (isNaN(parseFloat(addressOrigin))) {
-            var cidade = selector("#selCidadeOrigem").value;
+            var cidade = selector("#selOriginCity").value;
             if (cidade !== "Todas") {
-                addressOrigin += ', ' + selector("#selCidadeOrigem").value + ', SP';
+                addressOrigin += ', ' + selector("#selOriginCity").value + ', SP';
             }
         }
         this.addressOrigin = addressOrigin;
 
-        let shift = selector('#selTurno').value;
+        let shift = selector('#selShift').value;
         let shifts = [];
         if (shift > 0)
             shifts = data.shifts.filter(t => { return t.id == shift });

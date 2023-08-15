@@ -6,32 +6,42 @@ const Populate = async (data) => {
             if (!school.neighbor) {
                 school.de = "SAO BERNARDO DO CAMPO";
                 school.selected = false;
-                const selEscola = document.getElementById("selEscola");
+                const selSchool = document.getElementById("selSchool");
                 const option = document.createElement("option");
                 option.value = school.school_id;
                 option.text = school.name;
-                selEscola.add(option);
+                selSchool.add(option);
             }
         })
     })();
 
     (() => {
         data.years.forEach((ano) => {
-            const selAno = document.getElementById("selAno");
+            const selYear = document.getElementById("selYear");
             const option = document.createElement("option");
             option.value = ano.id;
             option.text = ano.description;
-            selAno.add(option);
+            selYear.add(option);
+        })
+    })();
+
+    (() => {
+        data.citys.forEach((city) => {
+            const selYear = document.getElementById("selCity");
+            const option = document.createElement("option");
+            option.value = city.id;
+            option.text = city.name;
+            selcity.add(option);
         })
     })();
 
     (() => {
         data.shifts.forEach((shift) => {
-            const selTurno = document.getElementById("selTurno");
+            const selShift = document.getElementById("selShift");
             const option = document.createElement("option");
             option.value = shift.id;
             option.text = shift.description;
-            selTurno.add(option);
+            selShift.add(option);
         });
     })();
 }

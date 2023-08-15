@@ -59,9 +59,9 @@ const AsyncForEach = async (array, callback) => {
 }
 
 const ShowAlert = (m) => {
-    Hide("#aguarde");
-    selector('#mensageAlert').innerHTML = m;
-    selector('#txtOrigem').focus();
+    Hide("#wait");
+    selector('#messageAlert').innerHTML = m;
+    selector('#txtOrigin').focus();
     Show('#alert', true);
     // setTimeout(function () {
     //     $("#alert").hide('fade');

@@ -22,7 +22,7 @@
 </head>
 
 <body>
-  <div id="aguarde" class="block" style="display:none">
+  <div id="wait" class="block" style="display:none">
     <div class="spinner"></div>
   </div>
 
@@ -31,19 +31,17 @@
     <div class="card-body content">
       <div class="form-inline">
         <div class="form-group col-lg-3 col-md-3  col-sm-12">
-          <select class="bootstrap-select form-control form-control-sm" id="selCidadeOrigem"
+          <select class="bootstrap-select form-control form-control-sm" id="selOriginCity"
             style="width:98%;margin:10px 10px 10px 10px" placeholder="Cidade">
-            <option value="Todas">Todas</option>
-            <option value="São Bernardo do Campo" selected="selected">São Bernardo do Campo</option>
-            <option value="São Caetano do Sul">São Caetano do Sul</option>
+            <option value="0">Todas</option>            
           </select>
         </div>
         <div class="form-group col-lg-6 col-md-6 col-sm-12">
-          <input name="pesquisaOrigem" type="text" id="txtOrigem" class="form-control form-control-sm"
+          <input name="OriginSearch" type="text" id="txtOrigin" class="form-control form-control-sm"
             style="width:98%;margin:10px 10px 10px 10px" value="" placeholder="Endere&ccedil;o do Aluno" />
         </div>
         <div class="form-group col-lg-3 col-md-3 col-sm-12  ">
-          <button class="btnCalcular btn btn-lg btn-block text-danger" style="margin: 0px 10px 0px 10px">
+          <button class="btnCalculate btn btn-lg btn-block text-danger" style="margin: 0px 10px 0px 10px">
             <span class="fas fa-search-location" aria-hidden="true"></span>
             Calcular Dist&acirc;ncia
           </button>
@@ -54,49 +52,49 @@
           <div class="row">
             <div class="col">
               <div class="form-check form-check-inline text-left" style="justify-content: left;">
-                <input class="form-check-input" type="checkbox" id="chkModeloParcial" value="1">
-                <label class="form-check-label" for="chkModeloParcial">Parcial</label>
+                <input class="form-check-input" type="checkbox" id="chkParcialModel" value="1">
+                <label class="form-check-label" for="chkParcialModel">Parcial</label>
               </div>
             </div>
             <div class="col">
               <div class="form-check form-check-inline text-left" style="justify-content: left;">
-                <input class="form-check-input" type="checkbox" id="chkModeloIntegral" value="2">
-                <label class="form-check-label" for="chkModeloIntegral">Integral</label>
+                <input class="form-check-input" type="checkbox" id="chkIntegralModel" value="2">
+                <label class="form-check-label" for="chkIntegralModel">Integral</label>
               </div>
             </div>
           </div>
           <div class="row">
             <div class="col">
               <div class="form-check form-check-inline text-left" style="justify-content: left;">
-                <input class="form-check-input" type="checkbox" id="chkModeloEJA" value="3">
-                <label class="form-check-label" for="chkModeloEJA">EJA</label>
+                <input class="form-check-input" type="checkbox" id="chkYAEModel" value="3">
+                <label class="form-check-label" for="chkYAEModel">EJA</label>
               </div>
             </div>
             <div class="col">
               <div class="form-check form-check-inline text-left" style="justify-content: left;">
-                <input class="form-check-input" type="checkbox" id="chkModeloNovotec" value="4">
-                <label class="form-check-label" for="chkModeloNovotec">NovoTec</label>
+                <input class="form-check-input" type="checkbox" id="chkNewtecModel" value="4">
+                <label class="form-check-label" for="chkNewtecModel">NovoTec</label>
               </div>
             </div>
           </div>
         </div>
 
         <div class="form-group col-lg-2 col-md-2 col-sm-6" style="padding:10px">
-          <select class="bootstrap-select form-control form-control-sm" id="selAno"
+          <select class="bootstrap-select form-control form-control-sm" id="selYear"
             style="width:98%;margin:10px 5px 10px 5px" placeholder="Ano">
             <option value="0">Selecione</option>
           </select>
         </div>
 
         <div class="form-group col-lg-2 col-md-2 col-sm-6" style="padding:10px">
-          <select class="bootstrap-select form-control form-control-sm" id="selTurno"
+          <select class="bootstrap-select form-control form-control-sm" id="selShift"
             style="width:98%;margin:10px 5px 10px 5px" placeholder="Turno">
             <option value="0">Todos</option>
           </select>
         </div>
 
         <div class="form-group col-lg-5 col-md-5 col-sm-12" style="padding:10px">
-          <select class="bootstrap-select form-control form-control-sm" id="selEscola"
+          <select class="bootstrap-select form-control form-control-sm" id="selSchool"
             style="width:98%;margin:10px 5px 10px 5px" placeholder="Escola">
             <option value="0">Selecione</option>
           </select>
@@ -108,16 +106,16 @@
   <div id='response' class="card" style="margin:20px; display:none;">
     <div class="card-header bg-info text-white">Resposta:</div>
     <div class="card-body">
-      <!-- Mensagem de aviso ao usuário -->
+      <!-- Warning message for user -->
       <div id="alert" class="alert alert-warning collapse">
-        <span id="mensageAlert"></span>
+        <span id="messageAlert"></span>
         <button id="btnAlert" type="button" class="close" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="form-group col-12" style="width: 98%">
-        <label for="txtOrigemResultado" style="margin:0px 10px">Endere&ccedil;o do Aluno Retornado</label>
-        <input name="resultadoOrigem" readonly="readonly" type="text" id="txtOrigemResultado"
+        <label for="txtResultOrigin" style="margin:0px 10px">Endere&ccedil;o do Aluno Retornado</label>
+        <input name="OriginResult" readonly="readonly" type="text" id="txtResultOrigin"
           class="form-control form-control-sm" style="width:98%;margin:0px 10px 0px 10px" value="" />
       </div>
       <div id='ways' class='row' style="margin: 10px;">

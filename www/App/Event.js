@@ -2,7 +2,7 @@ import { selector, Hide, Collapse } from './Library.js'
 
 export { AssociateEvents }
 const AssociateEvents = (Update, data, components) => {
-    selector(".btnCalcular").addEventListener("click", async () => {
+    selector(".btnCalculate").addEventListener("click", async () => {
         Update(data, components);
     });
 
@@ -10,9 +10,9 @@ const AssociateEvents = (Update, data, components) => {
         Hide("#alert", true);
     });
 
-    selector("#txtOrigem").addEventListener("keyup", (e) => {
+    selector("#txtOrigin").addEventListener("keyup", (e) => {
         if (e.keyCode === 13)
-            selector(".btnCalcular").dispatchEvent(new Event("click"));
+            selector(".btnCalculate").dispatchEvent(new Event("click"));
     });
 
     selector('.card-header.collapsible').addEventListener("click", function (e) {
