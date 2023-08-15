@@ -27,11 +27,12 @@ const Populate = async (data) => {
 
     (() => {
         data.citys.forEach((city) => {
-            const selYear = document.getElementById("selCity");
+            const selCity = document.getElementById("selOriginCity");
             const option = document.createElement("option");
             option.value = city.id;
             option.text = city.name;
-            selcity.add(option);
+            selCity.add(option);
+            if(city.default) selCity.value = city.id;
         })
     })();
 

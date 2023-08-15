@@ -1,4 +1,4 @@
 [
-    {"id":1, "name":"São Bernardo do Campo"},
-    {"id":2,"name":"São Caetano do Sul"}
+    {"id":1, "name":"São Bernardo do Campo","default":true},
+    {"id":2,"name":"São Caetano do Sul","default":false}
 ]

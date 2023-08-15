@@ -23,8 +23,9 @@ class Filter {
         let addressOrigin = selector("#txtOrigin").value;
         if (isNaN(parseFloat(addressOrigin))) {
             var cidade = selector("#selOriginCity").value;
-            if (cidade !== "Todas") {
-                addressOrigin += ', ' + selector("#selOriginCity").value + ', SP';
+            if (cidade !== "0") {
+                const city = data.citys.find(city=> city.id == selector("#selOriginCity").value);
+                addressOrigin += ', ' +  city.name + ', SP';
             }
         }
         this.addressOrigin = addressOrigin;
