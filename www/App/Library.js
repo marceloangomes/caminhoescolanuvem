@@ -71,11 +71,9 @@ const ShowAlert = (m) => {
 const Collapse = (el) => {
     el.classList.toggle("active");
     var content = el.nextElementSibling;
-    if (content.style.maxHeight) {
-        content.style.maxHeight = null;
-        content.style.padding = '0rem';
+    if (content.style.display === "block") {
+        content.style.display = "none";
     } else {
-        content.style.maxHeight = (content.scrollHeight + 40) + "px";
-        content.style.padding = '1.25rem';
+        content.style.display = "block";
     }
 }
