@@ -31,7 +31,35 @@ div #map {
   }
 }
 
-.nav-pills .nav-link {
+/* --------------- */
+.nav-pills-container {
+  display: flex;
+  overflow: hidden;
+}
+
+.nav-pills {
+  padding: 10px 20px;
+  color: #13889a;
+  background-color: #e9ecef;
+  margin: 0px 0px 10px 10px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.nav-pills.active {
+  color: #fff;
+  background-color: #17a2b8a6;
+}
+
+.nav-pills:not(.active):hover {
+  background-color: #e9ecef;
+}
+
+/* --------------- */
+
+/* .nav-pills .nav-link {
   color: #13889a;
   background-color: #e9ecef;
   margin: 0px 0px 10px 10px;
@@ -42,7 +70,7 @@ div #map {
   color: #fff;
   background-color: #17a2b8a6;
 
-}
+} */
 
 .collapsible,
 .collapsible.active:hover {
@@ -53,34 +81,41 @@ div #map {
 .collapsible.active {
   background-color: #17a2b8a6 !important;
 }
+
 .container {
-  display: grid;  
-  grid-gap: 5px; 
-  margin:0px;
+  display: inline-grid;
+  grid-gap: 10px;
+  margin: 0px;
+  align-content: space-evenly;
 }
 
-.container-address{
-  grid-template-columns: 1fr 2fr 1fr; 
+.container-address {
+  grid-template-columns: 1fr 2fr 1fr;
 }
 
-.container-parameters{
+.container-parameters {
   margin: 0px 0px 0px 25px;
-  grid-template-columns: 1fr 1fr 1fr 2fr; 
-  padding:10px;
+  grid-template-columns: 1fr 1fr 1fr 2fr;
+  padding: 10px;
 }
 
-.container-address-response{
-  grid-template-columns: 3fr 2fr 1fr 1fr 1fr; 
-  grid-template-rows: 1fr 1fr;
+.container-school-close1 {
+  grid-template-columns: 4fr 3fr 2fr 2fr 1fr;
 }
 
-.container-type{
-  grid-template-columns: 1fr 1fr; 
+.container-school-close2 {
+  grid-template-columns: 1fr 1fr;
 }
 
-@media screen and (max-width: 768px) { 
-  .container-address, .container-parameters{
-    grid-template-columns: 1fr; 
+.container-type {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media screen and (max-width: 768px) {
+
+  .container-address,
+  .container-parameters {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -90,13 +125,14 @@ div #map {
   border: transparent;
 }
 
-.right{
-  text-align:right;
-}
-.center{
-  text-align: center;
-}
-.left{
-  text-align: left;
+.right {
+  text-align: right;
 }
 
+.center {
+  text-align: center;
+}
+
+.left {
+  text-align: left;
+}
