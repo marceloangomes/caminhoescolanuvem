@@ -44,6 +44,15 @@ div #map {
 
 }
 
+.collapsible,
+.collapsible.active:hover {
+  cursor: pointer;
+  background-color: #17a3b85b !important;
+}
+
+.collapsible.active {
+  background-color: #17a2b8a6 !important;
+}
 .container {
   display: grid;  
   grid-gap: 5px; 
@@ -60,8 +69,13 @@ div #map {
   padding:10px;
 }
 
+.container-address-response{
+  grid-template-columns: 3fr 2fr 1fr 1fr 1fr; 
+  grid-template-rows: 1fr 1fr;
+}
+
 .container-type{
-  grid-template-columns: 1fr, 1fr; 
+  grid-template-columns: 1fr 1fr; 
 }
 
 @media screen and (max-width: 768px) { 
