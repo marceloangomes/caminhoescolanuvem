@@ -34,6 +34,13 @@ class SchoolHead extends HTMLElement {
             elChild.classList.add("show");
         }
         elChild.style.display = 'initial';
+        elChild.addEventListener("click",(ev)=>{  
+            const el = document.querySelector(".nav-pills.active.show");
+            el.classList.toggle("active");            
+            el.classList.toggle("show");      
+            ev.target.classList.toggle("active");
+            ev.target.classList.toggle("show");
+        });
     }
 
     static FormatSelected = (el, i, longer) => {
