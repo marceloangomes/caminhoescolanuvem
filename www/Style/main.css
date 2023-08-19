@@ -112,7 +112,6 @@ div #map {
 }
 
 @media screen and (max-width: 768px) {
-
   .container-address,
   .container-parameters {
     grid-template-columns: 1fr;
