@@ -1,15 +1,15 @@
-export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse }
+export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse, RemoveAutoComplete }
 
 const selector = document.querySelector.bind(document);
 const selectorAll = document.querySelectorAll.bind(document);
 
-const Fade = (element, duration, clean) => {
+const Fade = async (element, duration, clean) => {
     let opacity = clean ? 1 : 0;
     const alvoOpacidade = clean ? 0 : 1;
     const durationFrame = 10;
     const incrementFrame = durationFrame / duration;
 
-    function animation() {
+    async function animation() {
         if (alvoOpacidade == 0)
             if (opacity > alvoOpacidade) {
                 opacity -= incrementFrame;
@@ -25,18 +25,20 @@ const Fade = (element, duration, clean) => {
             } else
                 element.style.opacity = alvoOpacidade;
     }
-    animation();
+    await animation();
 };
 
-const Show = async (sel, fade = false) => {
+const Show = async (sel, fade = false, timeWait = 0) => {
     let elements = selectorAll(sel);
     if (elements.length == 0)
         return;
     elements.forEach(element => {
-        element.setAttribute('style', "display:flex;")
+        element.classList.remove('hide');
         if (fade)
-            Fade(element, 5000, true);
+            Fade(element, timeWait - 1000, true);
     });
+    if (timeWait > 0)
+        await Sleep(timeWait);
 }
 
 const Hide = (sel, fade = false) => {
@@ -44,8 +46,13 @@ const Hide = (sel, fade = false) => {
     if (elements.length == 0)
         return;
     if (fade)
-        elements.forEach(element => Fade(element, 2000, false));
-    elements.forEach(element => element.setAttribute('style', "display:none;"));
+        AsyncForEach(elements, (element) =>
+            Fade(element, 2000, false))
+            .then((element) => {
+                element.classList.add('hide')
+            });
+    else
+        elements.forEach(element => element.classList.add('hide'));
 }
 
 const Sleep = (ms) => {
@@ -62,18 +69,22 @@ const ShowAlert = (m) => {
     Hide("#wait");
     selector('#messageAlert').innerHTML = m;
     selector('#txtOrigin').focus();
-    Show('#alert', true);
-    // setTimeout(function () {
-    //     $("#alert").hide('fade');
-    // }, 5000)
+    Show('#alert', true, 5000)
+        .then(() => Hide('#alert'));
 }
 
 const Collapse = (el) => {
-    el.classList.toggle("active");
-    var content = el.nextElementSibling;
-    if (content.style.display === "block") {
-        content.style.display = "none";
-    } else {
-        content.style.display = "block";
+    const elActive = Array.from(el.parentElement.children)
+        .find(el => el.classList.contains("active"));
+    if (elActive) {
+        elActive.classList.toggle("active");
+        selector(`#${elActive.getAttribute("aria-controls")}`).classList.add("hide");
     }
+    el.classList.toggle("active");
+    selector(`#${el.getAttribute("aria-controls")}`).classList.remove("hide");
+}
+
+const RemoveAutoComplete = (el) => {
+    el.querySelectorAll("textarea[type='text'],input[type='text']")
+        .forEach(el => el.setAttribute('autocomplete', 'off'));
 }

@@ -20,7 +20,6 @@ class SchoolClose extends HTMLElement {
             el.querySelector("#pills-" + i + " #btnMap").addEventListener("click", (ev) => {
                 const frm = ev.target.parentElement.parentElement.parentElement;
                 frm.appendChild(componentMap.Init({ 'locationOrigin': way.locationOrigin, 'locationDestiny': way.locationDestiny }));
-                frm.querySelector('#mapModal').style.display = "block";
             })
             const informations = data.GetInformation(way.school);
 
@@ -30,13 +29,12 @@ class SchoolClose extends HTMLElement {
                         el.querySelector("#pills-" + i + " #txtInformacoes").value += information;
                     }
                 })
-            if (i == 0) {                
-                el.querySelector("#pills-" + i).classList.add("active");
-                el.querySelector("#pills-" + i).classList.add("show");
+            if (i == 0) {
+                el.querySelector("#pills-" + i).classList.remove("hide");
             }
         })
         return el;
     }
 
-   
+
 }

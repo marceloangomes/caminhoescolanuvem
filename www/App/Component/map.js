@@ -65,14 +65,12 @@ class Map extends HTMLElement {
 
         var span = el.querySelector(".close");
 
-        span.onclick = function () {
-            mapModal.style.display = "none";
+        span.onclick = function () {            
             mapModal.remove();
         }
 
         window.onclick = function (event) {
-            if (event.target == mapModal) {
-                mapModal.style.display = "none";
+            if (event.target == mapModal) {                
                 mapModal.remove();
             }
         }

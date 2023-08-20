@@ -1,4 +1,5 @@
 import { SchoolHeadTemplate } from './Template/schoolHead.js';
+import { Collapse, selector } from '../Library.js';
 export { SchoolHead };
 
 class SchoolHead extends HTMLElement {
@@ -31,15 +32,10 @@ class SchoolHead extends HTMLElement {
         elChild.textContent = textContent;
         if (i == 0) {
             elChild.classList.add("active")
-            elChild.classList.add("show");
         }
         elChild.style.display = 'initial';
-        elChild.addEventListener("click",(ev)=>{  
-            const el = document.querySelector(".nav-pills.active.show");
-            el.classList.toggle("active");            
-            el.classList.toggle("show");      
-            ev.target.classList.toggle("active");
-            ev.target.classList.toggle("show");
+        elChild.addEventListener("click", function (e) {
+            Collapse(e.target);
         });
     }
 

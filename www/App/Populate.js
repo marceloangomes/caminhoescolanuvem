@@ -26,13 +26,17 @@ const Populate = async (data) => {
     })();
 
     (() => {
-        data.citys.forEach((city) => {
-            const selCity = document.getElementById("selOriginCity");
+        const Fill = (id, nameCity, def) => {
             const option = document.createElement("option");
-            option.value = city.id;
-            option.text = city.name;
+            option.value = id;
+            option.text = nameCity;
             selCity.add(option);
-            if(city.default) selCity.value = city.id;
+            if (def) selCity.value = id;
+        }
+        const selCity = document.getElementById("selOriginCity");
+        Fill(0, "Todas", false)
+        data.citys.forEach((city) => {
+            Fill(city.id, city.name, city.default)
         })
     })();
 

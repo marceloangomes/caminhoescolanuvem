@@ -1,4 +1,4 @@
-import { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse } from './Library.js';
+import { selector, Show, Hide, Sleep, AsyncForEach, ShowAlert, RemoveAutoComplete } from './Library.js';
 import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
@@ -23,6 +23,7 @@ InitMap();
 
 const Update = async (data, components) => {
     try {
+        Hide("#response");
 
         ClearResult(selector("#ways"));
 
@@ -43,8 +44,8 @@ const Update = async (data, components) => {
         const schoolsFiltered = ApplyFilter(filter, data, schoolSelected);
 
         //POC
-        filter.addressOrigin ='lirio dos vales, 106, São Bernardo do Campo, SP'
-        //filter.addressOrigin = "R Simão da mata, 299, São Bernardo do Campo, SP"
+        //filter.addressOrigin = 'lirio dos vales, 106, São Bernardo do Campo, SP'
+        filter.addressOrigin = "R Simão da mata, 299, São Bernardo do Campo, SP"
         //filter.addressOrigin = "Av Antonio Toneto, 105, São Bernardo do Campo, SP"
         //filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
         //filter.addressOrigin = 'R. Me. de Deus, 263 - Mooca, São Paulo - SP, 03119-000'
@@ -61,8 +62,8 @@ const Update = async (data, components) => {
             throw (new Error(data.message.noLocation));
         wayCloses = SortWays(wayCloses);
         FormatResult(FilterWays(wayCloses), FilterNeighbors(wayCloses), data, components);
-        // } catch (error) {
-        //     ShowAlert(error);
+    } catch (error) {
+        ShowAlert(error);
     } finally {
         Hide("#wait");
     }
@@ -208,7 +209,6 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
         selector("#txtResultOrigin").value = wayNeighbors[0].addressOrigin;
     const indNeighbors = wayNeighbors.length > 0 ? wayVisions.length : -1;
     let elWays = selector("#ways");
-    selector('#response').style.display = 'block';
     elWays.appendChild(components.schoolHead.Init({ wayVisions: wayVisions, indNeighbors: indNeighbors }));
     if (wayVisions.length > 0)
         elWays.appendChild(components.schoolClose.Init({ wayVisions: wayVisions, data: data, componentMap: components.map }));
@@ -217,7 +217,8 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
             elWays = elWays.querySelector('#pills-tabContent');
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
-    Collapse(selector('.card-header.collapsible'));
+    RemoveAutoComplete(elWays);
+    Show('#response');
 }
 
 const GetDistanceMatrixPromise = (options) => {
@@ -275,7 +276,7 @@ const GeocodePromisse = (options, message) => {
 };
 
 const AddressOriginToLocation = async (addressOrigin, message) => {
-    const response = await GeocodePromisse({ 'address': addressOrigin, 'region': 'BR'}, message);
+    const response = await GeocodePromisse({ 'address': addressOrigin, 'region': 'BR' }, message);
     const lat = response[0].geometry.location.lat();
     const lng = response[0].geometry.location.lng();
     return new google.maps.LatLng(lat, lng);
@@ -295,7 +296,7 @@ const CreateComponents = () => {
         const data = await GetData(localStorage);
         Populate(data);
         AssociateEvents(Update, data, CreateComponents());
-        Collapse(selector('.card-header.collapsible'));
+        RemoveAutoComplete(selector("#search"));
         Hide("#wait");
     });
 })();
