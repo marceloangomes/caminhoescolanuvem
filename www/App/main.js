@@ -1,4 +1,4 @@
-import { selector, Show, Hide, Sleep, AsyncForEach, ShowAlert, RemoveAutoComplete } from './Library.js';
+import { selector, Show, Hide, Sleep, AsyncForEach, ShowAlert, RemoveAutoComplete, Collapse } from './Library.js';
 import { GetData } from './Data.js';
 import { Populate } from './Populate.js';
 import { AssociateEvents } from './Event.js';
@@ -45,7 +45,7 @@ const Update = async (data, components) => {
 
         //POC
         //filter.addressOrigin = 'lirio dos vales, 106, São Bernardo do Campo, SP'
-        filter.addressOrigin = "R Simão da mata, 299, São Bernardo do Campo, SP"
+        //filter.addressOrigin = "R Simão da mata, 299, São Bernardo do Campo, SP"
         //filter.addressOrigin = "Av Antonio Toneto, 105, São Bernardo do Campo, SP"
         //filter.addressOrigin = "Rua Princesa Maria da Glória, 176, São Bernardo do Campo, SP"
         //filter.addressOrigin = 'R. Me. de Deus, 263 - Mooca, São Paulo - SP, 03119-000'
@@ -217,6 +217,7 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
             elWays = elWays.querySelector('#pills-tabContent');
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
+    //Collapse("#search");
     RemoveAutoComplete(elWays);
     Show('#response');
 }

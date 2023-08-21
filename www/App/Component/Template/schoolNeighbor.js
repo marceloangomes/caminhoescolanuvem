@@ -19,13 +19,14 @@ const SchoolNeighborTemplate = (el, indNeighbors) => {
                       </form>
                     </div>
                   </div>`;
-  if (indNeighbors == 0) {
-    elChild.classList.add('show');
+  if (indNeighbors == 0) {    
     elChild.classList.add('active');
     el.innerHTML = `<div class="tab-content" id="pills-tabContent" style="width:100%"></div>`;
     el.querySelector('#pills-tabContent').appendChild(elChild);
-  } else
-    el.appendChild(elChild);
+  } else{
+    el.appendChild(elChild)
+    elChild.classList.add('hide');
+  }
   return el;
 }
 
