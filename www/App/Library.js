@@ -1,4 +1,4 @@
-export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, Collapse, RemoveAutoComplete }
+export { selector, selectorAll, Show, Hide, Sleep, AsyncForEach, ShowAlert, AlternNav, RemoveAutoComplete, Collapse }
 
 const selector = document.querySelector.bind(document);
 const selectorAll = document.querySelectorAll.bind(document);
@@ -73,7 +73,7 @@ const ShowAlert = (m) => {
         .then(() => Hide('#alert'));
 }
 
-const Collapse = (el) => {
+const AlternNav = (el) => {
     const elActive = Array.from(el.parentElement.children)
         .find(el => el.classList.contains("active"));
     if (elActive) {
@@ -82,6 +82,16 @@ const Collapse = (el) => {
     }
     el.classList.toggle("active");
     selector(`#${el.getAttribute("aria-controls")}`).classList.remove("hide");
+}
+
+const Collapse = (el) => {
+    el.classList.toggle("active");
+    var content = el.nextElementSibling;
+    if (content.classList.contains('hide') ) {
+      content.classList.remove('hide')
+    } else {
+      content.classList.add('hide');
+    }
 }
 
 const RemoveAutoComplete = (el) => {

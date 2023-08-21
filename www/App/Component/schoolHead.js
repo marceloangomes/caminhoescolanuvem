@@ -1,5 +1,5 @@
 import { SchoolHeadTemplate } from './Template/schoolHead.js';
-import { Collapse, selector } from '../Library.js';
+import { AlternNav, selector } from '../Library.js';
 export { SchoolHead };
 
 class SchoolHead extends HTMLElement {
@@ -35,7 +35,7 @@ class SchoolHead extends HTMLElement {
         }
         elChild.style.display = 'initial';
         elChild.addEventListener("click", function (e) {
-            Collapse(e.target);
+            AlternNav(e.target);
         });
     }
 

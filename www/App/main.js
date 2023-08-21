@@ -217,8 +217,8 @@ const FormatResult = (wayVisions, wayNeighbors, data, components) => {
             elWays = elWays.querySelector('#pills-tabContent');
         elWays.appendChild(components.schoolNeighbor.Init({ wayNeighbors: wayNeighbors, indNeighbors: indNeighbors }));
     }
-    //Collapse("#search");
     RemoveAutoComplete(elWays);
+    Collapse(selector(".collapsible"));
     Show('#response');
 }
 

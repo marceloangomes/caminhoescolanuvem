@@ -297,3 +297,11 @@ label {
 #txtNeighbor {
   width: 98%;
 }
+
+.collapsible {  
+  cursor: pointer;
+}
+
+.collapsible.active, .collapsible:hover {
+  background-color: #17a3b85b;
+}
