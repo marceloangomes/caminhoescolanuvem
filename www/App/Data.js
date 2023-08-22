@@ -1,7 +1,7 @@
 export { GetData };
 
 class Data {
-    constructor(cache, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}) {
+    constructor(cache, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys=[]) {
         this.cache = cache;
         this.schools = schools;
         this.years = years;
@@ -11,121 +11,21 @@ class Data {
         this.modelShifts = modelShifts;
         this.schoolJunctions = schoolJunctions;
         this.message = message;
+        this.citys = citys;
+        this.source = './Data/';
     }
     async Init() {
-        if (this.cache.getItem('schools')) {
-            this.schools = JSON.parse(this.cache.getItem('schools'));
-        }
-        else {
-            //Doens't filter for city, because can there is school in São Bernardo 
-            //next a student than São Caetano and vice-versa
-            let response = await fetch('./Data/school.json');
-            let _data = await response.text();
-            this.schools = JSON.parse(_data);
-            this.schools.forEach(school => {
-                school.neighbor = false
-            });
-            response = await fetch('./Data/schoolNeighbor.json');
-            _data = await response.text();
-            const escolaVizinhas = JSON.parse(_data);
-            escolaVizinhas.forEach(schoolNeighbor => {
-                const school = {
-                    "de": schoolNeighbor.DE,
-                    "school_id": schoolNeighbor.codigo_cie,
-                    "name": schoolNeighbor.nome,
-                    "address": schoolNeighbor.COMPLEND + " " + schoolNeighbor.ENDESC + ", " + schoolNeighbor.NUMESC + " - " + schoolNeighbor.BAIESC,
-                    "contact": "",
-                    "lat": parseFloat(schoolNeighbor.lat.replace(",", ".")),
-                    "lng": parseFloat(schoolNeighbor.lng.replace(",", ".")),
-                    "selected": false,
-                    "neighbor": true
-                };
-                this.schools.push(school);
-            })
-            this.schools.sort((escolaA, escolaB) => {
-                if (escolaA.nome < escolaB.nome)
-                    return -1
-                else if (escolaA.nome > escolaB.nome)
-                    return 1
-                else
-                    return 0
-            })
-            this.cache.setItem('schools', JSON.stringify(this.schools));
-        }
-
-        if (this.cache.getItem('years')) {
-            this.years = JSON.parse(this.cache.getItem('years'));
-        }
-        else {
-            const response = await fetch('./Data/year.json');
-            const _data = await response.text();
-            this.cache.setItem('years', _data);
-            this.years = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('shifts')) {
-            this.shifts = JSON.parse(this.cache.getItem('shifts'));
-        }
-        else {
-            const response = await fetch('./Data/shift.json');
-            const _data = await response.text();
-            this.cache.setItem('shifts', _data);
-            this.shifts = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('junctions'))
-            this.junctions = JSON.parse(this.cache.getItem('junctions'));
-        else {
-            const response = await fetch('./Data/junction.json');
-            const _data = await response.text();
-            this.cache.setItem('junctions', _data);
-            this.junctions = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('models'))
-            this.models = JSON.parse(this.cache.getItem('models'));
-        else {
-            const response = await fetch('./Data/model.json');
-            const _data = await response.text();
-            this.cache.setItem('models', _data);
-            this.models = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('modelShifts'))
-            this.modelShifts = JSON.parse(this.cache.getItem('modelShifts'));
-        else {
-            const response = await fetch('./Data/modelShift.json');
-            const _data = await response.text();
-            this.cache.setItem('modelShifts', _data);
-            this.modelShifts = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('schoolJunctions'))
-            this.schoolJunctions = JSON.parse(this.cache.getItem('schoolJunctions'));
-        else {
-            const response = await fetch('./Data/schoolJunction.json');
-            const _data = await response.text();
-            this.cache.setItem('schoolJunctions', _data);
-            this.schoolJunctions = JSON.parse(_data);
-        }
-
-        if (this.cache.getItem('message'))
-            this.message = JSON.parse(this.cache.getItem('message'));
-        else {
-            const response = await fetch("./Data/message.json");
-            const _data = await response.text();
-            this.cache.setItem('message', _data);
-            this.message = JSON.parse(_data)
-        }
-
-        if (this.cache.getItem('city'))
-            this.message = JSON.parse(this.cache.getItem('city'));
-        else {
-            const response = await fetch("./Data/city.json");
-            const _data = await response.text();
-            this.cache.setItem('city', _data);
-            this.citys = JSON.parse(_data)
-        }
+        await this.UpdateVersion();
+        this.schools = await this.GetSchools();
+        this.years = await this.GetDataFromFile('years', 'year.json');
+        this.shifts = await this.GetDataFromFile('shifts', 'shift.json');    
+        this.junctions = await this.GetDataFromFile('junctions','junction.json');
+        this.models = await this.GetDataFromFile('models','model.json');
+        this.modelShifts = await this.GetDataFromFile('modelShifts','modelShift.json');
+        this.schoolJunctions = await this.GetDataFromFile('schoolJunctions','schoolJunction.json');
+        this.message = await this.GetDataFromFile('message','message.json');        
+        this.citys = await this.GetDataFromFile('citys','city.json');
+               
         return this;
     }
 
@@ -142,24 +42,77 @@ class Data {
         return informations;
     }
 
-    async UpdateVersion() {
-        let response = await fetch('./Data/dataVersion.json');
-        let _data = await response.text();
-        const versionServer = JSON.parse(_data);
-        const versionClient = this.cache.getItem('version');
+    async UpdateVersion() {        
+        const versionServer = await this.GetDataFromFile('version','dataVersion.json', false);
+        const versionClient = await JSON.parse(this.cache.getItem('version'));
         if (versionClient) {
             if (versionClient.version != versionServer.version)
                 this.cache.clear();
         } else
             this.cache.clear();
-        this.cache.setItem('version', versionServer);
+        this.cache.setItem('version', JSON.stringify(versionServer));
+    }
+
+    async GetDataFromFile(name, nameFile, isCached = true){
+        //try {
+            if (isCached && this.cache.getItem(name)) {
+                return JSON.parse(this.cache.getItem(name));
+            }
+            else {
+                const response = await fetch(this.source + nameFile);
+                const _data = await response.text();
+                if(isCached) 
+                    this.cache.setItem(name, _data);
+                return JSON.parse(_data)
+            }
+        // } catch (error) {
+        //     throw Error(message.genericError);            
+        // }     
+    }
+
+    async GetNeighbors(){
+        let schoolsParsed =[];
+        let schoolsNeighbor = await this.GetDataFromFile('neighbors','schoolNeighbor.json');
+        schoolsNeighbor.forEach(schoolNeighbor => {
+            const school = {
+                "de": schoolNeighbor.DE,
+                "school_id": schoolNeighbor.codigo_cie,
+                "name": schoolNeighbor.nome,
+                "address": schoolNeighbor.COMPLEND + " " + schoolNeighbor.ENDESC + ", " + schoolNeighbor.NUMESC + " - " + schoolNeighbor.BAIESC,
+                "contact": "",
+                "lat": parseFloat(schoolNeighbor.lat.replace(",", ".")),
+                "lng": parseFloat(schoolNeighbor.lng.replace(",", ".")),
+                "selected": false,
+                "neighbor": true
+            };
+            schoolsParsed.push(school);
+        });
+        return schoolsParsed;
+    }
+
+    async GetSchools(){
+        let schools = await this.GetDataFromFile('schools','school.json');
+        schools.concat(await this.GetNeighbors());
+        schools = await this.SortSchools(schools);
+        return schools;       
+    }
+
+    async SortSchools(schools){
+        schools.sort((escolaA, escolaB) => {
+            if (escolaA.nome < escolaB.nome)
+                return -1
+            else if (escolaA.nome > escolaB.nome)
+                return 1
+            else
+                return 0
+        });     
+        return schools;
     }
 
 };
 
 const GetData = async (cache) => {
-    const instance = new Data(cache);
-    await instance.UpdateVersion();
+    const instance = new Data(cache);    
     await instance.Init();
     instance.cache = null;
     return instance;
