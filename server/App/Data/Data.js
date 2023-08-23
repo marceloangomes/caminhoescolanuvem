@@ -1,10 +1,9 @@
 export { GetData };
-import { LocalStorageMock } from './LocalStorage.js';
 import { promises as fsPromises } from 'fs';
 
 class Data {
-    constructor(cache, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = []) {
-        this.cache = new LocalStorageMock();
+    constructor(cache = undefined, source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = []) {        
+        this.cache = cache;        
         this.schools = schools;
         this.years = years;
         this.shifts = shifts;
@@ -14,21 +13,23 @@ class Data {
         this.schoolJunctions = schoolJunctions;
         this.message = message;
         this.citys = citys;
-        this.source = '../Data/';
+        if(source)
+            this.source = source;
+        else
+            this.source = '../Data/';
     }
     async Init() {
-        //await this.UpdateVersion();
-        // this.schools = await this.GetSchools();
-        // this.years = await this.GetDataFromFile('years', 'year.json');
-        // this.shifts = await this.GetDataFromFile('shifts', 'shift.json');
-        // this.junctions = await this.GetDataFromFile('junctions', 'junction.json');
-        // this.models = await this.GetDataFromFile('models', 'model.json');
-        // this.modelShifts = await this.GetDataFromFile('modelShifts', 'modelShift.json');
-        // this.schoolJunctions = await this.GetDataFromFile('schoolJunctions', 'schoolJunction.json');
-        // this.message = await this.GetDataFromFile('message', 'message.json');
-        this.citys = await this.GetDataFromFile('citys', 'city.json', false);
-
-        return this;
+        await this.UpdateVersion();
+        this.schools = await this.GetSchools();
+        this.years = await this.GetDataFromFile('years', 'year.json');
+        this.shifts = await this.GetDataFromFile('shifts', 'shift.json');
+        this.junctions = await this.GetDataFromFile('junctions', 'junction.json');
+        this.models = await this.GetDataFromFile('models', 'model.json');
+        this.modelShifts = await this.GetDataFromFile('modelShifts', 'modelShift.json');
+        this.schoolJunctions = await this.GetDataFromFile('schoolJunctions', 'schoolJunction.json');
+        this.message = await this.GetDataFromFile('message', 'message.json');
+        this.citys = await this.GetDataFromFile('citys', 'city.json');        
+        this.cache = null;
     }
 
     GetInformation(school) {
@@ -42,17 +43,20 @@ class Data {
             return `   Modelo: ${model.description}   período: ${shift.description}   horário de: ${modelShift.classSchedule.begin.substring(0, 5)}  até: ${modelShift.classSchedule.end.substring(0, 5)}\n`;
         });
         return informations;
-    }
+    }   
 
-    async UpdateVersion() {
-        const versionServer = await this.GetDataFromFile('version', 'dataVersion.json', false);
-        const versionClient = await JSON.parse(this.cache.getItem('version'));
-        if (versionClient) {
-            if (versionClient.version != versionServer.version)
+    async UpdateVersion() {        
+        const versionDatabase = await this.GetDataFromFile('version', 'dataVersion.json', false);        
+        const versionCache = this.cache.getItem('version');
+        const versionServer = undefined;
+        if(versionCache)
+            versionServer = await JSON.parse(versionCache);
+        if (versionServer) {
+            if (versionServer.version != versionDatabase.version)
                 this.cache.clear();
         } else
             this.cache.clear();
-        this.cache.setItem('version', JSON.stringify(versionServer));
+        this.cache.setItem('version', JSON.stringify(versionDatabase));
     }
 
     async GetDataFromFile(name, nameFile, isCached = true) {
@@ -60,9 +64,7 @@ class Data {
             if (isCached && this.cache.getItem(name)) {
                 return JSON.parse(this.cache.getItem(name));
             }
-            else {
-                //const response = await fetch(this.source + nameFile);
-                //const _data = await response.text();
+            else {                
                 const _data = await fsPromises.readFile(this.source + nameFile, 'utf-8');
                 if (isCached)
                     this.cache.setItem(name, _data);
@@ -111,13 +113,10 @@ class Data {
         });
         return schools;
     }
-
 };
 
 const GetData = async (cache) => {
     const instance = new Data(cache);
-    await instance.Init();
-    instance.cache = null;
+    await instance.Init();    
     return instance;
 }
-

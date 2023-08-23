@@ -1,9 +1,0 @@
-{
-    "noFindedAddress": "O Endereço do aluno não foi encontrado, tente melhorar a consulta.",
-    "noFindedSchool": "Nenhuma escola encontrada próximo ao endereço, tente melhorar a consulta.",
-    "emptyAddress": "Entre com o endereço do aluno.",
-    "selectYear": "Selecione o Ano !",
-    "timeOut": "O Mapa demorou muito para responder, tente novamente.",
-    "genericError": "Houve um problema, tente novamente.",
-    "noLocation": "Não foi possível geolocalizar, tente novamente."
-}

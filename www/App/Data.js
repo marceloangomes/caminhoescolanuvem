@@ -1,8 +1,7 @@
 export { GetData };
 
 class Data {
-    constructor(cache, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys=[]) {
-        this.cache = cache;
+    constructor(source, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys=[]) {       
         this.schools = schools;
         this.years = years;
         this.shifts = shifts;
@@ -12,21 +11,24 @@ class Data {
         this.schoolJunctions = schoolJunctions;
         this.message = message;
         this.citys = citys;
-        this.source = './Data/';
+        this.source = 'http://10.181.25.51:3000/';        
     }
     async Init() {
-        await this.UpdateVersion();
-        this.schools = await this.GetSchools();
-        this.years = await this.GetDataFromFile('years', 'year.json');
-        this.shifts = await this.GetDataFromFile('shifts', 'shift.json');    
-        this.junctions = await this.GetDataFromFile('junctions','junction.json');
-        this.models = await this.GetDataFromFile('models','model.json');
-        this.modelShifts = await this.GetDataFromFile('modelShifts','modelShift.json');
-        this.schoolJunctions = await this.GetDataFromFile('schoolJunctions','schoolJunction.json');
-        this.message = await this.GetDataFromFile('message','message.json');        
-        this.citys = await this.GetDataFromFile('citys','city.json');
-               
-        return this;
+        try {
+            const response = await fetch(this.source);
+            const _data = await response.text();
+            this.schools = _data.schools;
+            this.years = _data.years;
+            this.shifts = _data.shifts;
+            this.junctions = _data.junctions;
+            this.models = _data.models;
+            this.modelShifts = _data.modelShifts;
+            this.schoolJunctions = _data.schoolJunctions;
+            this.message = _data.message;
+            this.citys = _data.citys;           
+        } catch (error) {
+            throw Error("Fala na comunicação com a base de dados.");
+        }                            
     }
 
     GetInformation(school) {
@@ -41,80 +43,11 @@ class Data {
         });
         return informations;
     }
-
-    async UpdateVersion() {        
-        const versionServer = await this.GetDataFromFile('version','dataVersion.json', false);
-        const versionClient = await JSON.parse(this.cache.getItem('version'));
-        if (versionClient) {
-            if (versionClient.version != versionServer.version)
-                this.cache.clear();
-        } else
-            this.cache.clear();
-        this.cache.setItem('version', JSON.stringify(versionServer));
-    }
-
-    async GetDataFromFile(name, nameFile, isCached = true){
-        try {
-            if (isCached && this.cache.getItem(name)) {
-                return JSON.parse(this.cache.getItem(name));
-            }
-            else {
-                const response = await fetch(this.source + nameFile);
-                const _data = await response.text();
-                if(isCached) 
-                    this.cache.setItem(name, _data);
-                return JSON.parse(_data)
-            }
-         } catch (error) {
-             throw Error(message.genericError);            
-         }     
-    }
-
-    async GetNeighbors(){
-        let schoolsParsed =[];
-        let schoolsNeighbor = await this.GetDataFromFile('neighbors','schoolNeighbor.json');
-        schoolsNeighbor.forEach(schoolNeighbor => {
-            const school = {
-                "de": schoolNeighbor.DE,
-                "school_id": schoolNeighbor.codigo_cie,
-                "name": schoolNeighbor.nome,
-                "address": schoolNeighbor.COMPLEND + " " + schoolNeighbor.ENDESC + ", " + schoolNeighbor.NUMESC + " - " + schoolNeighbor.BAIESC,
-                "contact": "",
-                "lat": parseFloat(schoolNeighbor.lat.replace(",", ".")),
-                "lng": parseFloat(schoolNeighbor.lng.replace(",", ".")),
-                "selected": false,
-                "neighbor": true
-            };
-            schoolsParsed.push(school);
-        });
-        return schoolsParsed;
-    }
-
-    async GetSchools(){
-        let schools = await this.GetDataFromFile('schools','school.json');
-        schools.concat(await this.GetNeighbors());
-        schools = await this.SortSchools(schools);
-        return schools;       
-    }
-
-    async SortSchools(schools){
-        schools.sort((escolaA, escolaB) => {
-            if (escolaA.nome < escolaB.nome)
-                return -1
-            else if (escolaA.nome > escolaB.nome)
-                return 1
-            else
-                return 0
-        });     
-        return schools;
-    }
-
 };
 
-const GetData = async (cache) => {
-    const instance = new Data(cache);    
-    await instance.Init();
-    instance.cache = null;
+const GetData = async () => {
+    const instance = new Data();    
+    await instance.Init();    
     return instance;
 }
 

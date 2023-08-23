@@ -294,7 +294,7 @@ const CreateComponents = () => {
 (() => {
     window.addEventListener('load', async () => {
         Show("#wait");
-        const data = await GetData(localStorage);
+        const data = await GetData();
         Populate(data);
         AssociateEvents(Update, data, CreateComponents());
         RemoveAutoComplete(selector("#search"));
