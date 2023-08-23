@@ -1,0 +1,380 @@
+[
+    {
+        "id": 1,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 6
+    },
+    {
+        "id": 2,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 7
+    },
+    {
+        "id": 3,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 8
+    },
+    {
+        "id": 4,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 9
+    },
+    {
+        "id": 5,
+        "shift_id": 2,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 6
+    },
+    {
+        "id": 6,
+        "shift_id": 2,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 7
+    },
+    {
+        "id": 7,
+        "shift_id": 2,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 8
+    },
+    {
+        "id": 8,
+        "shift_id": 2,
+        "teachingType_id": 1,
+        "model_id": 1,
+        "year_id": 9
+    },
+    {
+        "id": 9,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 10
+    },
+    {
+        "id": 10,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 11
+    },
+    {
+        "id": 11,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 12
+    },
+    {
+        "id": 12,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 10
+    },
+    {
+        "id": 13,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 11
+    },
+    {
+        "id": 14,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 12
+    },
+    {
+        "id": 15,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 10
+    },
+    {
+        "id": 16,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 11
+    },
+    {
+        "id": 17,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 12
+    },
+    {
+        "id": 18,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 6
+    },
+    {
+        "id": 19,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 7
+    },
+    {
+        "id": 20,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 8
+    },
+    {
+        "id": 21,
+        "shift_id": 1,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 9
+    },
+    {
+        "id": 22,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 10
+    },
+    {
+        "id": 23,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 11
+    },
+    {
+        "id": 24,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 12
+    },
+    {
+        "id": 25,
+        "shift_id": 4,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 6
+    },
+    {
+        "id": 26,
+        "shift_id": 4,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 7
+    },
+    {
+        "id": 27,
+        "shift_id": 4,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 8
+    },
+    {
+        "id": 28,
+        "shift_id": 4,
+        "teachingType_id": 1,
+        "model_id": 2,
+        "year_id": 9
+    },
+    {
+        "id": 29,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 10
+    },
+    {
+        "id": 30,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 11
+    },
+    {
+        "id": 31,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 2,
+        "year_id": 12
+    },
+    {
+        "id": 32,
+        "shift_id": 3,
+        "teachingType_id": 1,
+        "model_id": 3,
+        "year_id": 6
+    },
+    {
+        "id": 33,
+        "shift_id": 3,
+        "teachingType_id": 1,
+        "model_id": 3,
+        "year_id": 7
+    },
+    {
+        "id": 34,
+        "shift_id": 3,
+        "teachingType_id": 1,
+        "model_id": 3,
+        "year_id": 8
+    },
+    {
+        "id": 35,
+        "shift_id": 3,
+        "teachingType_id": 1,
+        "model_id": 3,
+        "year_id": 9
+    },
+    {
+        "id": 36,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 3,
+        "year_id": 10
+    },
+    {
+        "id": 37,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 3,
+        "year_id": 11
+    },
+    {
+        "id": 38,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 3,
+        "year_id": 12
+    },
+    {
+        "id": 54,
+        "shift_id": 3,
+        "teachingType_id": 2,
+        "model_id": 3,
+        "year_id": 20
+    },
+    {
+        "id": 39,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 10
+    },
+    {
+        "id": 40,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 11
+    },
+    {
+        "id": 41,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 12
+    },
+    {
+        "id": 42,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 10
+    },
+    {
+        "id": 43,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 11
+    },
+    {
+        "id": 44,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 12
+    },
+    {
+        "id": 45,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 10
+    },
+    {
+        "id": 46,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 11
+    },
+    {
+        "id": 47,
+        "shift_id": 4,
+        "teachingType_id": 2,
+        "model_id": 4,
+        "year_id": 12
+    },
+    {
+        "id": 48,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 10
+    },
+    {
+        "id": 49,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 11
+    },
+    {
+        "id": 50,
+        "shift_id": 1,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 12
+    },
+    {
+        "id": 51,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 10
+    },
+    {
+        "id": 52,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 11
+    },
+    {
+        "id": 53,
+        "shift_id": 2,
+        "teachingType_id": 2,
+        "model_id": 1,
+        "year_id": 12
+    }
+]

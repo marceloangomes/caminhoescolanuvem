@@ -1,0 +1,26 @@
+{
+  "type": "module",
+  "dependencies": {},
+  "name": "caminhoescola",
+  "version": "1.0.0",
+  "description": "Mostra o Caminho para Escolas Próximas ao Estudante. ",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marceloangomes/caminhoescolanuvem.git"
+  },
+  "keywords": [
+    "caminho",
+    "escola",
+    "estudante"
+  ],
+  "author": "Marcelo Gomes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marceloangomes/caminhoescolanuvem/issues"
+  },
+  "homepage": "https://github.com/marceloangomes/caminhoescolanuvem#readme"
+}
