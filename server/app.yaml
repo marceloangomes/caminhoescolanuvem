@@ -1,0 +1,12 @@
+runtime: nodejs
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  static_files: App/App.js
+  upload: App/App.js
+
+- url: /(.*)
+  static_files: App/\1
+  upload: App/(.*)
