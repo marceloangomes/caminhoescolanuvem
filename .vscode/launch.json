@@ -13,7 +13,6 @@
             ],
             "type": "node"
         },
-
         {
             "name": "Attach to Chrome",
             "port": 9222,
@@ -36,11 +35,12 @@
             "webRoot": "./Test/Test.js"
         },
         {
-            "type": "chrome",
-            "request": "launch",
-            "name": "Launch Chrome against localhost node",
-            "url": "http://localhost:3000",
-            "webRoot": "./server/App/app.js"
+            "type": "node",
+            "request": "attach",
+            "name": "Attach by Proccess ID",
+            "processId": "${command:PickProcess}",
+            "protocol": "inspector",
+            "restart": true
         }
     ]
 }

@@ -1,9 +1,10 @@
 export { GetData };
 import { promises as fsPromises } from 'fs';
+import { CalculateAngleByZero } from '../maps.js'
 
 class Data {
-    constructor(cache = undefined, source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = []) {        
-        this.cache = cache;        
+    constructor(cache = undefined, source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = [], citysLatLng = []) {
+        this.cache = cache;
         this.schools = schools;
         this.years = years;
         this.shifts = shifts;
@@ -13,7 +14,8 @@ class Data {
         this.schoolJunctions = schoolJunctions;
         this.message = message;
         this.citys = citys;
-        if(source)
+        this.citysLatLng = citysLatLng;
+        if (source)
             this.source = source;
         else
             this.source = '../Data/';
@@ -28,7 +30,8 @@ class Data {
         this.modelShifts = await this.GetDataFromFile('modelShifts', 'modelShift.json');
         this.schoolJunctions = await this.GetDataFromFile('schoolJunctions', 'schoolJunction.json');
         this.message = await this.GetDataFromFile('message', 'message.json');
-        this.citys = await this.GetDataFromFile('citys', 'city.json');        
+        this.citys = await this.GetDataFromFile('citys', 'city.json');
+        this.citysLatLng = await this.GetCitysLatLng();
         this.cache = null;
     }
 
@@ -43,13 +46,13 @@ class Data {
             return `   Modelo: ${model.description}   período: ${shift.description}   horário de: ${modelShift.classSchedule.begin.substring(0, 5)}  até: ${modelShift.classSchedule.end.substring(0, 5)}\n`;
         });
         return informations;
-    }   
+    }
 
-    async UpdateVersion() {        
-        const versionDatabase = await this.GetDataFromFile('version', 'dataVersion.json', false);        
+    async UpdateVersion() {
+        const versionDatabase = await this.GetDataFromFile('version', 'dataVersion.json', false);
         const versionCache = this.cache.getItem('version');
         const versionServer = undefined;
-        if(versionCache)
+        if (versionCache)
             versionServer = await JSON.parse(versionCache);
         if (versionServer) {
             if (versionServer.version != versionDatabase.version)
@@ -64,7 +67,7 @@ class Data {
             if (isCached && this.cache.getItem(name)) {
                 return JSON.parse(this.cache.getItem(name));
             }
-            else {                
+            else {
                 const _data = await fsPromises.readFile(this.source + nameFile, 'utf-8');
                 if (isCached)
                     this.cache.setItem(name, _data);
@@ -97,7 +100,7 @@ class Data {
 
     async GetSchools() {
         let schools = await this.GetDataFromFile('schools', 'school.json');
-        schools.concat(await this.GetNeighbors());
+        schools = schools.concat(await this.GetNeighbors());
         schools = await this.SortSchools(schools);
         return schools;
     }
@@ -113,10 +116,20 @@ class Data {
         });
         return schools;
     }
+
+    async GetCitysLatLng() {
+        let citysLatLng = await this.GetDataFromFile('citysLatLng', 'cityCoordinate.json');
+        citysLatLng.map((city) => {
+            city.degreeDistance = CalculateAngleByZero({ 'lat': city.lat, 'lng': city.lng });
+        })
+        return citysLatLng.sort((cityA, cityB) => {
+            return cityA.degreeDistance - cityB.degreeDistance;
+        })
+    }
 };
 
 const GetData = async (cache) => {
     const instance = new Data(cache);
-    await instance.Init();    
+    await instance.Init();
     return instance;
 }

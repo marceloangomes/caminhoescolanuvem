@@ -8,7 +8,8 @@
   "description": "Mostra o Caminho para Escolas Próximas ao Estudante. ",
   "main": "App.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev":"nodemon --inspect ../server/App/App.js"
   },
   "repository": {
     "type": "git",
