@@ -19,6 +19,8 @@ const Update = async (parameters) => {
         if (!IsValidCacheImplementation(cache))
             throw new Error('Erro no componente: CacheNodeFacade');
         const data = await GetData(cache);
+        
+
         const filterParsed = new Filter(data, JSON.parse(parameters));
         filterParsed.Init();
         const schoolSelected = SchoolSelected(data, filterParsed.schoolSelectId);
@@ -47,6 +49,8 @@ const Update = async (parameters) => {
         //googleMaps = undefined;
     }
 }
+
+
 
 const SchoolSelected = (data, school_id) => {
     let schoolFound = data.schools.find(school => school.selected);

@@ -3,36 +3,43 @@ import { promises as fsPromises } from 'fs';
 import { CalculateAngleByZero } from '../maps.js'
 
 class Data {
-    constructor(cache = undefined, source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = [], citysLatLng = []) {
-        this.cache = cache;
-        this.schools = schools;
-        this.years = years;
-        this.shifts = shifts;
-        this.junctions = junctions;
-        this.models = models;
-        this.modelShifts = modelShifts;
-        this.schoolJunctions = schoolJunctions;
-        this.message = message;
-        this.citys = citys;
-        this.citysLatLng = citysLatLng;
-        if (source)
-            this.source = source;
-        else
-            this.source = '../Data/';
+    constructor(source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = [], citysLatLng = []) {
+        if (!Data.instance) {
+            this.cache = cache;
+            this.schools = schools;
+            this.years = years;
+            this.shifts = shifts;
+            this.junctions = junctions;
+            this.models = models;
+            this.modelShifts = modelShifts;
+            this.schoolJunctions = schoolJunctions;
+            this.message = message;
+            this.citys = citys;
+            this.citysLatLng = citysLatLng;
+            if (source)
+                this.source = source;
+            else
+                this.source = '../Data/';
+            this.charge = true;
+            Data.instance = this;
+        }           
+        return Data.instance;        
     }
-    async Init() {
-        await this.UpdateVersion();
-        this.schools = await this.GetSchools();
-        this.years = await this.GetDataFromFile('years', 'year.json');
-        this.shifts = await this.GetDataFromFile('shifts', 'shift.json');
-        this.junctions = await this.GetDataFromFile('junctions', 'junction.json');
-        this.models = await this.GetDataFromFile('models', 'model.json');
-        this.modelShifts = await this.GetDataFromFile('modelShifts', 'modelShift.json');
-        this.schoolJunctions = await this.GetDataFromFile('schoolJunctions', 'schoolJunction.json');
-        this.message = await this.GetDataFromFile('message', 'message.json');
-        this.citys = await this.GetDataFromFile('citys', 'city.json');
-        this.citysLatLng = await this.GetCitysLatLng();
-        this.cache = null;
+
+    async Init() {        
+        if (this.charge){
+            this.schools = await this.GetSchools();
+            this.years = await this.GetDataFromFile('year.json');
+            this.shifts = await this.GetDataFromFile('shift.json');
+            this.junctions = await this.GetDataFromFile('junction.json');
+            this.models = await this.GetDataFromFile('model.json');
+            this.modelShifts = await this.GetDataFromFile('modelShift.json');
+            this.schoolJunctions = await this.GetDataFromFile('schoolJunction.json');
+            this.message = await this.GetDataFromFile('message.json');
+            this.citys = await this.GetDataFromFile('city.json');
+            this.citysLatLng = await this.GetCitysLatLng();      
+            this.charge = false;
+        }
     }
 
     GetInformation(school) {
@@ -48,31 +55,10 @@ class Data {
         return informations;
     }
 
-    async UpdateVersion() {
-        const versionDatabase = await this.GetDataFromFile('version', 'dataVersion.json', false);
-        const versionCache = this.cache.getItem('version');
-        const versionServer = undefined;
-        if (versionCache)
-            versionServer = await JSON.parse(versionCache);
-        if (versionServer) {
-            if (versionServer.version != versionDatabase.version)
-                this.cache.clear();
-        } else
-            this.cache.clear();
-        this.cache.setItem('version', JSON.stringify(versionDatabase));
-    }
-
-    async GetDataFromFile(name, nameFile, isCached = true) {
-        try {
-            if (isCached && this.cache.getItem(name)) {
-                return JSON.parse(this.cache.getItem(name));
-            }
-            else {
-                const _data = await fsPromises.readFile(this.source + nameFile, 'utf-8');
-                if (isCached)
-                    this.cache.setItem(name, _data);
-                return JSON.parse(_data)
-            }
+    async GetDataFromFile(nameFile) {
+        try {            
+            const _data = await fsPromises.readFile(this.source + nameFile, 'utf-8');
+            return JSON.parse(_data);            
         } catch (error) {
             throw `${error}\n ${this.source + nameFile}`;
         }
@@ -80,7 +66,7 @@ class Data {
 
     async GetNeighbors() {
         let schoolsParsed = [];
-        let schoolsNeighbor = await this.GetDataFromFile('neighbors', 'schoolNeighbor.json');
+        let schoolsNeighbor = await this.GetDataFromFile('schoolNeighbor.json');
         schoolsNeighbor.forEach(schoolNeighbor => {
             const school = {
                 "de": schoolNeighbor.DE,
@@ -99,7 +85,7 @@ class Data {
     }
 
     async GetSchools() {
-        let schools = await this.GetDataFromFile('schools', 'school.json');
+        let schools = await this.GetDataFromFile('school.json');
         schools = schools.concat(await this.GetNeighbors());
         schools = await this.SortSchools(schools);
         return schools;
@@ -118,7 +104,7 @@ class Data {
     }
 
     async GetCitysLatLng() {
-        let citysLatLng = await this.GetDataFromFile('citysLatLng', 'cityCoordinate.json');
+        let citysLatLng = await this.GetDataFromFile('cityCoordinate.json');
         citysLatLng.map((city) => {
             city.degreeDistance = CalculateAngleByZero({ 'lat': city.lat, 'lng': city.lng });
         })
@@ -128,8 +114,8 @@ class Data {
     }
 };
 
-const GetData = async (cache) => {
-    const instance = new Data(cache);
+const GetData = async () => {
+    const instance = new Data();
     await instance.Init();
     return instance;
 }
