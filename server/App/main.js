@@ -13,17 +13,11 @@ export { Update };
 
 "use strict";
 
-const Update = async (parameters) => {
-    try {
-        let cache = new CacheNodeFacade();
-        if (!IsValidCacheImplementation(cache))
-            throw new Error('Erro no componente: CacheNodeFacade');
-        const data = await GetData(cache);
-        
-
+const Update = async (parameters) => {   
+        const data = await GetData();        
         const filterParsed = new Filter(data, JSON.parse(parameters));
         filterParsed.Init();
-        const schoolSelected = SchoolSelected(data, filterParsed.schoolSelectId);
+        const schoolSelected = SchoolSelected(data, filterParsed.schoolSelectedId);
         const schoolsFiltered = ApplyFilter(filterParsed, data, schoolSelected);
         //POC
         //filter.addressOrigin = 'lirio dos vales, 106, São Bernardo do Campo, SP'
@@ -37,20 +31,13 @@ const Update = async (parameters) => {
         const locationOrigin = await AddressOriginToLocation(filterParsed.addressOrigin, data.message);
         const schoolsRay = FilterSchoolsByRay(locationOrigin, schoolsFiltered);
         if (!schoolsRay)
-            throw new Error(data.message.noFindedSchool);
+            throw (new Error(data.message.noFindedSchool));
         let wayCloses = await ProcessSchoolsRay(locationOrigin, schoolsRay);
         if (!wayCloses)
-            throw new Error(data.message.noLocation);
+            throw (new Error(data.message.noLocation));
         wayCloses = SortWays(wayCloses);
         return { "ways": FilterWays(wayCloses), "neighbors": FilterNeighbors(wayCloses) };
-    } catch (error) {
-        throw error;
-    } finally {
-        //googleMaps = undefined;
-    }
 }
-
-
 
 const SchoolSelected = (data, school_id) => {
     let schoolFound = data.schools.find(school => school.selected);
@@ -64,7 +51,7 @@ const SchoolSelected = (data, school_id) => {
         schoolFound.junctionsId = [];
         return schoolFound;
     }
-    throw Error(data.message.noFindedSchool);
+    throw (new Error(data.message.noFindedSchool));
 }
 
 const ApplyFilter = (filter, data, schoolSelected) => {
@@ -203,7 +190,7 @@ const CalculateDistance = async (school, locationOrigin, locationDestiny) => {
     if (response.status === 'OK')
         return { "school": school, "locationOrigin": locationOrigin, "locationDestiny": locationDestiny, "distance": response.rows[0].elements[0].distance.value, "addressDestiny": response.destinationAddresses, "addressOrigin": response.originAddresses, "distanceLong": response.rows[0].elements[0].distance.text, "time": response.rows[0].elements[0].duration.text };
     else
-        throw Error('Não foi possível calcular as distâncias, tente novamente.');
+        throw (new Error('Não foi possível calcular as distâncias, tente novamente.'));
 }
 
 const ProcessSchoolsRay = async (locationOrigin, schoolsRay) => {
@@ -228,17 +215,17 @@ const AddressOriginToLocation = async (addressOrigin, message) => {
     if (response.statusText === "OK") {
         const data = response.data;
         if (data.status === "ZERO_RESULTS")
-            throw new Error(message.noFindedAddress);
+            throw (new Error(message.noFindedAddress));
         else if (data.status === "OK") {
             const results = response.data.results;
             const lat = results[0].geometry.location.lat;
             const lng = results[0].geometry.location.lng;
             return { 'lat': lat, 'lng': lng };
         } else
-            throw new Error(message.noLocation);
+            throw (new Error(message.noLocation));
     }
     else
-        throw new Error(message.noLocation);
+        throw (new Error(message.noLocation));
 }
 
 const CreateComponents = () => {

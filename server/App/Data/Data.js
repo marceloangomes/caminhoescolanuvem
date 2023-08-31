@@ -4,8 +4,7 @@ import { CalculateAngleByZero } from '../maps.js'
 
 class Data {
     constructor(source = undefined, schools = [], years = [], shifts = [], junctions = [], models = [], modelShifts = [], schoolJunctions = [], message = {}, citys = [], citysLatLng = []) {
-        if (!Data.instance) {
-            this.cache = cache;
+        if (!Data.instance) {            
             this.schools = schools;
             this.years = years;
             this.shifts = shifts;
@@ -60,7 +59,7 @@ class Data {
             const _data = await fsPromises.readFile(this.source + nameFile, 'utf-8');
             return JSON.parse(_data);            
         } catch (error) {
-            throw `${error}\n ${this.source + nameFile}`;
+            throw (new Error(`${error}\n ${this.source + nameFile}`));
         }
     }
 
